@@ -55,15 +55,18 @@ function MerchantEditProductVariants() {
   const [variants, setVariants] = useState([...product.variants]);
   const [newStyleText, setNewStyleText] = useState("");
   const [newSizeText, setNewSizeText] = useState("");
+  const [price, setPrice] = useState(0);
 
   const [newVariantModal, setNewVariantModal] = useState({ visible: false, editIndex: -1 });
   const [newVariant, setNewVariant] = useState(NewVariantObject);
 
   const handleSubmit = async (e) => {
+    console.log("submit working");
     let newProduct = { ...product };
-    newProduct.variants = [...variants];
+    newProduct.variants = [...variants, price];
     newProduct.variantParameters = { ...params };
 
+    console.log(newProduct, price);
     await RestAdmin.updateProduct(newProduct);
     navigate("/merchant/productlist");
 
@@ -143,6 +146,7 @@ function MerchantEditProductVariants() {
 
   useEffect(() => loadData(), []);
 
+  console.log(price);
   return (
     <>
       <Style />
@@ -465,6 +469,29 @@ function MerchantEditProductVariants() {
                                           </div>
                                         </div>
                                       </div>
+
+                                      <div className="row">
+                                        <div className="col-12">
+                                          <div className="row mt-3">
+                                            <div className="col-12">
+                                              <p className="ms-1">Price</p>
+                                            </div>
+                                          </div>
+                                          <div className="row">
+                                            <div className="col-sm-2">
+                                              <InputGroup className="mb-3">
+                                                <Form.Control
+                                                  value={newStyleText}
+                                                  onChange={(e) => {
+                                                    setPrice(e.target.value);
+                                                  }}
+                                                  placeholder="Price"
+                                                />
+                                              </InputGroup>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 )}
@@ -511,6 +538,8 @@ function MerchantEditProductVariants() {
                                   params.dimensionThicknessEnabled) && (
                                   <td className="text-center py-2">Dimensions</td>
                                 )}
+
+                                <td className="text-center py-2">Price</td>
                                 <td></td>
                               </thead>
                               <tbody>
@@ -571,6 +600,17 @@ function MerchantEditProductVariants() {
                                         {getUnit(params.dimensionUnitId)?.name || "Units"}
                                       </td>
                                     )}
+
+                                    {
+                                      <td className="text-center">
+                                        {Boolean(variant.price) && (
+                                          <span>{variant.price}</span>
+                                        )}
+                                        {!Boolean(variant.prize) && (
+                                          <span className="badge bg-danger">Select Price</span>
+                                        )}
+                                      </td>
+                                    }
                                     <td className="text-center">
                                       <button
                                         className="btn btn-sm btn-info"
@@ -791,6 +831,18 @@ function MerchantEditProductVariants() {
                             </div>
                           </div>
                         )}
+
+                        <div className="form-group">
+                          <Form.Label className="text-muted px-2 mt-2">Price</Form.Label>
+                          <Form.Control
+                            type="text"
+                            onChange={(e) => {
+                              setPrice(e.target.value);
+                            }}
+                            value={price}
+                            placeholder="Price"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

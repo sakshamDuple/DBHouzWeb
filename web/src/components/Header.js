@@ -32,9 +32,10 @@ function Header() {
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
   const [formError, setFormError] = useState();
+  const [selectedTab, setSelectedTab] = useState(1);
   const user = useSelector((s) => s.user);
 
-  console.log(user.user);
+  // console.log(user.user);
 
   const validateEmail = (email) => {
     return String(email)
@@ -89,6 +90,38 @@ function Header() {
         setError(`Registration Failed`);
       });
   };
+
+  console.log(selectedTab);
+
+  useEffect(() => {
+    const loc = window.location.href;
+    console.log(loc.split("/")[3]);
+    switch (loc.split("/")[3]) {
+      case "about":
+        setSelectedTab(1);
+        break;
+
+      case "category":
+        setSelectedTab(2);
+        break;
+
+      case "productlist":
+        setSelectedTab(3);
+        break;
+
+      case "bloglist":
+        setSelectedTab(4);
+        break;
+
+      case "contact":
+        setSelectedTab(5);
+        break;
+
+      default:
+        setSelectedTab(0);
+        break;
+    }
+  }, [window.location.href]);
 
   return (
     <header className="mainHeader wrapper">
@@ -790,19 +823,19 @@ function Header() {
             <div className="col-md">
               <div className="hdrMenu">
                 <ul>
-                  <li>
+                  <li className={selectedTab === 0 && "header-active"}>
                     <NavLink to="/">Home</NavLink>
                   </li>
-                  <li>
+                  <li className={selectedTab === 1 && "header-active"}>
                     <NavLink to="/about">About</NavLink>
                   </li>
-                  <li>
+                  <li className={selectedTab === 2 && "header-active"}>
                     <NavLink to="/category">Category</NavLink>
                   </li>
-                  <li>
+                  <li className={selectedTab === 3 && "header-active"}>
                     <NavLink to="/productlist">Shop</NavLink>
                   </li>
-                  <li>
+                  <li className={selectedTab === 4 && "header-active"}>
                     <NavLink to="/bloglist">Blog</NavLink>
                   </li>
                   {/* <li>
