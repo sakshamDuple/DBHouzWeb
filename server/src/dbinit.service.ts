@@ -25,6 +25,7 @@ export async function dbInit(db: mongoDB.Db) {
   await db.createCollection(AppConfig.mongoCollections.colors).catch((e) => console.log(e));
   await db.createCollection(AppConfig.mongoCollections.units).catch((e) => console.log(e));
   await db.createCollection(AppConfig.mongoCollections.user).catch((e) => console.log(e));
+  await db.createCollection(AppConfig.mongoCollections.orders).catch((e) => console.log(e));
 }
 export async function dataInit(db) {
   let newAdmin: IAdmin = {

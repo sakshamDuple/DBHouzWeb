@@ -141,6 +141,7 @@ productRouter.get("/getOne/:productId", async (req: Request, res: Response) => {
 
 productRouter.post("/updateOne", async (req: Request, res: Response) => {
   try {
+    console.log(req.body.product)
     const product: IProduct = req.body.product;
     await ProductService.update(product);
     res.status(200).json({});

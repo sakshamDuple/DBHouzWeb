@@ -100,6 +100,7 @@ export interface IProduct {
     documentId: ObjectId;
     priority: number;
   }[];
+  price:number;
   seo?: {
     metaTagTitle?: string;
     metaTagDescription?: string;
@@ -134,6 +135,7 @@ export interface IProductVariant {
   availableQuantity: number;
   discountPercentage: number;
   price: number | Double;
+  // stock:number;
   images?: {
     documentId: ObjectId;
     priority: number;
@@ -144,6 +146,19 @@ export enum EProductStatus {
   Active = "ACTIVE",
   InActive = "INACTIVE",
 }
+export enum OrderStatus {
+  Recieved = "Recieved",
+  Payment_Accepted = "Payment_Accepted",
+  Inprogress = "Inprogress",
+  Delivered = "Delivered",
+  Cancelled = "Cancelled",
+  Refund_Inprogress = "Refund_Inprogress",
+  Refund_Done = "Refund_Done"
+}
+// export enum TransactionStatus {
+//   Successful = "Successful",
+//   Failed = "Failed"
+// }
 export enum ECategoryStatus {
   Active = "ACTIVE",
   InActive = "INACTIVE",
@@ -177,3 +192,45 @@ export interface IUnit {
   createdAt: number;
   priority: number;
 }
+export interface Order {
+  _id: ObjectId;
+  productId: string[];
+  address: {
+    addressId:ObjectId,
+    country:string,
+    state:string,
+    city:string,
+    postal_code:string,
+    main_address_text:string
+  };
+  total_price:number;
+  customer:string;
+  discount:string[];
+  coupon:string[];
+  order_status:OrderStatus;
+  transactionDetail:{
+    transactionId: ObjectId,
+    transactionDate: number,
+    status: string
+  };
+  createdAt:number;
+}
+
+// export interface Order {
+//   _id: ObjectId;
+//   orderId: string;
+//   productId: ObjectId[];
+//   address: {
+//     country:string,
+//     state:string,
+//     city:string,
+//     postal_code:string,
+//     main_address_text:string
+//   };
+//   total_price: number;
+//   customer: IUser;
+//   discount: string[];
+//   coupon: string[];
+//   order_status: string;
+//   transactionId: string;
+// }

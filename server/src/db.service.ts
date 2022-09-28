@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import { LOG } from "./logger";
 import { AppConfig } from "./config";
 import { dataInit, dbInit } from "./dbinit.service";
+import { number } from "joi";
 
 /**
  * Global Variables
@@ -19,6 +20,7 @@ export const collections: {
   colors?: mongoDB.Collection;
   units?: mongoDB.Collection;
   users?: mongoDB.Collection;
+  orders?: mongoDB.Collection;
 } = {};
 
 /**
@@ -63,6 +65,7 @@ export async function connectToDatabase() {
   collections.colors = db.collection(AppConfig.mongoCollections.colors);
   collections.units = db.collection(AppConfig.mongoCollections.units);
   collections.users = db.collection(AppConfig.mongoCollections.user);
+  collections.orders = db.collection(AppConfig.mongoCollections.orders);
   LOG.info(`Successfully connected to database`);
   try {
     await applyMongoValidations(db);
@@ -404,4 +407,61 @@ let applyMongoValidations = async (db: mongoDB.Db) => {
       },
     },
   });
+  LOG.info(`Validating collection ${AppConfig.mongoCollections.orders}`);
+  await db.command({
+    collMod: AppConfig.mongoCollections.orders,
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: ["productId", "address", "total_price", "customer", "discount", "coupon", "order_status", "transactionDetail"],
+        additionalProperties: true,
+        properties: {
+          productId: {
+            bsonType: "array",
+            items: { bsonType: "string" }
+          },
+          order_status: { enum: ["Recieved", "Payment_Accepted", "Inprogress", "Delivered", "Cancelled", "Refund_Inprogress", "Refund_Done"] },
+          total_price: { bsonType: "number" },
+          customer: { bsonType: "string" },
+          discount: {
+            bsonType: "array",
+            items: { bsonType: "string" }
+          },
+          coupon: {
+            bsonType: "array",
+            items: { bsonType: "string" }
+          },
+          address: {
+            bsonType: "object",
+            additionalProperties: true,
+            required: [
+              "country",
+              "state",
+              "city",
+              "postal_code",
+              "main_address_text",
+            ],
+            properties: {
+              country: { bsonType: "string" },
+              state: { bsonType: "string" },
+              city: { bsonType: "string" },
+              main_address_text: { bsonType: "string" },
+              postal_code: { bsonType: "number" },
+            },
+          },
+          transactionDetail: {
+            bsonType: "object",
+            additionalProperties: true,
+            required: [
+              "status"
+            ],
+            properties: {
+              status: { bsonType: "string" },
+            },
+          },
+          createdAt: { bsonType: "number" }
+        },
+      },
+    },
+  })
 };
