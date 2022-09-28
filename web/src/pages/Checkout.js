@@ -277,7 +277,7 @@ $(selectRef3.current).niceSelect();
                                                     <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                                     </div>
                                                     <div className="prodctListPrice">
-                                                        <div className="price">£83.69</div>
+                                                        <div className="price">$83.69</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -286,7 +286,7 @@ $(selectRef3.current).niceSelect();
                                     <div className="chckoutPymtSideBrBlk">
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
-                                                <li>Total MRP<span>£100.43</span></li>
+                                                <li>Total MRP<span>$100.43</span></li>
                                                 <li>Discount on MRP<span className="discntPrice" >-$05</span></li>
                                                 <li>Convenience Fee<span className="oferPrice">$1 <span className="discntPrice">Free</span></span></li>
                                             </ul>
@@ -301,7 +301,7 @@ $(selectRef3.current).niceSelect();
                                         </div>
                                         <div className="col-auto">
                                             <div className="totlGstBlk">
-                                                <h5>£94.43</h5>
+                                                <h5>$94.43</h5>
                                                 <p>Inc. GST</p>
                                             </div>
                                         </div>

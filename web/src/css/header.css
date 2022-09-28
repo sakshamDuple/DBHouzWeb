@@ -17,3 +17,7 @@
 .header-fix button h5{
     color:white !important;
 }
+
+.hdrMenu > ul > li > a.active{
+    color:coral;
+}

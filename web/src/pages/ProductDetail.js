@@ -30,6 +30,7 @@ require("jquery-nice-select");
 
 function ProductDetail() {
   let [count, setCount] = useState(1);
+  const [Unit, setUnit] = useState(0);
   let [selectedVariant, setSelectedVariant] = useState(0);
   const dispatch = useDispatch();
   const { state } = useLocation();
@@ -60,13 +61,24 @@ function ProductDetail() {
   const getSingleColors = (id) => {
     if (color && color.colors) {
       const _color = color.colors.filter((item) => item._id === id);
-      return _color[0].name;
+      return _color[0]?.name;
     } else return "green";
   };
 
   const getDimension = (obj) => {
+    let unit = 0;
+    if(obj.dimensions.height != 0 && obj.dimensions.width != 0 && obj.dimensions.thickness != 0){
+      unit = 3
+    } else if((obj.dimensions.height !=0 && obj.dimensions.width != 0) || (obj.dimensions.height !=0 && obj.dimensions.thickness != 0) || (obj.dimensions.thickness != 0 && obj.dimensions.width != 0)) {
+      unit = 2
+    } else if(obj.dimensions.height != 0 || obj.dimensions.width != 0 || obj.dimensions.thickness != 0) {
+      unit = 1
+    } else {
+      unit = 0
+    }
+    // setUnit(unit)
     if (obj)
-      return `${obj.dimensions.height} x ${obj.dimensions.width} x ${obj.dimensions.thickness} inches`;
+      return `${obj.dimensions.height} x ${obj.dimensions.width} x ${obj.dimensions.thickness} inches^${unit}`;
     else return "0 x 0 x 0 inches";
   };
 
@@ -196,10 +208,11 @@ function ProductDetail() {
                           ? product.variants[selectedVariant].price
                           : 0
                       }`}</div>
-                      <div className="prcentOff px-3">$100.43 Inc VAT</div>
+                      <div className="prcentOff px-3">{product.variants[selectedVariant].price/100*8}$ VAT Included</div>
                     </div>
-                    <div className="gst">$38.04 per m²</div>
-                    <div className="leftStock">59 item left in Stock</div>
+                    <div className="gst">{product.variants[selectedVariant].price/100*10}$ gst per inches² Included</div>
+                    {console.log("product:",product)}
+                    <div className="leftStock">{product.variants[selectedVariant].availableQuantity} item left in Stock</div>
                     <div className="prdctDtlSize d-flex align-items-center py-3">
                       <div className="btn-label">
                         <h5>Variant name:</h5>

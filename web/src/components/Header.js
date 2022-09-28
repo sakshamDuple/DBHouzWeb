@@ -13,6 +13,55 @@ import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
 
 function Header() {
+  const [path, setPath] = useState({
+    home: "no",
+    about: "no",
+    cate: "no",
+    shop: "no",
+    blog: "no",
+    cont: "no",
+  });
+
+  function handleHover() {
+    switch (window.location.pathname) {
+      case "/":
+        setPath((prevState) => ({
+          ...prevState,
+          home: "",
+        }));
+        break;
+      case "/about":
+        setPath((prevState) => ({
+          ...prevState,
+          about: "",
+        }));
+        break;
+      case "/category":
+        setPath((prevState) => ({
+          ...prevState,
+          cate: "",
+        }));
+        break;
+      case "/productlist":
+        setPath((prevState) => ({
+          ...prevState,
+          shop: "",
+        }));
+        break;
+      case "/bloglist":
+        setPath((prevState) => ({
+          ...prevState,
+          blog: "",
+        }));
+        break;
+      case "/contact":
+        setPath((prevState) => ({
+          ...prevState,
+          cont: "",
+        }));
+        break;
+    }
+  }
   const categories = useSelector((s) => s.categories);
   const cart = useSelector((s) => s.cart);
   let cartTotalAmount = 0;
@@ -609,7 +658,7 @@ function Header() {
                 </Modal>
                 <div className="navBarIcons">
                   <Link to="/wishlist">
-                    <img src="img/wishListIcon.svg" alt="WishList" />
+                    <img src="/img/wishListIcon.svg" alt="WishList" />
                   </Link>
                   {/* <Link to="/" onClick={() =>
                      loginModel(true)}>
@@ -637,7 +686,7 @@ function Header() {
             <div className="col-md-3">
               <div className="logo">
                 <Link to="/">
-                  <img src="img/logo.png" alt="Logo" />
+                  <img src="/img/logo.png" alt="Logo" />
                 </Link>
               </div>
             </div>
@@ -664,7 +713,7 @@ function Header() {
                     <div className="col-sm-auto">
                       <div className="form-group">
                         <button className="btnCommon btnDark">
-                          Search <img src="img/searchIcon.svg" />
+                          Search <img src="/img/searchIcon.svg" />
                         </button>
                       </div>
                     </div>
@@ -682,7 +731,7 @@ function Header() {
                 <Dropdown>
                   <Dropdown.Toggle variant="btn" id="dropdown-basic">
                     <div className="cartBtn">
-                      <img src="img/cartIcon.svg" />{" "}
+                      <img src="/img/cartIcon.svg" />{" "}
                       {cart?.length > 0 && <span>{cart?.length}</span>}
                     </div>
                   </Dropdown.Toggle>
@@ -769,7 +818,7 @@ function Header() {
                   <div className="categorydropDown">
                     <Dropdown>
                       <Dropdown.Toggle variant="default" id="dropdown-basic">
-                        <img src="img/catIcon.svg" /> Categories
+                        <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {categories.map((category) => (
@@ -790,19 +839,19 @@ function Header() {
             <div className="col-md">
               <div className="hdrMenu">
                 <ul>
-                  <li>
+                  <li className={`\active${path.home}`}>
                     <NavLink to="/">Home</NavLink>
                   </li>
-                  <li>
+                  <li className={`\active${path.about}`}>
                     <NavLink to="/about">About</NavLink>
                   </li>
-                  <li>
+                  <li className={`\active${path.cate}`}>
                     <NavLink to="/category">Category</NavLink>
                   </li>
-                  <li>
+                  <li className={`\active${path.shop}`}>
                     <NavLink to="/productlist">Shop</NavLink>
                   </li>
-                  <li>
+                  <li className={`\active${path.blog}`}>
                     <NavLink to="/bloglist">Blog</NavLink>
                   </li>
                   {/* <li>
@@ -811,7 +860,7 @@ function Header() {
                      <li>
                         <NavLink to="/">LookBook</NavLink>
                      </li> */}
-                  <li>
+                  <li className={`\active${path.cont}`}>
                     <NavLink to="/contact">Contact</NavLink>
                   </li>
                 </ul>

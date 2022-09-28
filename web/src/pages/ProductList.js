@@ -60,14 +60,14 @@ function ProductList() {
     <section className="wrapper">
       <Header />
       <article className="categoryInrBlk hdrBrNone wrapper">
-        <div className="greyBg2 py-4 mb-5">
+        {/* <div className="greyBg2 py-4 mb-5"> */}
           <div className="container">
-            <div className="row d-flex align-items-center justify-content-between">
+            {/* <div className="row d-flex align-items-center justify-content-between">
               <div className="col">
                 <div className="bredCrumbHdng">
                   <h3>Shop DBHouz</h3>
                 </div>
-              </div>
+              </div> */}
               <div className="col-auto">
                 <div className="breadcrumbsCol py-20">
                   <nav aria-label="breadcrumb">
@@ -85,9 +85,9 @@ function ProductList() {
                   </nav>
                 </div>
               </div>
-            </div>
+            {/* </div> */}
           </div>
-        </div>
+        {/* </div> */}
       </article>
       <article className="NavCatInrBlck wrapper">
         <div className="container">
@@ -97,9 +97,9 @@ function ProductList() {
                 <li key={index}>
                   <div
                     style={{
-                      color: "#333",
+                      color: "#FFFFFF",
                       cursor: "pointer",
-                      background: cat.category === category?.category ? "#F2672A" : "#eee",
+                      background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
                     onClick={() => {
                       setCategory(cat);
@@ -387,12 +387,12 @@ function ProductList() {
                   <div className="sideBarBnrCol">
                     <div className="sideBrAddBnr py-4">
                       <Link to="/">
-                        <img src="img/addBnr1.png" />
+                        <img src="/img/addBnr1.png" />
                       </Link>
                     </div>
                     <div className="sideBrAddBnr">
                       <Link to="/">
-                        <img src="img/addBnr2.png" />
+                        <img src="/img/addBnr2.png" />
                       </Link>
                     </div>
                   </div>
@@ -461,12 +461,12 @@ function ProductList() {
                               <div className="prdctHovrCard">
                                 <Link to="/wishlist">
                                   <span className="prdctListWishListIcon">
-                                    <img src="img/wishListIconDark.svg" />
+                                    <img src="/img/wishListIconDark.svg" />
                                   </span>
                                 </Link>
                                 <Link to="/">
                                   <span className="prdctListIcon">
-                                    <img src="img/prdctListIcon.svg" />
+                                    <img src="/img/prdctListIcon.svg" />
                                   </span>
                                 </Link>
                               </div>
