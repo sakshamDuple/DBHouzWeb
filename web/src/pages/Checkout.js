@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import $ from "jquery";
 import 'rc-slider/assets/index.css';
+import { useSelector } from "react-redux";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function Checkout() {
@@ -20,6 +21,16 @@ $(selectRef2.current).niceSelect();
   useEffect(() => {
 $(selectRef3.current).niceSelect();
   }, []);
+  const cart = useSelector((s) => s.cart);
+  let cartTotalAmount = 0;
+  cart.forEach((i) => {
+      console.log("item",i)
+    console.log("price:",i.variant?.price)
+    let price = i.variant?.price;
+    cartTotalAmount += price * i.quantity;
+  });
+  let Type = window.localStorage.getItem("utype")
+
   return (
     <section className="wrapper">
     <Header/>
@@ -29,7 +40,7 @@ $(selectRef3.current).niceSelect();
                 <div className="row d-flex justify-content-between g-5 py-3">
                     <div className="col-md">
                         <div className="checkoutMainBlk">
-                            <div className="whiteBg py-3 px-3">
+                            {Type!="user"?<div className="whiteBg py-3 px-3">
                                 <div className="row d-flex align-items-center">
                                     <div className="col">
                                         <div className="checkOutLoginBts">
@@ -48,7 +59,7 @@ $(selectRef3.current).niceSelect();
                                         </div>   
                                     </div>
                                 </div>
-                            </div>
+                            </div>:""}
                             <div className="whiteBg phoneNumbrBlk my-4 py-3 px-3">
                                 <div className="row d-flex align-items-center justify-content-between">
                                     <div className="col">
@@ -77,6 +88,10 @@ $(selectRef3.current).niceSelect();
                                             <div className="col-6">
                                                 <label htmlFor="lastaNameFld" className="form-label">Last Name*</label>
                                                 <input type="text" className="form-control" placeholder="Doe" />
+                                            </div>
+                                            <div className="col-6">
+                                                <label htmlFor="firstNameFld" className="form-label">Phone*</label>
+                                                <input type="text" className="form-control" placeholder="000000000" />
                                             </div>
                                             <div className="col-12">
                                             <label htmlFor="emailFld" className="form-label">Address*</label>
@@ -256,7 +271,7 @@ $(selectRef3.current).niceSelect();
                         <div className="sdbrWdgt">
                             <div className=" checkoutSideProdct sideBarBg ">
                                 <div className="sdbrHdng checkOutSdeHdng mb-4"><h4>Your Order</h4></div>
-                                    <div className="sideBrPrdct">
+                                    {/* <div className="sideBrPrdct">
                                         <div className="row g-3 d-sm-flex align-items-center">
                                             <div className="col-auto">
                                                 <div className="sdbrProMedia">
@@ -282,13 +297,14 @@ $(selectRef3.current).niceSelect();
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="chckoutPymtSideBrBlk">
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
-                                                <li>Total MRP<span>$100.43</span></li>
-                                                <li>Discount on MRP<span className="discntPrice" >-$05</span></li>
-                                                <li>Convenience Fee<span className="oferPrice">$1 <span className="discntPrice">Free</span></span></li>
+                                                <li>Total MRP<span>${cartTotalAmount+cartTotalAmount*18/100}</span></li>
+                                                <li>GST<span className="discntPrice" >+${cartTotalAmount*18/100}</span></li>
+                                                <li>Discount on MRP<span className="discntPrice" >-${cartTotalAmount*36/100}</span></li>
+                                                <li>Convenience Fee<span className="oferPrice">$0 <span className="discntPrice">Free</span></span></li>
                                             </ul>
                                         </div> 
                                                                        
@@ -301,7 +317,7 @@ $(selectRef3.current).niceSelect();
                                         </div>
                                         <div className="col-auto">
                                             <div className="totlGstBlk">
-                                                <h5>$94.43</h5>
+                                                <h5>${cartTotalAmount}</h5>
                                                 <p>Inc. GST</p>
                                             </div>
                                         </div>

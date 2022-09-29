@@ -510,7 +510,7 @@ function ProductList() {
                               </div>
                               <div className="prdctListInfo">
                                 <p
-                                  dangerouslySetInnerHTML={{ __html: product.description }}
+                                  dangerouslySetInnerHTML={{ __html: product.description.slice(0,100)+"..." }}
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">

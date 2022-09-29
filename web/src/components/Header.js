@@ -66,7 +66,7 @@ function Header() {
   const cart = useSelector((s) => s.cart);
   let cartTotalAmount = 0;
   cart?.forEach((i) => {
-    let price = i.variant.price;
+    let price = i.variant?.price;
     cartTotalAmount += price * i.quantity;
   });
   const navigate = useNavigate();
@@ -745,8 +745,8 @@ function Header() {
                                 <img
                                   alt="product"
                                   src={
-                                    cartItem.product.images[0]
-                                      ? `${Rest}/documents/get/${cartItem.product.images[0].documentId}`
+                                    cartItem.product?.images[0]
+                                      ? `${Rest}/documents/get/${cartItem.product?.images[0].documentId}`
                                       : `/img/productImg1.jpg`
                                   }
                                 />
@@ -757,13 +757,17 @@ function Header() {
                             <div className="shopping-cart-title">
                               <h4>
                                 <Link to="/productdetail">
-                                  {cartItem.product.name}
+                                  {cartItem.product?.name}
                                   <br /> LacqueredFloor
                                   <br /> 18 x 125mm 2.2m²{" "}
                                 </Link>
                               </h4>
-                              <h5>
-                                <span>{cartItem.quantity} × </span>£{cartItem.variant.price}
+                              <h5 onClick={(e) => {
+                                    dispatch(
+                                      stateActions.removeCartItem(cartItem.product?._id)
+                                    );
+                                  }}>
+                                <span>{cartItem.quantity} × </span>£{cartItem.variant?.price}
                               </h5>
                             </div>
                           </div>
