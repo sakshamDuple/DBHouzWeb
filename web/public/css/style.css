@@ -1,8 +1,148 @@
 @charset "utf-8";
+
+/***Correction Start***/
+.categoryDropdownNew .dropdown-menu {
+    z-index: 9999999999;
+}
+.userContnt-name .dropdown-toggle:focus {
+   
+    box-shadow: none;
+}
+.userContnt-name .dropdown-toggle h5{
+    position: relative;
+}
+.userContnt-name .dropdown-toggle h5:after{
+    position: absolute;
+    top: 0;
+    right: 0;
+    content: "";
+    width: 0; 
+  height: 0; 
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  border-top: 6px solid white;
+
+}
+.userContnt-name .dropdown-toggle:after{
+    display: none;
+}
+.DBcategoryList .DBcategoryList {
+    
+}
+.DBcategoryList .DBcategoryList-main {
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-top: 10px solid #eee;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    background-color: #fff;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem {
+    position: relative;
+    border-radius: 0;
+    height: 100%;
+    box-shadow: none;
+    min-height: 550px;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem a,
+.DBcategoryList .DBcategoryList-main .categoryListItem a .categoryListMedia,
+.DBcategoryList .DBcategoryList-main .categoryListItem a .categoryListMedia .categoryListImg
+{
+    height: 100%;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem .categoryListBtn{
+    display: none;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem:after{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "";
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem .categoryListOverlay{
+    display: none;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem .categoryListTitle{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: no-repeat;
+    box-shadow: none;
+    z-index: 1;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem .categoryListTitle h4{
+    font-weight: 700;
+    font-size: 30px;
+    color: #fff;
+    border: 0;
+    z-index: 0;
+}
+.DBcategoryList .DBcategoryList-main .categoryListItem:hover .categoryListTitle h4{
+    background-color: transparent;
+}
+/*--*/
+
+.DBcategoryList-sub {
+    /* background: red; */
+    margin-bottom: 10px;
+    max-height: 615px;
+    overflow: auto;
+    border-top: 10px solid #eee;
+    padding-top: 15px;
+    padding-left: 15px;
+    background-color: #fff;
+}
+.DBcategoryList-sub .DBcategoryList-subCard{
+    margin-bottom: 20px;
+}
+.DBcategoryList-sub .categoryListItem{
+    border: 1px solid #ddd   ;
+    padding: 30px 30px 0 30px;
+    height: 100%;
+
+}
+.DBcategoryList-sub .categoryListItem .categoryListMedia{
+    
+    overflow: hidden;
+}   
+.DBcategoryList-sub .categoryListItem .categoryListMedia .categoryListImg{
+    min-height: 180px;
+}
+.DBcategoryList-sub .categoryListItem .categoryListMedia .categoryListBtn,
+.DBcategoryList-sub .categoryListItem .categoryListMedia .btnCommon,
+.DBcategoryList-sub .categoryListItem .categoryListMedia .categoryListOverlay
+{
+    display: none;
+}
+.DBcategoryList-sub .categoryListItem h4{
+    border: 0;
+    font-size: 18px;
+}
+.DBcategoryList-sub .categoryListItem h4, .DBcategoryList-sub .categoryListItem {
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+    box-shadow: none;
+}
+.DBcategoryList-sub .categoryListItem:hover .categoryListTitle  h4{
+    background-color: transparent;
+    color: #000;
+}
+
+/***Correction End***/
+
 /* CSS Document */
  body {
      font-family: 'Poppins', sans-serif!important;
      color: #000000;
+     background-color: #F0F2F5;
 }
 
 /* Designed by Pankaj Joshi */
@@ -42,6 +182,10 @@ img {
      float: left;
      width: 100%;
 }
+.bg-none{
+    background: none !important;
+    background-color: transparent !important;
+  }
 .whiteBg {
      background: #fff!important;
 }
@@ -572,6 +716,7 @@ img {
      font-weight: 600;
 }
 /***Advance Search End***/
+
 /* Header Cart -- CSS Start */
  .cartProductBlk .dropdown-toggle::after{
      display: none;

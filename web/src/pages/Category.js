@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import ImportCollection2 from "../components/Home/ImportCollection2";
 import MaterialCat from "../components/Home/MaterialCat";
 import HomeAbout from "../components/Home/HomeAbout";
-import { RestAdmin } from "../rest";
+import { Rest, RestAdmin } from "../rest";
 import { useSelector } from "react-redux";
 
 function Category() {
@@ -53,13 +53,14 @@ function Category() {
         </div>
         {/* </div> */}
         <div className="container">
-          <div className="NavCatInr">
+          <div className="NavCatInr category-NavCatInr">
             <ul>
               {categories?.map((cat, index) => (
                 <li>
-                  <div
+                  <div 
                     onClick={() => {
-                      navigate(`/productlist/${index}`, { state: cat });
+                      navigate(``, { state: cat });
+                      // navigate(`/productlist/${index}`, { state: cat });
                     }}
                     style={{
                       color: "#FFFFFF",
@@ -106,13 +107,13 @@ function Category() {
           </div>
         </div>
       </article>
-      <article className="wrapper categoryRowBlk py-20">
+      <article className="wrapper categoryRowBlk py-20 DBcategoryList">
         <div className="container">
-          <div className="catgySideBarOuterDiv mt-4">
+          <div className="catgySideBarOuterDiv bg-none mt-4">
             <div className="row ">
               <div className="col-sm-12">
-                <div className="catgryListRow">
-                  <div className="row mb-4">
+                <div className="catgryListRow DBcategoryList">
+                  <div className="row mb-4 DBcategoryList-row">
                     {/* {subcategories?.map((subcategory) => (
                       <div className="col-sm">
                         <div className="categoryListItem">
@@ -157,8 +158,8 @@ function Category() {
                       console.log(subcategories)
                       return(
                       <>
-                        <div className="col-sm">
-                          <div className="categoryListItem">
+                        <div id={`${category.category._id}`} className={`col-sm-4 DBcategoryList-main `}>
+                          <div className="categoryListItem ">
                             <a
                               style={{ cursor: "pointer" }}
                               onClick={() => {
@@ -169,9 +170,7 @@ function Category() {
                                 <div
                                   className="categoryListImg"
                                   style={{
-                                    backgroundImage: `url("img/catListImg${Math.ceil(
-                                      Math.random() * 4
-                                    )}.jpg")`,
+                                    backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})`,
                                   }}
                                 >
                                   <div className="categoryListOverlay"></div>
@@ -190,49 +189,53 @@ function Category() {
                               </div>
                               <div className="categoryListTitle">
                                 <h4>{category?.category.name}</h4>
+                                {console.log("chalo baba", category.name)}
                               </div>
                             </a>
                           </div>
                         </div>
-                        {subcategories.map((subcategory) => (
-                          <div className="col-sm">
-                            <div className="categoryListItem">
-                              <a
-                                style={{ cursor: "pointer" }}
-                                onClick={() => {
-                                  linkProductList(category.category);
-                                }}
-                              >
-                                <div className="categoryListMedia">
-                                  <div
-                                    className="categoryListImg"
-                                    style={{
-                                      backgroundImage: `url("img/catListImg${Math.ceil(
-                                        Math.random() * 4
-                                      )}.jpg")`,
+                        <div className="col-sm-8 DBcategoryList-sub">
+                          <div className="row">
+                            {subcategories.map((subcategory) => (
+                              <div className="col-sm-4 DBcategoryList-subCard">
+                                <div className="categoryListItem">
+                                  <a
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                      linkProductList(subcategory.category);
                                     }}
                                   >
-                                    <div className="categoryListOverlay"></div>
-                                  </div>
-                                  <span className="categoryListBtn">
-                                    <a
-                                      style={{ cursor: "pointer" }}
-                                      onClick={() => {
-                                        linkProductList(category.category);
-                                      }}
-                                      className="btnCommon"
-                                    >
-                                      View Product
-                                    </a>
-                                  </span>
+                                    <div className="categoryListMedia">
+                                      <div
+                                        className="categoryListImg"
+                                        style={{
+                                          backgroundImage: `url(${Rest}/documents/get/${subcategory.imageDocumentId})`,
+                                        }}
+                                      >
+                                        <div className="categoryListOverlay"></div>
+                                      </div>
+                                      <span className="categoryListBtn">
+                                        <a
+                                          style={{ cursor: "pointer" }}
+                                          onClick={() => {
+                                            linkProductList(category.category);
+                                          }}
+                                          className="btnCommon"
+                                        >
+                                          View Product
+                                        </a>
+                                      </span>
+                                    </div>
+                                    <div className="categoryListTitle">
+                                      <h4>{subcategory.name}</h4>
+                                    </div>
+                                  </a>
                                 </div>
-                                <div className="categoryListTitle">
-                                  <h4>{subcategory.name}</h4>
-                                </div>
-                              </a>
-                            </div>
+                              </div>
+                              
+                            ))}
                           </div>
-                        ))}
+                        </div>
                       </>
                     )})}
                   </div>

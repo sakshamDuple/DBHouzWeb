@@ -159,12 +159,12 @@ function Header() {
             <Col className="col-md-auto">
               <div className="tpBarRightCol d-flex">
                 {user.jwt ? (
-                  <div>
+                  <div className="userContnt-name" style={{width: "200px"}}>
                     <Dropdown className="header-fix">
-                      <Dropdown.Toggle className="notificatnCol" id="dropdown-basic">
-                        <div className="userContnt d-flex">
-                          <div>
-                            <p>Welcome</p>
+                      <Dropdown.Toggle className="notificatnCol w-100 p-0 border-0" id="dropdown-basic">
+                        <div className="userContnt ">
+                          <div className="">
+                            <p className="m-0">Welcome</p>
                             {Boolean(user?.user?.firstName) && (
                               <h5>{user?.user?.firstName}</h5>
                             )}
@@ -815,7 +815,7 @@ function Header() {
             <div className="col-md-auto">
               <div className="hdrLeft">
                 <div className="categoryBlk">
-                  <div className="categorydropDown">
+                  <div className="categorydropDown categoryDropdownNew">
                     <Dropdown>
                       <Dropdown.Toggle variant="default" id="dropdown-basic">
                         <img src="/img/catIcon.svg" /> Categories
