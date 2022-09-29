@@ -57,6 +57,7 @@ class ProductServiceClass {
             metaTagTitle: ""
         }
         delete newProduct._id
+        console.log(newProduct)
         const result: InsertOneResult<IProduct> = await collections.products.insertOne(newProduct);
         newProduct._id = result.insertedId
         return newProduct
