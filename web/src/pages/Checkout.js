@@ -83,31 +83,31 @@ $(selectRef3.current).niceSelect();
                                         <div className="row g-3">
                                             <div className="col-6">
                                                 <label htmlFor="firstNameFld" className="form-label">First Name*</label>
-                                                <input type="text" className="form-control" placeholder="Johan" />
+                                                <input type="text" className="form-control" />
                                             </div>
                                             <div className="col-6">
                                                 <label htmlFor="lastaNameFld" className="form-label">Last Name*</label>
-                                                <input type="text" className="form-control" placeholder="Doe" />
+                                                <input type="text" className="form-control" />
                                             </div>
                                             <div className="col-6">
                                                 <label htmlFor="firstNameFld" className="form-label">Phone*</label>
-                                                <input type="text" className="form-control" placeholder="000000000" />
+                                                <input type="number" className="form-control" />
                                             </div>
                                             <div className="col-12">
                                             <label htmlFor="emailFld" className="form-label">Address*</label>
-                                            <input type="text" className="form-control" placeholder="4709 Shadowmar Drive, Bristol" />
+                                            <input type="text" className="form-control" placeholder="Main Address" />
                                             </div>
                                             <div className="col-6">
                                                 <label htmlFor="cityFld" className="form-label">City*</label>
-                                                <input type="text" className="form-control" placeholder="Bristol" />
+                                                <input type="text" className="form-control" />
                                             </div>
                                             <div className="col-6">
                                                 <label htmlFor="countrField" className="form-label">Country*</label>
-                                                <input type="text" className="form-control" placeholder="Australia" />
+                                                <input type="text" className="form-control" />
                                             </div>
                                             <div className="col-6">
                                                 <label htmlFor="passwordFld" className="form-label">Postal Code*</label>
-                                                <input type="number" className="form-control" placeholder="70062" />
+                                                <input type="number" className="form-control" />
                                             </div>
                                         </div>
                                     </Form>
