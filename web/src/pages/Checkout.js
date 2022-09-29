@@ -260,18 +260,126 @@ function Checkout() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-auto">
-                                <div className="sdbrWdgt">
-                                    <div className=" checkoutSideProdct sideBarBg ">
-                                        <div className="sdbrHdng checkOutSdeHdng mb-4"><h4>Your Order</h4></div>
-                                        {/* <div className="sideBrPrdct">
-                                            <div className="row g-3 d-sm-flex align-items-center">
-                                                <div className="col-auto">
-                                                    <div className="sdbrProMedia">
-                                                        <a href="/product-detail">
-                                                            <div className="sdbrProImg" style={{ backgroundImage: `url("img/productDtilImg.png")` }}>
-                                                            </div>
-                                                        </a>
+                            <div className="bilingBlk ">
+                                <div className="prdctDtlHdng pb-4">
+                                    <h3>Billing Details</h3>
+                                </div>
+                                <div className="conttForm conttFormWidth">
+                                    <Form className="formStyle">
+                                        <div className="row g-3">
+                                            <div className="col-6">
+                                                <label htmlFor="firstNameFld" className="form-label">First Name*</label>
+                                                <input type="text" className="form-control" />
+                                            </div>
+                                            <div className="col-6">
+                                                <label htmlFor="lastaNameFld" className="form-label">Last Name*</label>
+                                                <input type="text" className="form-control" />
+                                            </div>
+                                            <div className="col-6">
+                                                <label htmlFor="firstNameFld" className="form-label">Phone*</label>
+                                                <input type="number" className="form-control" />
+                                            </div>
+                                            <div className="col-12">
+                                            <label htmlFor="emailFld" className="form-label">Address*</label>
+                                            <input type="text" className="form-control" placeholder="Main Address" />
+                                            </div>
+                                            <div className="col-6">
+                                                <label htmlFor="cityFld" className="form-label">City*</label>
+                                                <input type="text" className="form-control" />
+                                            </div>
+                                            <div className="col-6">
+                                                <label htmlFor="countrField" className="form-label">Country*</label>
+                                                <input type="text" className="form-control" />
+                                            </div>
+                                            <div className="col-6">
+                                                <label htmlFor="passwordFld" className="form-label">Postal Code*</label>
+                                                <input type="number" className="form-control" />
+                                            </div>
+                                        </div>
+                                    </Form>
+                                </div>
+                                <div className="shpnMthodBlk formStyle my-4 py-4">
+                                    <div className="prdctDtlHdng pb-3">
+                                        <h3>Shipping Method</h3>
+                                    </div>  
+                                    <div className="row">
+                                        <div className="col-12 ">
+                                        <div className="form-check pb-2">
+                                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"/>
+                                            <label className="form-check-label" htmlFor="flexRadioDefault1">
+                                            Free Shipping
+                                            </label>
+                                        </div>
+                                            <div className="form-check">
+                                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
+                                            <label className="form-check-label" htmlFor="flexRadioDefault2">
+                                            EMS (Express Mail Service): $18.00
+                                            </label>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="saveMthodBlk formStyle pt-2 mb-4 pb-4">
+                                    <div className="prdctDtlHdng pb-3">
+                                        <h3>Saved Payment Method</h3>
+                                    </div>  
+                                    <div className="row d-flex align-items-center text-center pb-3">
+                                        <div className="col-sm-4">
+                                            <div className="form-check">
+                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3"/>
+                                                <label className="form-check-label" htmlFor="flexRadioDefault3">
+                                                <span> <img src="img/visaCard.png"/></span> 41xx xxxx xxxx 5609
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm">
+                                        Johan Doe
+                                        </div>
+                                        <div className="col-sm">
+                                        10/2022
+                                        </div>
+                                        <div className="col-sm">
+                                            <div className="saveCvvInput">
+                                                <input type="text" className="form-control" placeholder="CVV" /> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row d-flex align-items-center text-center">
+                                        <div className="col-sm-4">
+                                            <div className="form-check">
+                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" checked />
+                                                <label className="form-check-label" htmlFor="flexRadioDefault4">
+                                                <span> <img src="img/mastrCard.png"/></span> 69xx xxxx xxxx 5845 
+                                                </label>                                                    
+                                            </div>
+                                        </div>
+                                        <div className="col text-center">
+                                        Johan Doe
+                                        </div>
+                                        <div className="col-sm">
+                                        10/2022
+                                        </div>
+                                        <div className="col-sm">
+                                            <div className="saveCvvInput">
+                                            <input type="text" className="form-control" placeholder="CVV" /> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div className="paymentMthodBlk formStyle">
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="prdctDtlHdng pb-1">
+                                                <h3>Payment Method</h3>
+                                            </div>
+                                            <div className="paymntCreditForm">
+                                                <div className="creditRadio">
+                                                    <div className="form-check">
+                                                        <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault5"/>
+                                                        <label className="form-check-label  d-flex align-items-center justify-content-between" htmlFor="flexRadioDefault5">
+                                                            <h4>Credit/Debit Cards </h4>
+                                                        <span><img src="img/allCardImg.png"/></span>
+                                                        </label>
                                                     </div>
                                                 </div>
                                                 <div className="col">
@@ -290,7 +398,7 @@ function Checkout() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> */}
+                                        </div>
                                         <div className="chckoutPymtSideBrBlk">
                                             <div className="d-flex justify-content-between">
                                                 <ul className="prodctListPrice checkotPymntList">
