@@ -413,16 +413,44 @@ let applyMongoValidations = async (db: mongoDB.Db) => {
     validator: {
       $jsonSchema: {
         bsonType: "object",
-        required: ["productId", "address", "total_price", "customer", "discount", "coupon", "order_status", "transactionDetail"],
+        required: ["address", "total_price", "discount", "customerDetail", "coupon", "order_status", "transactionDetail", "products"],
         additionalProperties: true,
         properties: {
-          productId: {
+          products: {
             bsonType: "array",
-            items: { bsonType: "string" }
+            items: {
+              bsonType: "object",
+              required: [
+                "sellerId",
+                "productId",
+                "saleId"
+              ],
+              additionalProperties: true,
+              properties: {
+                sellerId: { bsonType: "string" },
+                productId: { bsonType: "string" },
+                saleId: { bsonType: "objectId"}
+              }
+            }
           },
           order_status: { enum: ["Recieved", "Payment_Accepted", "Inprogress", "Delivered", "Cancelled", "Refund_Inprogress", "Refund_Done"] },
           total_price: { bsonType: "number" },
-          customer: { bsonType: "string" },
+          customerDetail: {
+            bsonType: "object",
+            additionalProperties: true,
+            required: [
+              "userId",
+              "name",
+              "phone",
+              "email",
+            ],
+            properties: {
+              userId: { bsonType: "string" },
+              name: { bsonType: "string" },
+              email: { bsonType: "string" },
+              phone: { bsonType: "number" },
+            },
+          },
           discount: {
             bsonType: "array",
             items: { bsonType: "string" }
@@ -459,6 +487,7 @@ let applyMongoValidations = async (db: mongoDB.Db) => {
               status: { bsonType: "string" },
             },
           },
+          seller: { bsonType: "string" },
           createdAt: { bsonType: "number" }
         },
       },

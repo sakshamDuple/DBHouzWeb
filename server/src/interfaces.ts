@@ -194,7 +194,11 @@ export interface IUnit {
 }
 export interface Order {
   _id: ObjectId;
-  productId: string[];
+  products: {
+    sellerId:string,
+    productId:string,
+    saleId:ObjectId
+  }[];
   address: {
     addressId:ObjectId,
     country:string,
@@ -204,7 +208,14 @@ export interface Order {
     main_address_text:string
   };
   total_price:number;
-  customer:string;
+  customerDetail:{
+    userId:string,
+    name:string,
+    phone:number,
+    email:string,
+    customerId:ObjectId
+  };
+  seller:string;
   discount:string[];
   coupon:string[];
   order_status:OrderStatus;
