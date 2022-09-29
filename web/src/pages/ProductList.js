@@ -475,16 +475,11 @@ function ProductList() {
                                   style={{ cursor: "pointer" }}
                                   className="btnCommon"
                                   onClick={() => {
-                                    dispatch(
-                                      stateActions.addCartItem(product, 1, product.variants[0])
-                                    );
+                                    productDetails(product);
                                   }}
                                 >
-                                  Add To Cart
+                                  View Detail 
                                 </a>
-                                <Link to="/checkout" className="btnCommon btnWhite">
-                                  Buy Now
-                                </Link>
                               </div>
                             </div>
                             <div className="prodctListInfoCol text-center">

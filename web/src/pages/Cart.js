@@ -21,10 +21,11 @@ require("jquery-nice-select");
 function Cart() {
 
     const cart = useSelector(s => s.cart)
-    const dispatch = useDispatch()
-    
+    const dispatch = useDispatch();
+
     let cartTotalAmount = 0
     cart?.forEach((i) => {
+        console.log("i", i)
         let price = i.variant.price
         cartTotalAmount += (price * i.quantity)
     })
@@ -51,7 +52,7 @@ function Cart() {
         count = count - 1;
         setCount(count);
     }
-    const updateCartTotalPrice=(totalPricePerProduct)=>{
+    const updateCartTotalPrice = (totalPricePerProduct) => {
         let total = cartTotalPrice + totalPricePerProduct
         setCartTotalPrice(total)
     }
@@ -94,7 +95,7 @@ function Cart() {
                                                                 <div className="col-auto">
                                                                     <div className="cartListPrdctProMedia">
                                                                         <a href="/product-detail">
-                                                                            <div className="cartListPrdctProImg" style={{ backgroundImage: (cartItem.product.images[0]?(`url("${Rest}/documents/get/${cartItem.product.images[0].documentId}")`):`url("img/productImg1.jpg")`) }}></div>
+                                                                            <div className="cartListPrdctProImg" style={{ backgroundImage: (cartItem.product.images[0] ? (`url("${Rest}/documents/get/${cartItem.product.images[0].documentId}")`) : `url("img/productImg1.jpg")`) }}></div>
                                                                         </a>
                                                                     </div>
                                                                 </div>
@@ -109,7 +110,13 @@ function Cart() {
                                                                             <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                                                         </div>
                                                                         <div className="prodctListPrice">
-                                                                            <Link to="/" > Remove</Link>
+                                                                            <button onClick={(e)=>{
+                                                                                e.preventDefault();
+                                                                               dispatch(stateActions.removeCartItem(cartItem.product._id ))
+                                                                            }
+                                                                            }>
+                                                                                Remove
+                                                                            </button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -137,7 +144,7 @@ function Cart() {
                                                     </div>
                                                     <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
                                                         <div className="carTotalPrice">
-                                                            <Link to="/checkout">£{cartItem.quantity*cartItem.variant.price}</Link>
+                                                            <Link to="/checkout">£{cartItem.quantity * cartItem.variant.price}</Link>
                                                         </div>
                                                     </div>
                                                 </div>
