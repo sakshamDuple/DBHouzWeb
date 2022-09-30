@@ -82,7 +82,7 @@ function Checkout() {
     }, []);
     const getD = () => {
         if (window.localStorage.JWT) {
-            let accessToken = window.localStorage.JWT;
+            let accessToken = window.localStorage.getItem("JWT"); 
             console.log(jwtDecode(accessToken));
             let n = jwtDecode(accessToken);
             console.log("n", n)
