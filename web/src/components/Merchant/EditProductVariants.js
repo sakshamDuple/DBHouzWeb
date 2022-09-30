@@ -56,7 +56,10 @@ function MerchantEditProductVariants() {
   const [newStyleText, setNewStyleText] = useState("");
   const [newSizeText, setNewSizeText] = useState("");
 
-  const [newVariantModal, setNewVariantModal] = useState({ visible: false, editIndex: -1 });
+  const [newVariantModal, setNewVariantModal] = useState({
+    visible: false,
+    editIndex: -1,
+  });
   const [newVariant, setNewVariant] = useState(NewVariantObject);
 
   const handleSubmit = async (e) => {
@@ -172,7 +175,9 @@ function MerchantEditProductVariants() {
                         <h3>Variants for {product.name}</h3>
                       </div>
 
-                      <h5 className="text-muted mt-4">Variation Configurations</h5>
+                      <h5 className="text-muted mt-4">
+                        Variation Configurations
+                      </h5>
                       <div className="row mt-3">
                         <div className="col-12">
                           <div className="card card-body">
@@ -182,7 +187,10 @@ function MerchantEditProductVariants() {
                                   checked={params.styleEnabled}
                                   type="switch"
                                   onChange={(e) => {
-                                    setParams({ ...params, styleEnabled: e.target.checked });
+                                    setParams({
+                                      ...params,
+                                      styleEnabled: e.target.checked,
+                                    });
                                   }}
                                   label={`Enable Styles`}
                                 />
@@ -195,36 +203,50 @@ function MerchantEditProductVariants() {
                                         </div>
                                       </div>
                                       <div className="row">
-                                        {params.styleList.map((style, index) => (
-                                          <div className="col-sm-2" key={index}>
-                                            <InputGroup className="mb-3">
-                                              <Form.Control
-                                                disabled
-                                                type="text"
-                                                onChange={(e) => {
-                                                  handleVariantsChange(e, index);
-                                                }}
-                                                value={style}
-                                                placeholder="Style"
-                                              />
-                                              <Button
-                                                variant="outline-warning"
-                                                onClick={() => {
-                                                  let index = params.styleList.findIndex(
-                                                    (s) => s === style
-                                                  );
-                                                  if (index !== -1) {
-                                                    let newParams = { ...params };
-                                                    newParams.styleList.splice(index, 1);
-                                                    setParams(newParams);
-                                                  }
-                                                }}
-                                              >
-                                                X
-                                              </Button>
-                                            </InputGroup>
-                                          </div>
-                                        ))}
+                                        {params.styleList.map(
+                                          (style, index) => (
+                                            <div
+                                              className="col-sm-2"
+                                              key={index}
+                                            >
+                                              <InputGroup className="mb-3">
+                                                <Form.Control
+                                                  disabled
+                                                  type="text"
+                                                  onChange={(e) => {
+                                                    handleVariantsChange(
+                                                      e,
+                                                      index
+                                                    );
+                                                  }}
+                                                  value={style}
+                                                  placeholder="Style"
+                                                />
+                                                <Button
+                                                  variant="outline-warning"
+                                                  onClick={() => {
+                                                    let index =
+                                                      params.styleList.findIndex(
+                                                        (s) => s === style
+                                                      );
+                                                    if (index !== -1) {
+                                                      let newParams = {
+                                                        ...params,
+                                                      };
+                                                      newParams.styleList.splice(
+                                                        index,
+                                                        1
+                                                      );
+                                                      setParams(newParams);
+                                                    }
+                                                  }}
+                                                >
+                                                  X
+                                                </Button>
+                                              </InputGroup>
+                                            </div>
+                                          )
+                                        )}
                                         <div className="col-sm-2">
                                           <InputGroup className="mb-3">
                                             <Form.Control
@@ -237,9 +259,10 @@ function MerchantEditProductVariants() {
                                             <Button
                                               variant="outline-success"
                                               onClick={() => {
-                                                let index = params.styleList.findIndex(
-                                                  (s) => s === newStyleText
-                                                );
+                                                let index =
+                                                  params.styleList.findIndex(
+                                                    (s) => s === newStyleText
+                                                  );
                                                 if (index === -1) {
                                                   setNewStyleText("");
                                                   setParams({
@@ -268,7 +291,10 @@ function MerchantEditProductVariants() {
                                   checked={params.sizeEnabled}
                                   type="switch"
                                   onChange={(e) => {
-                                    setParams({ ...params, sizeEnabled: e.target.checked });
+                                    setParams({
+                                      ...params,
+                                      sizeEnabled: e.target.checked,
+                                    });
                                   }}
                                   label={`Enable Sizes`}
                                 />
@@ -288,7 +314,10 @@ function MerchantEditProductVariants() {
                                                 disabled
                                                 type="text"
                                                 onChange={(e) => {
-                                                  handleVariantsChange(e, index);
+                                                  handleVariantsChange(
+                                                    e,
+                                                    index
+                                                  );
                                                 }}
                                                 value={size}
                                                 placeholder="Style"
@@ -296,12 +325,18 @@ function MerchantEditProductVariants() {
                                               <Button
                                                 variant="outline-warning"
                                                 onClick={() => {
-                                                  let index = params.sizeList.findIndex(
-                                                    (s) => s === size
-                                                  );
+                                                  let index =
+                                                    params.sizeList.findIndex(
+                                                      (s) => s === size
+                                                    );
                                                   if (index !== -1) {
-                                                    let newParams = { ...params };
-                                                    newParams.sizeList.splice(index, 1);
+                                                    let newParams = {
+                                                      ...params,
+                                                    };
+                                                    newParams.sizeList.splice(
+                                                      index,
+                                                      1
+                                                    );
                                                     setParams(newParams);
                                                   }
                                                 }}
@@ -323,9 +358,10 @@ function MerchantEditProductVariants() {
                                             <Button
                                               variant="outline-success"
                                               onClick={() => {
-                                                let index = params.sizeList.findIndex(
-                                                  (s) => s === newSizeText
-                                                );
+                                                let index =
+                                                  params.sizeList.findIndex(
+                                                    (s) => s === newSizeText
+                                                  );
                                                 if (index === -1) {
                                                   setNewSizeText("");
                                                   setParams({
@@ -354,7 +390,10 @@ function MerchantEditProductVariants() {
                                   checked={params.colorEnabled}
                                   type="switch"
                                   onChange={(e) => {
-                                    setParams({ ...params, colorEnabled: e.target.checked });
+                                    setParams({
+                                      ...params,
+                                      colorEnabled: e.target.checked,
+                                    });
                                   }}
                                   label={`Enable Colors`}
                                 />
@@ -453,13 +492,18 @@ function MerchantEditProductVariants() {
                                               onChange={(e) => {
                                                 setParams({
                                                   ...params,
-                                                  dimensionUnitId: e.target.value,
+                                                  dimensionUnitId:
+                                                    e.target.value,
                                                 });
                                               }}
                                             >
-                                              <option value="">(Select Unit)</option>
+                                              <option value="">
+                                                (Select Unit)
+                                              </option>
                                               {allUnits.map((u) => (
-                                                <option value={u._id}>{u.name}</option>
+                                                <option value={u._id}>
+                                                  {u.name}
+                                                </option>
                                               ))}
                                             </select>
                                           </div>
@@ -482,7 +526,10 @@ function MerchantEditProductVariants() {
                               className="btn btn-sm btn-success m-2"
                               onClick={() => {
                                 setNewVariant({ ...NewVariantObject });
-                                setNewVariantModal({ visible: true, editIndex: -1 });
+                                setNewVariantModal({
+                                  visible: true,
+                                  editIndex: -1,
+                                });
                               }}
                             >
                               Add Variant
@@ -509,8 +556,14 @@ function MerchantEditProductVariants() {
                                 {(params.dimensionHeightEnabled ||
                                   params.dimensionWidthEnabled ||
                                   params.dimensionThicknessEnabled) && (
-                                  <td className="text-center py-2">Dimensions</td>
+                                  <td className="text-center py-2">
+                                    Dimensions
+                                  </td>
                                 )}
+                                {/* {params.price && ( */}
+                                <td className="text-center py-2">Price</td>
+                                <td className="text-center py-2">Stock Qty</td>
+                                {/* )} */}
                                 <td></td>
                               </thead>
                               <tbody>
@@ -530,10 +583,14 @@ function MerchantEditProductVariants() {
                                     {params.colorEnabled && (
                                       <td className="text-center">
                                         {Boolean(variant.colorId) && (
-                                          <span>{getColor(variant.colorId)?.name}</span>
+                                          <span>
+                                            {getColor(variant.colorId)?.name}
+                                          </span>
                                         )}
                                         {!Boolean(variant.colorId) && (
-                                          <span className="badge bg-danger">Select Color</span>
+                                          <span className="badge bg-danger">
+                                            Select Color
+                                          </span>
                                         )}
                                       </td>
                                     )}
@@ -543,15 +600,21 @@ function MerchantEditProductVariants() {
                                           <span>{variant.style}</span>
                                         )}
                                         {!Boolean(variant.style) && (
-                                          <span className="badge bg-danger">Select Style</span>
+                                          <span className="badge bg-danger">
+                                            Select Style
+                                          </span>
                                         )}
                                       </td>
                                     )}
                                     {params.sizeEnabled && (
                                       <td className="text-center">
-                                        {Boolean(variant.size) && <span>{variant.size}</span>}
+                                        {Boolean(variant.size) && (
+                                          <span>{variant.size}</span>
+                                        )}
                                         {!Boolean(variant.size) && (
-                                          <span className="badge bg-danger">Select Size</span>
+                                          <span className="badge bg-danger">
+                                            Select Size
+                                          </span>
                                         )}
                                       </td>
                                     )}
@@ -560,17 +623,50 @@ function MerchantEditProductVariants() {
                                         {variant.dimensions.height + " "}
                                         {Boolean(
                                           params.dimensionWidthEnabled &&
-                                            Number.isInteger(variant.dimensions.width)
-                                        ) && <span>X {variant.dimensions.width}</span>}
+                                            Number.isInteger(
+                                              variant.dimensions.width
+                                            )
+                                        ) && (
+                                          <span>
+                                            X {variant.dimensions.width}
+                                          </span>
+                                        )}
                                         {Boolean(
                                           params.dimensionThicknessEnabled &&
-                                            Number.isInteger(variant.dimensions.thickness)
+                                            Number.isInteger(
+                                              variant.dimensions.thickness
+                                            )
                                         ) && (
-                                          <span>X {variant.dimensions.thickness}</span>
+                                          <span>
+                                            X {variant.dimensions.thickness}
+                                          </span>
                                         )}{" "}
-                                        {getUnit(params.dimensionUnitId)?.name || "Units"}
+                                        {getUnit(params.dimensionUnitId)
+                                          ?.name || "Units"}
                                       </td>
                                     )}
+                                    {/* {params.price && ( */}
+                                    <td className="text-center">
+                                      {Boolean(variant.price) && (
+                                        <span>${variant.price}</span>
+                                      )}
+                                      {!Boolean(variant.price) && (
+                                        <span className="badge bg-danger">
+                                          Fix Price
+                                        </span>
+                                      )}
+                                    </td>
+                                    {/* )} */}
+                                    <td className="text-center">
+                                      {Boolean(variant.availableQuantity) && (
+                                        <span>{variant.availableQuantity}</span>
+                                      )}
+                                      {!Boolean(variant.availableQuantity) && (
+                                        <span className="badge bg-danger">
+                                          Fix Stock
+                                        </span>
+                                      )}
+                                    </td>
                                     <td className="text-center">
                                       <button
                                         className="btn btn-sm btn-info"
@@ -587,7 +683,9 @@ function MerchantEditProductVariants() {
                                       <button
                                         className="btn btn-sm btn-warning ms-2"
                                         onClick={() => {
-                                          if (confirm("Delete Variant Entry?")) {
+                                          if (
+                                            confirm("Delete Variant Entry?")
+                                          ) {
                                             let newVariants = [...variants];
                                             newVariants.splice(index, 1);
                                             setVariants(newVariants);
@@ -644,7 +742,9 @@ function MerchantEditProductVariants() {
             <div className="row">
               <div className="col">
                 <div className="form-group">
-                  <Form.Label className="text-muted px-2">Name of Variant</Form.Label>
+                  <Form.Label className="text-muted px-2">
+                    Name of Variant
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     onChange={(e) => {
@@ -671,6 +771,27 @@ function MerchantEditProductVariants() {
                     </select>
                   </div>
                 )}
+                  <div className="form-group mt-3">
+                    <label className="text-muted px-2">Price Of Product</label>
+                    <div className="input-group">
+                      <input
+                        value={newVariant.price}
+                        className="form-control"
+                        type={"number"}
+                        onChange={(e) => {
+                          let num = Number.parseInt(e.target.value);
+                          if (Number.isInteger(num)) {
+                            let newVariant2 = { ...newVariant };
+                            newVariant2.price = num;
+                            setNewVariant(newVariant2);
+                          }
+                        }}
+                      />
+                      <div className="input-group-append">
+                        <div className="input-group-text">$</div>
+                      </div>
+                    </div>
+                  </div>
                 {params.styleEnabled && (
                   <div className="form-group mt-3">
                     <label className="text-muted px-2">Select a Style</label>
@@ -695,7 +816,10 @@ function MerchantEditProductVariants() {
                       value={newVariant.colorId}
                       className="form-control"
                       onChange={(e) => {
-                        setNewVariant({ ...newVariant, colorId: e.target.value });
+                        setNewVariant({
+                          ...newVariant,
+                          colorId: e.target.value,
+                        });
                       }}
                     >
                       <option value="">(Select Color)</option>
@@ -705,6 +829,22 @@ function MerchantEditProductVariants() {
                     </select>
                   </div>
                 )}
+                <div className="form-group mt-3">
+                  <label className="text-muted px-2">Stock Quantity</label>
+                  <input
+                    value={newVariant.availableQuantity}
+                    className="form-control"
+                    type={"number"}
+                    onChange={(e) => {
+                      let num = Number.parseInt(e.target.value);
+                      if (Number.isInteger(num)) {
+                        let newVariant2 = { ...newVariant };
+                        newVariant2.availableQuantity = num;
+                        setNewVariant(newVariant2);
+                      }
+                    }}
+                  />
+                </div>
                 {(params.dimensionHeightEnabled ||
                   params.dimensionWidthEnabled ||
                   params.dimensionThicknessEnabled) && (
@@ -730,7 +870,8 @@ function MerchantEditProductVariants() {
                               />
                               <div className="input-group-append">
                                 <div className="input-group-text">
-                                  {getUnit(params.dimensionUnitId)?.name || "Units"}
+                                  {getUnit(params.dimensionUnitId)?.name ||
+                                    "Units"}
                                 </div>
                               </div>
                             </div>
@@ -757,7 +898,8 @@ function MerchantEditProductVariants() {
                                 />
                                 <div className="input-group-append">
                                   <div className="input-group-text">
-                                    {getUnit(params.dimensionUnitId)?.name || "Units"}
+                                    {getUnit(params.dimensionUnitId)?.name ||
+                                      "Units"}
                                   </div>
                                 </div>
                               </div>
@@ -767,7 +909,9 @@ function MerchantEditProductVariants() {
                         {params.dimensionThicknessEnabled && (
                           <div className="col">
                             <div className="form-group mt-3">
-                              <label className="text-muted px-2">Thickness</label>
+                              <label className="text-muted px-2">
+                                Thickness
+                              </label>
                               <div className="input-group">
                                 <input
                                   value={newVariant.dimensions.thickness}
@@ -784,7 +928,8 @@ function MerchantEditProductVariants() {
                                 />
                                 <div className="input-group-append">
                                   <div className="input-group-text">
-                                    {getUnit(params.dimensionUnitId)?.name || "Units"}
+                                    {getUnit(params.dimensionUnitId)?.name ||
+                                      "Units"}
                                   </div>
                                 </div>
                               </div>

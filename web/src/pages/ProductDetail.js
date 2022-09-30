@@ -1,12 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   Button,
-  Modal,
-  Dropdown,
-  Offcanvas,
-  Accordion,
   Tabs,
   Tab,
   Table,
@@ -30,7 +26,6 @@ require("jquery-nice-select");
 
 function ProductDetail() {
   let [count, setCount] = useState(1);
-  const [Unit, setUnit] = useState(0);
   let [selectedVariant, setSelectedVariant] = useState(0);
   const dispatch = useDispatch();
   const { state } = useLocation();
@@ -66,19 +61,19 @@ function ProductDetail() {
   };
 
   const getDimension = (obj) => {
-    let unit = 0;
-    if(obj.dimensions.height != 0 && obj.dimensions.width != 0 && obj.dimensions.thickness != 0){
-      unit = 3
-    } else if((obj.dimensions.height !=0 && obj.dimensions.width != 0) || (obj.dimensions.height !=0 && obj.dimensions.thickness != 0) || (obj.dimensions.thickness != 0 && obj.dimensions.width != 0)) {
-      unit = 2
-    } else if(obj.dimensions.height != 0 || obj.dimensions.width != 0 || obj.dimensions.thickness != 0) {
-      unit = 1
-    } else {
-      unit = 0
-    }
+    // let unit = 0;
+    // if(obj.dimensions.height != 0 && obj.dimensions.width != 0 && obj.dimensions.thickness != 0){
+    //   unit = 3
+    // } else if((obj.dimensions.height !=0 && obj.dimensions.width != 0) || (obj.dimensions.height !=0 && obj.dimensions.thickness != 0) || (obj.dimensions.thickness != 0 && obj.dimensions.width != 0)) {
+    //   unit = 2
+    // } else if(obj.dimensions.height != 0 || obj.dimensions.width != 0 || obj.dimensions.thickness != 0) {
+    //   unit = 1
+    // } else {
+    //   unit = 0
+    // }
     // setUnit(unit)
     if (obj)
-      return `${obj.dimensions.height} x ${obj.dimensions.width} x ${obj.dimensions.thickness} inches^${unit}`;
+      return `${obj.dimensions.height} inches x ${obj.dimensions.width} inches x ${obj.dimensions.thickness} inches`; //^${unit}
     else return "0 x 0 x 0 inches";
   };
 
@@ -248,7 +243,7 @@ function ProductDetail() {
                               >
                                 {variant.size} Foot / {getSingleColors(variant.colorId)}
                                 <br />
-                                <span>{variant.price} $</span>
+                                <span>${variant.price}</span>
                               </button>
                             ))}
                         </div>
@@ -420,7 +415,7 @@ function ProductDetail() {
                         <td>
                           {product.variants[selectedVariant]
                             ? product.variants[selectedVariant].dimension
-                            : "0 x 0 x 0 inches"}
+                            : "0 inches x 0 inches x 0 inches"}
                         </td>
                       </tr>
                       <tr>
@@ -1089,7 +1084,6 @@ function ProductDetail() {
           </div>
         </article>
       </section>
-
       <Footer />
     </section>
   );

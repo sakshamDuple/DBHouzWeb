@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useMemo, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -12,11 +12,13 @@ function Category() {
   const navigate = useNavigate();
   const location = useLocation();
   let category = location.state?.category;
-  let subcategories = location.state?.subcategories;
   const categories = useSelector((s) => s.categories);
+  let lenCat = categories.length
   console.log(categories);
-
+  const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i=> React.createRef()), []);
+  console.log(inputRefs)
   const linkProductList = (category) => {
+    console.log(category)
     navigate("/productlist", { state: { category } });
   };
 
@@ -55,13 +57,16 @@ function Category() {
         <div className="container">
           <div className="NavCatInr category-NavCatInr">
             <ul>
-              {categories?.map((cat, index) => (
+              {categories?.map((cat, index) => {
+                const handleChange = (e) => {
+                  e.current.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }
+                return(
                 <li>
-                  <div 
-                    onClick={() => {
-                      navigate(``, { state: cat });
-                      // navigate(`/productlist/${index}`, { state: cat });
-                    }}
+                  <div
+                    onClick={() => handleChange(inputRefs[index])}
                     style={{
                       color: "#FFFFFF",
                       cursor: "pointer",
@@ -74,36 +79,8 @@ function Category() {
                     {cat.category.name}
                   </div>
                 </li>
-              ))}
+              )})}
             </ul>
-            {/*<ul>
-                    
-                        <li>
-                        <NavLink to="/productlist" className="active">Stone Blocks</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">Stone Tiles & Slabs</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">Stone Sculpture</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">White Jal Marble</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">Brazilian White</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">Granite</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">Kitchen Top</NavLink>
-                        </li>
-                        <li>
-                        <NavLink to="/productlist">Interior Stone</NavLink>
-                        </li>
-                    </ul>
-                       */}
           </div>
         </div>
       </article>
@@ -114,51 +91,12 @@ function Category() {
               <div className="col-sm-12">
                 <div className="catgryListRow DBcategoryList">
                   <div className="row mb-4 DBcategoryList-row">
-                    {/* {subcategories?.map((subcategory) => (
-                      <div className="col-sm">
-                        <div className="categoryListItem">
-                          <a
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              linkProductList(subcategory.category);
-                            }}
-                          >
-                            <div className="categoryListMedia">
-                              <div
-                                className="categoryListImg"
-                                style={{
-                                  backgroundImage: `url("img/catListImg${Math.ceil(
-                                    Math.random() * 4
-                                  )}.jpg")`,
-                                }}
-                              >
-                                <div className="categoryListOverlay"></div>
-                              </div>
-                              <span className="categoryListBtn">
-                                <a
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => {
-                                    linkProductList(subcategory.category);
-                                  }}
-                                  className="btnCommon"
-                                >
-                                  View Product
-                                </a>
-                              </span>
-                            </div>
-                            <div className="categoryListTitle">
-                              <h4>{subcategory?.name}</h4>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    ))} */}
-                    {categories.map((category) => {
+                    {categories.map((category, index) => {
                       let subcategories = category.subCategories
                       console.log(subcategories)
                       return(
                       <>
-                        <div id={`${category.category._id}`} className={`col-sm-4 DBcategoryList-main `}>
+                        <div ref={inputRefs[index]} id={`${category.category._id}`} className={`col-sm-4 DBcategoryList-main `}>
                           <div className="categoryListItem ">
                             <a
                               style={{ cursor: "pointer" }}
@@ -232,7 +170,6 @@ function Category() {
                                   </a>
                                 </div>
                               </div>
-                              
                             ))}
                           </div>
                         </div>
