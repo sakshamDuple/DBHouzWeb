@@ -137,9 +137,7 @@ function Checkout() {
         try {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
-            // const { data: {  } = {} } = res1 || {};
-            // toast();
-            // return renderPage();
+            return (window.alert("Successful Place Order"));
         } catch (error) {
             console.log(error);
         }
@@ -239,7 +237,7 @@ function Checkout() {
                                                                         ...prev,
                                                                         customerDetail: {
                                                                             ...prev.customerDetail,
-                                                                            phone: e.target.value,
+                                                                            phone: parseInt(e.target.value),
                                                                         },
                                                                     };
                                                                 });
@@ -309,7 +307,7 @@ function Checkout() {
                                                                         ...prev,
                                                                         address: {
                                                                             ...prev.address,
-                                                                            postal_code: e.target.value,
+                                                                            postal_code: parseInt(e.target.value),
                                                                         },
                                                                     };
                                                                 });
