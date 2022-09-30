@@ -229,13 +229,13 @@ function ProductDetail() {
                         VAT Included
                       </div> */}
                     <div className="gst">
-                      {((product.variants[selectedVariant].price / 100) * 18).toFixed(2)}$
+                      {((product.variants[selectedVariant]?.price / 100) * 18).toFixed(2)}$
                       gst
                     </div>
                     </div>
                     {console.log("product:", product)}
                     <div className="leftStock">
-                      {product.variants[selectedVariant].availableQuantity} item
+                      {product.variants[selectedVariant]?.availableQuantity} item
                       left in Stock
                     </div>
                     <div className="prdctDtlSize d-flex align-items-center py-3">
