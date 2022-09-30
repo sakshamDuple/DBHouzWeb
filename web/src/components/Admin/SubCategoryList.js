@@ -214,7 +214,7 @@ function SubCategoryList() {
                                                                     </ul>
                                                                 </div>
                                                             </td>
-                                                        </tr>))};
+                                                        </tr>))}
                                                 </tbody>
                                             </Table>)}
                                     </div>

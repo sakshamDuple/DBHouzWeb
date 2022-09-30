@@ -643,7 +643,7 @@ function AdminEditProductVariants() {
                                     {/* {params.price && ( */}
                                     <td className="text-center">
                                       {Boolean(variant.price) && (
-                                        <span>{variant.price}$</span>
+                                        <span>${variant.price}</span>
                                       )}
                                       {!Boolean(variant.price) && (
                                         <span className="badge bg-danger">
