@@ -1,12 +1,15 @@
 import { Double, InsertOneResult, ObjectId, UpdateResult } from "mongodb";
 import { collections } from "../db.service";
-import { OrderStatus, IProduct, Order } from "../interfaces";
+import { OrderStatus, IProduct, Order, transactionMethod } from "../interfaces";
 
 class OrderServiceClass {
     async create(newOrder: Order): Promise<Order> {
         newOrder = { ...newOrder }
         newOrder.createdAt = Date.now()
         newOrder.transactionDetail.transactionDate = Date.now()
+        if(newOrder.transactionDetail.transactionMethod == "CASH_ON_DELIVERY") {
+            newOrder.transactionDetail.transactionMethod = transactionMethod.CASH_ON_DELIVERY
+        }
         newOrder = this.sanitize(newOrder)
         if (newOrder.transactionDetail.status == "successful") {
             newOrder.order_status = OrderStatus.Payment_Accepted
@@ -40,8 +43,9 @@ class OrderServiceClass {
         })
         if (o.address) o.address.addressId = new ObjectId(o.address.addressId)
         if (o.customerDetail) o.customerDetail.customerId = new ObjectId(o.customerDetail.customerId)
-        if (o.transactionDetail) o.transactionDetail.transactionId = new ObjectId(o.transactionDetail.transactionId)
+        if (o.transactionDetail.transactionMethod != transactionMethod.CASH_ON_DELIVERY) o.transactionDetail.transactionId = new ObjectId(o.transactionDetail.transactionId)
         if (Number.isNaN(o.total_price)) o.total_price = 0
+        if (o.createdAt) o.expectedDeliveryDate = 5*24*60*60*1000 + Date.now();
         return o
     }
 }

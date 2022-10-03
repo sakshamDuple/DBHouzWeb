@@ -413,7 +413,7 @@ let applyMongoValidations = async (db: mongoDB.Db) => {
     validator: {
       $jsonSchema: {
         bsonType: "object",
-        required: ["address", "total_price", "discount", "customerDetail", "coupon", "order_status", "transactionDetail", "products"],
+        required: ["address", "total_price", "discount", "customerDetail", "coupon", "order_status", "transactionDetail", "products", "expectedDeliveryDate"],
         additionalProperties: true,
         properties: {
           products: {
@@ -429,7 +429,7 @@ let applyMongoValidations = async (db: mongoDB.Db) => {
               properties: {
                 sellerId: { bsonType: "string" },
                 productId: { bsonType: "string" },
-                saleId: { bsonType: "objectId"}
+                saleId: { bsonType: "objectId" }
               }
             }
           },
@@ -481,14 +481,19 @@ let applyMongoValidations = async (db: mongoDB.Db) => {
             bsonType: "object",
             additionalProperties: true,
             required: [
-              "status"
+              "status",
+              "transactionMethod"
             ],
             properties: {
               status: { bsonType: "string" },
+              transactionMethod: {
+                enum: ["CASH_ON_DELIVERY", "GPAY", "PAYTM", "UPI", "CREDIT_CARD", "DEBIT_CARD"]
+              }
             },
           },
           seller: { bsonType: "string" },
-          createdAt: { bsonType: "number" }
+          createdAt: { bsonType: "number" },
+          expectedDeliveryDate: { bsonType: "number" }
         },
       },
     },
