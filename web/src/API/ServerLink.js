@@ -1,0 +1,1 @@
+export const SERVER_LINK = "http://139.59.36.222:12001/rest";

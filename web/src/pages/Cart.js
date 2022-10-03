@@ -29,202 +29,138 @@ function Cart() {
   const cart = useSelector((s) => s.cart);
   const dispatch = useDispatch();
 
-  let cartTotalAmount = 0;
-  cart?.forEach((i) => {
-    console.log("price:",i.variant?.price)
-    let price = i.variant?.price;
-    cartTotalAmount += price * i.quantity;
-  });
+    const cart = useSelector(s => s.cart)
+    const dispatch = useDispatch();
 
-  const selectRef1 = useRef();
-  useEffect(() => {
-    $(selectRef1.current).niceSelect();
-  }, []);
-  const selectRef2 = useRef();
-  useEffect(() => {
-    $(selectRef2.current).niceSelect();
-  }, []);
-  const selectRef3 = useRef();
-  useEffect(() => {
-    $(selectRef3.current).niceSelect();
-  }, []);
-  let [count, setCount] = useState(0);
-  let [cartTotalPrice, setCartTotalPrice] = useState(0);
-  function incrementCount() {
-    count = count + 1;
-    setCount(count);
-  }
-  function decrementCount() {
-    count = count - 1;
-    setCount(count);
-  }
-  const updateCartTotalPrice = (totalPricePerProduct) => {
-    let total = cartTotalPrice + totalPricePerProduct;
-    setCartTotalPrice(total);
-  };
-  return (
-    <section className="wrapper">
-      <Header />
-      <article className="wrapper greyDarkBg checkOutBlk py-20">
-        <div className="container">
-          <div className="checkOutOuterDiv p-4">
-            <div className="row  ">
-              <div className="col-md">
-                <div className="checkoutMainBlk ">
-                  <div className="whiteBg  pt-4 px-5 pb-4">
-                    <div className="row d-flex align-items-center">
-                      <div className="prdctDtlHdng  pt-3">
-                        <h3>
-                          Shopping Cart <span>1 Items</span>
-                        </h3>
-                        <div className="hdngBrBtm"></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="row pt-4 ">
-                        <div className="col-sm-5">
-                          <div>Product Details</div>
-                        </div>
-                        <div className="col-sm-3 justify-content-between">
-                          Quantity
-                        </div>
-                        <div className="col-sm-2 d-flex justify-content-between">
-                          Price
-                        </div>
-                        <div className="col-sm-2 d-flex justify-content-end">
-                          Total
-                        </div>
-                      </div>
-                      {cart?.map((cartItem, cartItemIndex) => (
-                        <div className="row d-flex justify-content-between pt-5">
-                          <div className="col-sm-5">
-                            <div className="cartListPrdct">
-                              <div className="row g-3 d-sm-flex align-items-center">
-                                <div className="col-auto">
-                                  <div className="cartListPrdctProMedia">
-                                    <a href="/product-detail">
-                                      <div
-                                        className="cartListPrdctProImg"
-                                        style={{
-                                          backgroundImage: cartItem.product?.images[0]
-                                            ? `url("${Rest}/documents/get/${cartItem.product?.images[0].documentId}")`
-                                            : `url("img/productImg1.jpg")`,
-                                        }}
-                                      ></div>
-                                    </a>
-                                  </div>
-                                </div>
-                                <div className="col">
-                                  <div className="cartListPrdctProInfo">
-                                    <div className="prdctListTitle">
-                                      <h4>
-                                        <a href="/productdetail">
-                                          {cartItem.product?.name}
-                                        </a>
-                                      </h4>
-                                    </div>
-                                    <div className="rvwRtngPrgrsStars">
-                                      <i
-                                        className="fa fa-star ylowStar"
-                                        aria-hidden="true"
-                                      ></i>
-                                      <i
-                                        className="fa fa-star ylowStar"
-                                        aria-hidden="true"
-                                      ></i>
-                                      <i
-                                        className="fa fa-star ylowStar"
-                                        aria-hidden="true"
-                                      ></i>
-                                      <i
-                                        className="fa fa-star ylowStar"
-                                        aria-hidden="true"
-                                      ></i>
-                                      <i
-                                        className="fa fa-star ylowStar"
-                                        aria-hidden="true"
-                                      ></i>
-                                    </div>
-                                    <div className="prodctListPrice">
-                                      <p
-                                        onClick={() => {
-                                          dispatch(
-                                            stateActions.removeCartItem(
-                                                cartItem.product?._id
-                                            )
-                                          );
-                                        }}
-                                      >
-                                        {" "}
-                                        Remove
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-sm-3">
-                            <div className="countRow d-flex">
-                              <button
-                                onClick={() => {
-                                  dispatch(
-                                    stateActions.addCartItem(
-                                      cartItem.product,
-                                      cartItem.quantity + 1,
-                                      cartItem.variant
-                                    )
-                                  );
-                                }}
-                                className="countBtn "
-                              >
-                                +
-                              </button>
-                              <div className="countTotal">
-                                {cartItem.quantity}
-                              </div>
-                              <button
-                                onClick={() => {
-                                  if (cartItem.quantity === 1) {
-                                    dispatch(
-                                      stateActions.removeCartItem(
-                                        cartItem.product._id
-                                      )
-                                    );
-                                  } else {
-                                    dispatch(
-                                      stateActions.addCartItem(
-                                        cartItem.product,
-                                        cartItem.quantity - 1,
-                                        cartItem.variant
-                                      )
-                                    );
-                                  }
-                                }}
-                                className="countBtn"
-                              >
-                                -
-                              </button>
-                            </div>
-                          </div>
-                          <div className="col-sm-2 prodctDtlPrice ">
-                            <div className="cartPrice">
-                              {" "}
-                              £{cartItem.variant?.price}
-                            </div>
-                            {/* <div className="discntPrice">£100.43 Inc VAT</div> */}
-                          </div>
-                          <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
-                            <div className="carTotalPrice">
-                              <Link to="/checkout">
-                                £{cartItem.quantity * cartItem.variant?.price}
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      <hr />
-                      {/* <div className="row d-flex justify-content-between pt-5">
+    let cartTotalAmount = 0
+    cart?.forEach((i) => {
+        console.log("i", i)
+        let price = i.variant.price
+        cartTotalAmount += (price * i.quantity)
+    })
+
+    const selectRef1 = useRef();
+    useEffect(() => {
+        $(selectRef1.current).niceSelect();
+    }, []);
+    const selectRef2 = useRef();
+    useEffect(() => {
+        $(selectRef2.current).niceSelect();
+    }, []);
+    const selectRef3 = useRef();
+    useEffect(() => {
+        $(selectRef3.current).niceSelect();
+    }, []);
+    let [count, setCount] = useState(0);
+    let [cartTotalPrice, setCartTotalPrice] = useState(0);
+    function incrementCount() {
+        count = count + 1;
+        setCount(count);
+    }
+    function decrementCount() {
+        count = count - 1;
+        setCount(count);
+    }
+    const updateCartTotalPrice = (totalPricePerProduct) => {
+        let total = cartTotalPrice + totalPricePerProduct
+        setCartTotalPrice(total)
+    }
+    return (
+        <section className="wrapper">
+            <Header />
+            <article className="wrapper greyDarkBg checkOutBlk py-20">
+                <div className="container">
+                    <div className="checkOutOuterDiv p-4">
+                        <div className="row  ">
+                            <div className="col-md">
+                                <div className="checkoutMainBlk ">
+                                    <div className="whiteBg  pt-4 px-5 pb-4">
+                                        <div className="row d-flex align-items-center">
+                                            <div className="prdctDtlHdng  pt-3">
+                                                <h3>Shopping Cart <span>1 Items</span></h3>
+                                                <div className="hdngBrBtm"></div>
+                                            </div>
+                                        </div>
+                                        <div >
+                                            <div className="row pt-4 ">
+                                                <div className="col-sm-5">
+                                                    <div>Product Details</div>
+                                                </div>
+                                                <div className="col-sm-3 justify-content-between">
+                                                    Quantity
+                                                </div>
+                                                <div className="col-sm-2 d-flex justify-content-between">
+                                                    Price
+                                                </div>
+                                                <div className="col-sm-2 d-flex justify-content-end">
+                                                    Total
+                                                </div>
+                                            </div>
+                                            {cart?.map((cartItem, cartItemIndex) => (
+                                                <div className="row d-flex justify-content-between pt-5">
+                                                    <div className="col-sm-5">
+                                                        <div className="cartListPrdct">
+                                                            <div className="row g-3 d-sm-flex align-items-center">
+                                                                <div className="col-auto">
+                                                                    <div className="cartListPrdctProMedia">
+                                                                        <a href="/product-detail">
+                                                                            <div className="cartListPrdctProImg" style={{ backgroundImage: (cartItem.product.images[0] ? (`url("${Rest}/documents/get/${cartItem.product.images[0].documentId}")`) : `url("img/productImg1.jpg")`) }}></div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col">
+                                                                    <div className="cartListPrdctProInfo">
+                                                                        <div className="prdctListTitle"><h4><a href="/productdetail">{cartItem.product.name}</a></h4></div>
+                                                                        <div className="rvwRtngPrgrsStars">
+                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                                                        </div>
+                                                                        <div className="prodctListPrice">
+                                                                            <button onClick={(e)=>{
+                                                                                e.preventDefault();
+                                                                               dispatch(stateActions.removeCartItem(cartItem.product._id ))
+                                                                            }
+                                                                            }>
+                                                                                Remove
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-sm-3">
+                                                        <div className="countRow d-flex">
+                                                            <button onClick={() => {
+                                                                dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity + 1, cartItem.variant))
+                                                            }} className="countBtn ">+</button>
+                                                            <div className="countTotal">{cartItem.quantity}</div>
+                                                            <button onClick={() => {
+                                                                if (cartItem.quantity === 1) {
+                                                                    dispatch(stateActions.removeCartItem(cartItem.product._id))
+                                                                } else {
+                                                                    dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity - 1, cartItem.variant))
+                                                                }
+                                                            }} className="countBtn">-</button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-sm-2 prodctDtlPrice ">
+                                                        <div className="cartPrice"> £{cartItem.variant.price}</div>
+                                                        {/* <div className="discntPrice">£100.43 Inc VAT</div> */}
+                                                    </div>
+                                                    <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
+                                                        <div className="carTotalPrice">
+                                                            <Link to="/checkout">£{cartItem.quantity * cartItem.variant.price}</Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <hr />
+                                            {/* <div className="row d-flex justify-content-between pt-5">
+
                                     <div className="col-sm-5">
                                         <div className="cartListPrdct">
                                             <div className="row g-3 d-sm-flex align-items-center">

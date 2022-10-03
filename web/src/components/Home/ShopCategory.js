@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Row, Col, Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
-
+import { Rest } from "../../rest";
 function ShopCategory() {
 
   const navigate = useNavigate()
   const categories = useSelector(s => s.categories)
-  console.log(categories)
+  console.log("jas",categories)
 
   return (
     <article className="shopByCategy wrapper py-40">
@@ -23,7 +23,7 @@ function ShopCategory() {
               <Col lg={3} md={6}>
                 <div className="categoryItem" style={{ cursor: 'pointer' }} onClick={() => { navigate(`/category`, { state: category }) }}>
                   <div className="categoryMedia">
-                    <div className="categoryImg" style={{ backgroundImage: `url("img/catListImg4.jpg")` }}>
+                    <div className="categoryImg" style={{ backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})` }}>
                       <div className="categoryOverlay"></div>
                     </div>
                     <span className="categoryBtn" style={{ display: 'flex' }}>

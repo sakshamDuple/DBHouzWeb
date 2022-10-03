@@ -14,7 +14,7 @@ export let stateActions = {
 	removeCartItem: (productId) => {
 		return {
 			type: 'REMOVE_CART_ITEM',
-			payload: { productId }
+			payload: {productId} 
 		}
 	},
 	addCartItem: (product, quantity, variant) => {

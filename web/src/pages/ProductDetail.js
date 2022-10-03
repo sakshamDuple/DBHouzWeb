@@ -68,29 +68,6 @@ function ProductDetail() {
   };
 
   const getDimension = (obj) => {
-    // let unit = 0;
-    // if (
-    //   obj.dimensions.height != 0 &&
-    //   obj.dimensions.width != 0 &&
-    //   obj.dimensions.thickness != 0
-    // ) {
-    //   unit = 3;
-    // } else if (
-    //   (obj.dimensions.height != 0 && obj.dimensions.width != 0) ||
-    //   (obj.dimensions.height != 0 && obj.dimensions.thickness != 0) ||
-    //   (obj.dimensions.thickness != 0 && obj.dimensions.width != 0)
-    // ) {
-    //   unit = 2;
-    // } else if (
-    //   obj.dimensions.height != 0 ||
-    //   obj.dimensions.width != 0 ||
-    //   obj.dimensions.thickness != 0
-    // ) {
-    //   unit = 1;
-    // } else {
-    //   unit = 0;
-    // }
-    // setUnit(unit)
     if (obj)
       return `${obj.dimensions.height} inches x ${obj.dimensions.width} inches x ${obj.dimensions.thickness} inches`; //^${unit}
     else return "0 x 0 x 0 inches";

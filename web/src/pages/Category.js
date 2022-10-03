@@ -15,6 +15,7 @@ function Category() {
   const categories = useSelector((s) => s.categories);
   let lenCat = categories.length
   const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i=> React.createRef()), []);
+
   const linkProductList = (category) => {
     console.log(category)
     navigate("/productlist", { state: { category } });

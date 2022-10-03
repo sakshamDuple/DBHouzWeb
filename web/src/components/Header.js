@@ -5,7 +5,7 @@ import RightArrow from "../img/rightArrowIcon.svg";
 import { Rest, RestAdmin, RestUser } from "../rest";
 import { useDispatch, useSelector } from "react-redux";
 import { stateActions } from "../redux/stateActions";
-
+import deleteCart from "../assets/images/icons/deleteShoppingCart.svg";
 import SetingUser from "../assets/images/settingIcons/userIcon.svg";
 import Edit from "../assets/images/settingIcons/editIcon.svg";
 import ChangePassword from "../assets/images/settingIcons/changePaswrd.svg";
@@ -159,7 +159,7 @@ function Header() {
             <Col className="col-md-auto">
               <div className="tpBarRightCol d-flex">
                 {user.jwt ? (
-                  <div className="userContnt-name" style={{width: "200px"}}>
+                  <div className="userContnt-name" style={{ width: "200px" }}>
                     <Dropdown className="header-fix">
                       <Dropdown.Toggle className="notificatnCol w-100 p-0 border-0" id="dropdown-basic">
                         <div className="userContnt ">
@@ -773,18 +773,13 @@ function Header() {
                           </div>
                           <div className="col-auto">
                             <div className="shopping-cart-delete">
-                              <Link to="/">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24 "
-                                  fill="currentColor"
-                                  className="bi bi-x"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                              </Link>
+                              {/* <Link to="/"> */}
+                              <img src={deleteCart} alt="" onClick={(e) => {
+                                e.preventDefault();
+                                dispatch(stateActions.removeCartItem(cartItem.product._id))
+                              }
+                              } />
+                              {/* </Link> */}
                             </div>
                           </div>
                         </div>
