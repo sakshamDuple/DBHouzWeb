@@ -200,14 +200,14 @@ function ProductDetail() {
                     <div className="prodctDtlPriceLrge d-flex align-items-center">
                       <div className="price">{`$ ${
                         product.variants[selectedVariant]
-                          ? product.variants[selectedVariant].price
+                          ? product.variants[selectedVariant]?.price
                           : 0
                       }`}</div>
-                      <div className="prcentOff px-3">{product.variants[selectedVariant].price/100*8}$ VAT Included</div>
+                      <div className="prcentOff px-3">{product.variants[selectedVariant]?.price/100*8}$ VAT Included</div>
                     </div>
-                    <div className="gst">{product.variants[selectedVariant].price/100*10}$ gst per inches² Included</div>
+                    <div className="gst">{product.variants[selectedVariant]?.price/100*10}$ gst per inches² Included</div>
                     {console.log("product:",product)}
-                    <div className="leftStock">{product.variants[selectedVariant].availableQuantity} item left in Stock</div>
+                    <div className="leftStock">{product.variants[selectedVariant]?.availableQuantity} item left in Stock</div>
                     <div className="prdctDtlSize d-flex align-items-center py-3">
                       <div className="btn-label">
                         <h5>Variant name:</h5>
@@ -243,7 +243,7 @@ function ProductDetail() {
                               >
                                 {variant.size} Foot / {getSingleColors(variant.colorId)}
                                 <br />
-                                <span>${variant.price}</span>
+                                <span>${variant?.price}</span>
                               </button>
                             ))}
                         </div>
@@ -258,7 +258,7 @@ function ProductDetail() {
                       </div>
                       {getSingleColors(
                         product.variants[selectedVariant]
-                          ? product.variants[selectedVariant].colorId
+                          ? product.variants[selectedVariant]?.colorId
                           : "green"
                       )}
                     </div>

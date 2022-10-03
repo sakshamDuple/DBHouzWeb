@@ -66,7 +66,7 @@ function Header() {
   const cart = useSelector((s) => s.cart);
   let cartTotalAmount = 0;
   cart?.forEach((i) => {
-    let price = i.variant.price;
+    let price = i.variant?.price;
     cartTotalAmount += price * i.quantity;
   });
   const navigate = useNavigate();
@@ -763,7 +763,7 @@ function Header() {
                                 </Link>
                               </h4>
                               <h5>
-                                <span>{cartItem.quantity} × </span>£{cartItem.variant.price}
+                                <span>{cartItem.quantity} × </span>£{cartItem.variant?.price}
                               </h5>
                             </div>
                           </div>

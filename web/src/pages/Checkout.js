@@ -28,7 +28,9 @@ const initialFormData = {
     discount: ["dbhouz"],
     coupon: ["dbhouz"],
     transactionDetail: {
-        status: "successful"
+        status: "successful",
+        transactionMenthod: "DEBIT_CARD",
+        transactionNumber: 762153812830
     }
 };
 const initialCredit = {
@@ -58,14 +60,14 @@ function Checkout() {
     }, []);
     const cart = useSelector((s) => s.cart);
     let cartTotalAmount = 0;
-    const getData =() => {
+    const getData = () => {
         const car = cart.map((i) => {
-            const { product: { _id, merchantId } = {},variant :{price} ={} } = i
+            const { product: { _id, merchantId } = {}, variant: { price } = {} } = i
             return ({ sellerId: _id, productId: merchantId });
         })
-       setProductData((prev)=>{
-         return ([...prev, ...car])
-       })
+        setProductData((prev) => {
+            return ([...prev, ...car])
+        })
     }
     cart.forEach((i) => {
         console.log("item", i)
@@ -82,7 +84,7 @@ function Checkout() {
     }, []);
     const getD = () => {
         if (window.localStorage.JWT) {
-            let accessToken = window.localStorage.getItem("JWT"); 
+            let accessToken = window.localStorage.getItem("JWT");
             console.log(jwtDecode(accessToken));
             let n = jwtDecode(accessToken);
             console.log("n", n)
@@ -112,7 +114,7 @@ function Checkout() {
         } = formData || {};
         const data = {
             order: {
-                products: productData ,
+                products: productData,
                 address: {
                     country: country,
                     state: state,
@@ -120,7 +122,7 @@ function Checkout() {
                     postal_code: postal_code,
                     main_address_text: main_address_text,
                 },
-                total_price: cartTotalAmount ,
+                total_price: cartTotalAmount,
                 customerDetail: {
                     name: firstName + " " + lastName,
                     userId: userId,
@@ -130,7 +132,9 @@ function Checkout() {
                 discount: ["sdfghjkl"],
                 coupon: ["asderftgyhjukl"],
                 transactionDetail: {
+                    transactionMenthod: "DEBIT_CARD",
                     status: "successful",
+                    transactionNumber: 762153812830,
                 }
             }
         };

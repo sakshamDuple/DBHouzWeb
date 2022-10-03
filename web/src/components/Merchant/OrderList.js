@@ -21,6 +21,7 @@ import product5 from "../../assets/images/productImg5.jpg";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function OrderList() {
+    const [getData, setGetData] = useState();
     const selectRef1 = useRef();
     useEffect(() => {
   $(selectRef1.current).niceSelect();

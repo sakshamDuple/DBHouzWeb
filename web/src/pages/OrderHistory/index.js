@@ -11,13 +11,14 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import axios from '../../API/axios';
 import { FreeMode, Navigation, Thumbs, Pagination, Scrollbar, A11y } from 'swiper';
+import { strictValidArray } from '../../utils/commonutils';
 // import TableList from './table/TableList';
 import jwtDecode from "jwt-decode";
 import { useSelector } from "react-redux";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function OrderHistory() {
-    const [token, setToken] = useState();
+    const [getData, setGetData] = useState();
     const user = useSelector((s) => s.user);
     // const getData =() => {
     //     const users = user.map((i) => {
@@ -25,17 +26,20 @@ function OrderHistory() {
     //     }
     // }
     useEffect(async () => {
-        let accessToken = window.localStorage.getItem("JWT"); 
-        console.log("at",accessToken)
+        let accessToken = window.localStorage.getItem("JWT");
+        console.log("at", accessToken)
         console.log(jwtDecode(accessToken));
         let n = jwtDecode(accessToken);
         console.log("n", n)
-        const { id} = n || {};
-        const userId = id;
+        const { user: { _id } = {} } = n || {};
+        const userId = _id;
         console.log("userId", userId)
         try {
             const res = await axios.get(`/order/getOrderForUser/${userId}`);
             console.log("res jagvir", res)
+            const { data: { order } = {} } = res || {};
+            console.log("res jagvir", order)
+            return setGetData(order);
         } catch (error) {
             console.log("erroe", error)
         }
@@ -56,6 +60,8 @@ function OrderHistory() {
     useEffect(() => {
         $(selectRef4.current).niceSelect();
     }, []);
+    const ans = Array.isArray(getData);
+    console.log("getData", ans)
     return (
         <section className="wrapper greyBg3 dashboardBlk ">
             <Header />
@@ -149,70 +155,33 @@ function OrderHistory() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>#2632</td>
-                                                        <td>May 05,2022</td>
-                                                        <td className="delvrd">Delivered</td>
-                                                        <td>Paid</td>
-                                                        <td>May 08,2022</td>
-                                                        <td>$102.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#9865</td>
-                                                        <td>Mar 20,2022</td>
-                                                        <td className="prcesing">Processing</td>
-                                                        <td>Cash</td>
-                                                        <td>Mar 20,2022</td>
-                                                        <td>$99.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#5894</td>
-                                                        <td>Mar 15,2022</td>
-                                                        <td className="cancled">Cancelled</td>
-                                                        <td>Cash</td>
-                                                        <td>May 18,2022</td>
-                                                        <td>$85.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#2909</td>
-                                                        <td>Apr 19,2022</td>
-                                                        <td className="delvrd">Delivered</td>
-                                                        <td>Paid</td>
-                                                        <td>Apr 22,2022</td>
-                                                        <td>$109.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#0107</td>
-                                                        <td>Mar 20,2022</td>
-                                                        <td className="delvrd">Delivered</td>
-                                                        <td>Paid</td>
-                                                        <td>Mar 25,2022</td>
-                                                        <td>$120.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#2512</td>
-                                                        <td>May 20,2022</td>
-                                                        <td className="prcesing">Processing</td>
-                                                        <td>Cash</td>
-                                                        <td>Mar 20,2022</td>
-                                                        <td>$74.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#7490</td>
-                                                        <td>Mar 20,2022</td>
-                                                        <td className="delvrd">Delivered</td>
-                                                        <td>Paid</td>
-                                                        <td>Mar 25,2022</td>
-                                                        <td>$62.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr>
-                                                    <tr>
+                                                    {getData?.map((item, index) => {
+                                                        console.log("item", item)
+                                                        const { _id, createdAt, order_status, total_price,expectedDeliveryDate,
+                                                            transactionDetail : {transactionMethod} ={},
+                                                         } = item || {};
+                                                        let ShippingDate = new Date(expectedDeliveryDate);
+                                                        let y = ShippingDate.getFullYear();
+                                                        let mm = ShippingDate.toLocaleString('default', { month: 'short' });
+                                                        let d = ("0" + ShippingDate.getDate()).slice(-2);
+                                                        let date = new Date(createdAt);
+                                                        let year = date.getFullYear();
+                                                        let month = date.toLocaleString('default', { month: 'short' });
+                                                        let day = ("0" + date.getDate()).slice(-2);
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td>#{_id}</td>
+                                                                <td>{`${month}  ${day},${year}`}</td>
+                                                                <td className="delvrd">{order_status}</td>
+                                                                <td>{transactionMethod}</td>
+                                                                <td>{`${mm}  ${d},${y}`}</td>
+                                                                <td>${total_price}.00</td>
+                                                                <td><Link to="/">View Details</Link></td>
+                                                            </tr>
+                                                        );
+                                                    })
+                                                    }
+                                                    {/* <tr>
                                                         <td>#4549</td>
                                                         <td>Mar 05,2022</td>
                                                         <td className="cancled">Cancelled </td>
@@ -220,7 +189,7 @@ function OrderHistory() {
                                                         <td>Mar 24,2022</td>
                                                         <td>$112.00</td>
                                                         <td><Link to="/">View Details</Link></td>
-                                                    </tr>
+                                                    </tr> */}
                                                 </tbody>
                                             </Table>
                                         </div>
