@@ -24,7 +24,7 @@ function ProductList() {
   let flag = 1;
   const categories = useSelector((s) => s.categories);
   let currentCategory = [{}];
-  let mon = selectedCategory?selectedCategory:categories[0].category._id
+  let mon = selectedCategory?selectedCategory:categories[0]?.category?._id
   console.log("selectedCategory._id",selectedCategory)
   console.log("mon",mon)
   currentCategory = categories.filter((i) => i.category._id == mon);
