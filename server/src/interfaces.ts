@@ -194,7 +194,11 @@ export interface IUnit {
 }
 export interface Order {
   _id: ObjectId;
-  productId: string[];
+  products: {
+    sellerId:string,
+    productId:string,
+    saleId:ObjectId
+  }[];
   address: {
     addressId:ObjectId,
     country:string,
@@ -204,33 +208,32 @@ export interface Order {
     main_address_text:string
   };
   total_price:number;
-  customer:string;
+  customerDetail:{
+    userId:string,
+    name:string,
+    phone:number,
+    email:string,
+    customerId:ObjectId
+  };
+  seller:string;
   discount:string[];
   coupon:string[];
   order_status:OrderStatus;
   transactionDetail:{
     transactionId: ObjectId,
     transactionDate: number,
-    status: string
+    status: string,
+    transactionMethod: transactionMethod,
+    transactionNumber: string
   };
   createdAt:number;
+  expectedDeliveryDate: number;
 }
-
-// export interface Order {
-//   _id: ObjectId;
-//   orderId: string;
-//   productId: ObjectId[];
-//   address: {
-//     country:string,
-//     state:string,
-//     city:string,
-//     postal_code:string,
-//     main_address_text:string
-//   };
-//   total_price: number;
-//   customer: IUser;
-//   discount: string[];
-//   coupon: string[];
-//   order_status: string;
-//   transactionId: string;
-// }
+export enum transactionMethod {
+  DEBIT_CARD = "DEBIT_CARD",
+  CREDIT_CARD = "CREDIT_CARD",
+  UPI = "UPI",
+  PAYTM = "PAYTM",
+  GPAY = "GPAY",
+  CASH_ON_DELIVERY = "CASH_ON_DELIVERY"
+}
