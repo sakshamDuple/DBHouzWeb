@@ -1,13 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Table, { Styles } from './Table';
 import axios from '../../../API/axios';
-
+import jwtDecode from "jwt-decode";
 const initialState = { temples: [], currentPage: 1, totalCount: 0 };
 
-const App = ({Id}) => {
-  console.log("userId",Id)
+const App = () => {
+  const userId = Id;
   const [{ temples, currentPage, totalCount }, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState();
+  useEffect(async () => {
+    let accessToken = window.localStorage.getItem("JWT");
+    console.log("at", accessToken)
+    console.log(jwtDecode(accessToken));
+    let n = jwtDecode(accessToken);
+    console.log("n", n)
+    const { user: { _id } = {} } = n || {};
+    console.log("_id", _id)
+    setToken(_id);
+  }, [])
 
   // const onToggle = async (val, id) => {
   //   if (window.confirm("Are you sure?")) {
@@ -81,10 +92,11 @@ const App = ({Id}) => {
         accessor: 'creatorEmail',
       },
       {
-        Header : 'Total',
+        Header: 'Total',
+
       },
       {
-        Header : 'Action',
+        Header: 'Action',
       }
     ],
     []
@@ -113,17 +125,18 @@ const App = ({Id}) => {
     [temples]
   )
 
-  const initialData = async (userId=Id) => {
+  const initialData = async (userId=token) => {
     // console.log(page, limit)
+    console.log("userId", userId)
     try {
       setLoading(true);
-      const res = await axios.post(`/order/getOrderForUser/:${userId}`);
-      // const { data: { results: { temples = [] } = {}, totalResults = 0 } = {}, } = res || {}
-      console.log("userId", res)
+      const res = await axios.post(`/order/getOrderForUser/${userId}`);
+      // const { data: { results: { order = [] } = {}, totalResults = 0 } = {}, } = res || {}
+      console.log("res js", res)
       // setState(prev => ({ ...prev, temples, totalCount: totalResults }));
       // setLoading(false);
     } catch (error) {
-      console.log("error", error)
+      console.log("error js", error)
       setLoading(false);
     }
   }

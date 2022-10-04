@@ -31,7 +31,7 @@ const initialFormData = {
         status: "successful",
         transactionMenthod: "DEBIT_CARD",
         transactionNumber: 762153812830
-    }
+    },
 };
 const initialCredit = {
     CreditSelect: false,
@@ -62,7 +62,7 @@ function Checkout() {
     let cartTotalAmount = 0;
     const getData = () => {
         const car = cart.map((i) => {
-            const { product: { _id, merchantId } = {}, variant: { price } = {} } = i
+            const { product: { _id, merchantId } = {} } = i
             return ({ sellerId: _id, productId: merchantId });
         })
         setProductData((prev) => {
@@ -73,7 +73,6 @@ function Checkout() {
         console.log("item", i)
         console.log("price:", i.variant?.price)
         let price = i.variant?.price;
-        const { product: { _id, merchantId } = {} } = i || {};
         cartTotalAmount += price * i.quantity;
     });
 
@@ -112,7 +111,7 @@ function Checkout() {
                 firstName, lastName, userId, phone, email
             } = {},
         } = formData || {};
-        const data = {
+        let data = {
             order: {
                 products: productData,
                 address: {
@@ -138,6 +137,8 @@ function Checkout() {
                 }
             }
         };
+        // data = JSON.stringify(data)
+        console.log("data", data)
         try {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
@@ -145,6 +146,63 @@ function Checkout() {
         } catch (error) {
             console.log(error);
         }
+        // var data = JSON.stringify({
+        //     "order": {
+        //         "products": [
+        //             {
+        //                 "sellerId": "63319113c2393142354ff861",
+        //                 "productId": "63319113c2393142354ff018"
+        //             },
+        //             {
+        //                 "sellerId": "63319113c2393142354ff521",
+        //                 "productId": "63319113c2393142354ff619"
+        //             }
+        //         ],
+        //         "address": {
+        //             "country": "ihe",
+        //             "state": "ieyuh",
+        //             "city": "lwiej",
+        //             "postal_code": 29783,
+        //             "main_address_text": "kwueuh"
+        //         },
+        //         "total_price": 18728,
+        //         "customerDetail": {
+        //             "name": "Saksham Verma",
+        //             "userId": "63319113c23931423523f911",
+        //             "phone": 7986471769,
+        //             "email": "sakshamverma1222k@gmail.com"
+        //         },
+        //         "discount": [
+        //             "jksgd"
+        //         ],
+        //         "coupon": [
+        //             "uyidh"
+        //         ],
+        //         "transactionDetail": {
+        //             "transactionMethod": "DEBIT_CARD",
+        //             "status": "successful",
+        //             "transactionNumber": 721786538313370100
+        //         }
+        //     }
+        // });
+
+        // var config = {
+        //     method: 'post',
+        //     url: 'http://2c98-223-178-213-55.ngrok.io/rest/order/make',
+        //     headers: {
+        //         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYzMzE3NjQxZTgxYTI5ZmMxNWNiMzhlNyIsImVtYWlsIjoic3loeXpAbWFpbGluYXRvci5jb20iLCJ0eXBlIjoibWVyY2hhbnQifSwiaWF0IjoxNjY0MTg1OTIxfQ.kgs09r74P3HizHyvh-48v8ctUOU69VU01U2hEVtlSXs',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     data: data
+        // };
+
+        // axios(config)
+        //     .then(response =>
+        //         console.log('response', JSON.stringify(response.data))
+        //     ).catch(function (error) {
+        //         console.log(error);
+        //     })
+
     };
 
     return (

@@ -354,28 +354,28 @@ function ProductList() {
                             <div className="filtrList mb-2">
                               <ul>
                                 <li>
-                                  <Link to="/">Under $500</Link>
+                                 Under $500
                                 </li>
                                 <li>
-                                  <Link to="/">$500 - $750</Link>
+                                 $500 - $750
                                 </li>
                                 <li>
-                                  <Link to="/">$1,000 - $1,500</Link>
+                                  $1,000 - $1,500
                                 </li>
                                 <li>
-                                  <Link to="/">$1,500 - $2,000</Link>
+                                 $1,500 - $2,000
                                 </li>
                                 <li>
-                                  <Link to="/">$2,000 - $5,000</Link>
+                                 $2,000 - $5,000
                                 </li>
                                 <li>
-                                  <Link to="/">$5,000 - $10,000</Link>
+                                  $5,000 - $10,000
                                 </li>
                                 <li>
-                                  <Link to="/">$15,000 - $20,000</Link>
+                                 $15,000 - $20,000
                                 </li>
                                 <li>
-                                  <Link to="/">Over $20,000</Link>
+                                  Over $20,000
                                 </li>
                               </ul>
                             </div>

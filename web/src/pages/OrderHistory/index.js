@@ -12,7 +12,7 @@ import "swiper/css/thumbs";
 import axios from '../../API/axios';
 import { FreeMode, Navigation, Thumbs, Pagination, Scrollbar, A11y } from 'swiper';
 import { strictValidArray } from '../../utils/commonutils';
-// import TableList from './table/TableList';
+import TableList from './table/TableList';
 import jwtDecode from "jwt-decode";
 import { useSelector } from "react-redux";
 window.jQuery = window.$ = $;
@@ -34,6 +34,7 @@ function OrderHistory() {
         const { user: { _id } = {} } = n || {};
         const userId = _id;
         console.log("userId", userId)
+        setToken(_id);
         try {
             const res = await axios.get(`/order/getOrderForUser/${userId}`);
             console.log("res jagvir", res)
@@ -141,7 +142,7 @@ function OrderHistory() {
                                             </div>
                                         </div>
                                         <div className="orderHistryTable">
-                                            {/* <TableList ID={token}/> */}
+                                            {/* <TableList /> */}
                                             <Table bordered>
                                                 <thead>
                                                     <tr>
@@ -181,7 +182,7 @@ function OrderHistory() {
                                                         );
                                                     })
                                                     }
-                                                    {/* <tr>
+                                                    <tr>
                                                         <td>#4549</td>
                                                         <td>Mar 05,2022</td>
                                                         <td className="cancled">Cancelled </td>
@@ -189,7 +190,7 @@ function OrderHistory() {
                                                         <td>Mar 24,2022</td>
                                                         <td>$112.00</td>
                                                         <td><Link to="/">View Details</Link></td>
-                                                    </tr> */}
+                                                    </tr>
                                                 </tbody>
                                             </Table>
                                         </div>
