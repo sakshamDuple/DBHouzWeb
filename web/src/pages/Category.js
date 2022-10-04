@@ -17,7 +17,7 @@ function Category() {
   const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i=> React.createRef()), []);
 
   const linkProductList = (category) => {
-    console.log(category)
+    console.log("category",category)
     navigate("/productlist", { state: { category } });
   };
   window.scrollTo(0, 0);

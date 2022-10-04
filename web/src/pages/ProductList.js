@@ -184,7 +184,6 @@ function ProductList() {
                                     <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
                                   </li>
                                 ))}
-                                {console.log(categories[0].category)}
                               </ul>
                             </div>
                           </Accordion.Body>

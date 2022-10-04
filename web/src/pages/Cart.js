@@ -29,9 +29,6 @@ function Cart() {
   const cart = useSelector((s) => s.cart);
   const dispatch = useDispatch();
 
-    const cart = useSelector(s => s.cart)
-    const dispatch = useDispatch();
-
     let cartTotalAmount = 0
     cart?.forEach((i) => {
         console.log("i", i)

@@ -148,7 +148,6 @@ function Checkout() {
         <section className="wrapper">
             <Header />
             <form onSubmit={(valuesm) => console.log("values", valuesm)} className="wrapper greyDarkBg checkOutBlk py-20">
-                <div className="container">
                     <div className="checkOutOuterDiv">
                         <div className="row d-flex justify-content-between g-5 py-3">
                             <div className="col-md">
