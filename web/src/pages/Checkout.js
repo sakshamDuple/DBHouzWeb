@@ -8,6 +8,7 @@ import $ from "jquery";
 import 'rc-slider/assets/index.css';
 import { useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
+
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 const initialFormData = {
@@ -209,7 +210,6 @@ function Checkout() {
         <section className="wrapper">
             <Header />
             <form onSubmit={(valuesm) => console.log("values", valuesm)} className="wrapper greyDarkBg checkOutBlk py-20">
-                <div className="container">
                     <div className="checkOutOuterDiv">
                         <div className="row d-flex justify-content-between g-5 py-3">
                             <div className="col-md">
@@ -628,29 +628,30 @@ function Checkout() {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
                                     </div> */}
-                                        <div className="chckoutPymtSideBrBlk">
-                                            <div className="d-flex justify-content-between">
-                                                <ul className="prodctListPrice checkotPymntList">
-                                                    <li>Total MRP<span>${cartTotalAmount + cartTotalAmount * 18 / 100}</span></li>
-                                                    <li>GST<span className="discntPrice" >+${cartTotalAmount * 18 / 100}</span></li>
-                                                    <li>Discount on MRP<span className="discntPrice" >-${cartTotalAmount * 36 / 100}</span></li>
-                                                    <li>Convenience Fee<span className="oferPrice">$0 <span className="discntPrice">Free</span></span></li>
-                                                </ul>
+                                    <div className="chckoutPymtSideBrBlk">
+                                        <div className="d-flex justify-content-between">
+                                            <ul className="prodctListPrice checkotPymntList">
+                                                <li>Total MRP<span>${cartTotalAmount+cartTotalAmount*18/100}</span></li>
+                                                <li>GST<span className="discntPrice" >+${cartTotalAmount*18/100}</span></li>
+                                                <li>Discount on MRP<span className="discntPrice" >-${cartTotalAmount*36/100}</span></li>
+                                                <li>Convenience Fee<span className="oferPrice">$0 <span className="discntPrice">Free</span></span></li>
+                                            </ul>
+                                        </div> 
+                                                                       
+                                    </div>
+                                    <div className="row g-0 d-flex justify-content-row">
+                                        <div className="col">
+                                            <div className="totlAmntHdng">
+                                                <h3>Total Amount </h3>
                                             </div>
 
                                         </div>
-                                        <div className="row g-0 d-flex justify-content-row">
-                                            <div className="col">
-                                                <div className="totlAmntHdng">
-                                                    <h3>Total Amount </h3>
-                                                </div>
-                                            </div>
-                                            <div className="col-auto">
-                                                <div className="totlGstBlk">
-                                                    <h5>${cartTotalAmount}</h5>
-                                                    <p>Inc. GST</p>
-                                                </div>
+                                        <div className="col-auto">
+                                            <div className="totlGstBlk">
+                                                <h5>${cartTotalAmount}</h5>
+                                                <p>Inc. GST</p>
                                             </div>
                                         </div>
                                     </div>

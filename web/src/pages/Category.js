@@ -14,13 +14,13 @@ function Category() {
   let category = location.state?.category;
   const categories = useSelector((s) => s.categories);
   let lenCat = categories.length
-  console.log(categories);
   const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i=> React.createRef()), []);
-  console.log(inputRefs)
+
   const linkProductList = (category) => {
-    console.log(category)
+    console.log("category",category)
     navigate("/productlist", { state: { category } });
   };
+  window.scrollTo(0, 0);
 
   return (
     <section className="wrapper ">
@@ -93,7 +93,6 @@ function Category() {
                   <div className="row mb-4 DBcategoryList-row">
                     {categories.map((category, index) => {
                       let subcategories = category.subCategories
-                      console.log(subcategories)
                       return(
                       <>
                         <div ref={inputRefs[index]} id={`${category.category._id}`} className={`col-sm-4 DBcategoryList-main `}>
@@ -101,7 +100,7 @@ function Category() {
                             <a
                               style={{ cursor: "pointer" }}
                               onClick={() => {
-                                linkProductList(category.category);
+                                linkProductList(category.category._id);
                               }}
                             >
                               <div className="categoryListMedia">
@@ -116,9 +115,9 @@ function Category() {
                                 <span className="categoryListBtn">
                                   <a
                                     style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      linkProductList(category.category);
-                                    }}
+                                          onClick={() => {
+                                            linkProductList(category._id);
+                                          }}
                                     className="btnCommon"
                                   >
                                     View Product
@@ -127,7 +126,6 @@ function Category() {
                               </div>
                               <div className="categoryListTitle">
                                 <h4>{category?.category.name}</h4>
-                                {console.log("chalo baba", category.name)}
                               </div>
                             </a>
                           </div>
@@ -140,7 +138,7 @@ function Category() {
                                   <a
                                     style={{ cursor: "pointer" }}
                                     onClick={() => {
-                                      linkProductList(subcategory.category);
+                                      linkProductList(subcategory._id);
                                     }}
                                   >
                                     <div className="categoryListMedia">
@@ -156,7 +154,7 @@ function Category() {
                                         <a
                                           style={{ cursor: "pointer" }}
                                           onClick={() => {
-                                            linkProductList(category.category);
+                                            linkProductList(category._id);
                                           }}
                                           className="btnCommon"
                                         >

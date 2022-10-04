@@ -19,7 +19,14 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "../css/productdetails.css";
 
-import { FreeMode, Navigation, Thumbs, Pagination, Scrollbar, A11y } from "swiper";
+import {
+  FreeMode,
+  Navigation,
+  Thumbs,
+  Pagination,
+  Scrollbar,
+  A11y,
+} from "swiper";
 import $ from "jquery";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
@@ -61,17 +68,6 @@ function ProductDetail() {
   };
 
   const getDimension = (obj) => {
-    // let unit = 0;
-    // if(obj.dimensions.height != 0 && obj.dimensions.width != 0 && obj.dimensions.thickness != 0){
-    //   unit = 3
-    // } else if((obj.dimensions.height !=0 && obj.dimensions.width != 0) || (obj.dimensions.height !=0 && obj.dimensions.thickness != 0) || (obj.dimensions.thickness != 0 && obj.dimensions.width != 0)) {
-    //   unit = 2
-    // } else if(obj.dimensions.height != 0 || obj.dimensions.width != 0 || obj.dimensions.thickness != 0) {
-    //   unit = 1
-    // } else {
-    //   unit = 0
-    // }
-    // setUnit(unit)
     if (obj)
       return `${obj.dimensions.height} inches x ${obj.dimensions.width} inches x ${obj.dimensions.thickness} inches`; //^${unit}
     else return "0 x 0 x 0 inches";
@@ -104,7 +100,9 @@ function ProductDetail() {
                       <li className="breadcrumb-item">
                         <a href="/">Artificial Stone</a>
                       </li>
-                      <li className="breadcrumb-item active">Artificial Stone Tiles</li>
+                      <li className="breadcrumb-item active">
+                        Artificial Stone Tiles
+                      </li>
                     </ol>
                   </nav>
                 </div>
@@ -200,14 +198,23 @@ function ProductDetail() {
                     <div className="prodctDtlPriceLrge d-flex align-items-center">
                       <div className="price">{`$ ${
                         product.variants[selectedVariant]
-                          ? product.variants[selectedVariant]?.price
+                          ? (product.variants[selectedVariant].price*82/100).toFixed(2)
                           : 0
-                      }`}</div>
-                      <div className="prcentOff px-3">{product.variants[selectedVariant]?.price/100*8}$ VAT Included</div>
+                      }`}</div>+
+                      {/* <div className="prcentOff px-3">
+                        {(product.variants[selectedVariant].price / 100) * 8}$
+                        VAT Included
+                      </div> */}
+                    <div className="gst">
+                      {((product.variants[selectedVariant]?.price / 100) * 18).toFixed(2)}$
+                      gst
                     </div>
-                    <div className="gst">{product.variants[selectedVariant]?.price/100*10}$ gst per inches² Included</div>
-                    {console.log("product:",product)}
-                    <div className="leftStock">{product.variants[selectedVariant]?.availableQuantity} item left in Stock</div>
+                    </div>
+                    {console.log("product:", product)}
+                    <div className="leftStock">
+                      {product.variants[selectedVariant]?.availableQuantity} item
+                      left in Stock
+                    </div>
                     <div className="prdctDtlSize d-flex align-items-center py-3">
                       <div className="btn-label">
                         <h5>Variant name:</h5>
@@ -235,13 +242,16 @@ function ProductDetail() {
                               <button
                                 key={index}
                                 className={
-                                  index === selectedVariant ? "btn-active button" : "button"
+                                  index === selectedVariant
+                                    ? "btn-active button"
+                                    : "button"
                                 }
                                 onClick={(e) => {
                                   changeSelectedVariant(index);
                                 }}
                               >
-                                {variant.size} Foot / {getSingleColors(variant.colorId)}
+                                {variant.size} Foot /{" "}
+                                {getSingleColors(variant.colorId)}
                                 <br />
                                 <span>${variant?.price}</span>
                               </button>
@@ -291,7 +301,10 @@ function ProductDetail() {
                       </div>
                       <div className="col-auto pl-0">
                         <div className="countRow d-flex">
-                          <button onClick={incrementCount} className="countBtn ">
+                          <button
+                            onClick={incrementCount}
+                            className="countBtn "
+                          >
                             +
                           </button>
                           <div className="countTotal">{count}</div>
@@ -345,14 +358,14 @@ function ProductDetail() {
                         <span>Save Extra</span> with 2 offers
                       </h5>
                       <p>
-                        <span>Cashback (4)</span> variations of passages of Lorem Ipsum
-                        available, but the majority have suffered alteration in some form, by
-                        injected humour,{" "}
+                        <span>Cashback (4)</span> variations of passages of
+                        Lorem Ipsum available, but the majority have suffered
+                        alteration in some form, by injected humour,{" "}
                       </p>
                       <p>
-                        <span>Cashback (4)</span> variations of passages of Lorem Ipsum
-                        available, but the majority have suffered alteration in some form, by
-                        injected humour,{" "}
+                        <span>Cashback (4)</span> variations of passages of
+                        Lorem Ipsum available, but the majority have suffered
+                        alteration in some form, by injected humour,{" "}
                       </p>
                     </div>
                     <div className="prdctDtlShare ">
@@ -381,10 +394,19 @@ function ProductDetail() {
             </div>
           </div>
           <div className="prdctDtlinfoTabs mt-5">
-            <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-3">
+            <Tabs
+              defaultActiveKey="home"
+              id="uncontrolled-tab-example"
+              className="mb-3"
+            >
               <Tab eventKey="home" title="Discription">
                 <div className="prdctDtlTabInfo">
-                  {product.description}
+                  {console.log(product.description)}
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: product.description
+                    }}
+                  ></p>
                   <br />
                   <p>
                     <b>Benefits</b>
@@ -475,8 +497,8 @@ function ProductDetail() {
               <div className="mainHeading headingCenter pb-30">
                 <h2>RATINGS & REVIEWS</h2>
                 <p>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry's{" "}
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry. Lorem Ipsum has been the industry's{" "}
                 </p>
               </div>
               <div className="prdctRatingRow">
@@ -488,11 +510,26 @@ function ProductDetail() {
                           <h3>3.8/5</h3>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star-half-o ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star blkStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star-half-o ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star blkStar"
+                            aria-hidden="true"
+                          ></i>
                         </div>
                         <h4>12 Ratings & 0 Review</h4>
                       </div>
@@ -558,14 +595,15 @@ function ProductDetail() {
                   </div>
                   <div className="reviewTxt">
                     <p>
-                      There are many variations of passages of Lorem Ipsum available, but the
-                      majority have suffered alteration in some form, by injected humour, or
-                      randomised words which don't look even slightly believable. If you are
-                      going to use a passage of Lorem Ipsum, you need to be sure there isn't
-                      anything embarrassing hidden in the middle of text. There are many
-                      variations of passages of Lorem Ipsum available, but the majority have
-                      suffered alteration in some form, by injected humour, or randomised
-                      words.
+                      There are many variations of passages of Lorem Ipsum
+                      available, but the majority have suffered alteration in
+                      some form, by injected humour, or randomised words which
+                      don't look even slightly believable. If you are going to
+                      use a passage of Lorem Ipsum, you need to be sure there
+                      isn't anything embarrassing hidden in the middle of text.
+                      There are many variations of passages of Lorem Ipsum
+                      available, but the majority have suffered alteration in
+                      some form, by injected humour, or randomised words.
                     </p>
                   </div>
                 </div>
@@ -592,14 +630,15 @@ function ProductDetail() {
                   </div>
                   <div className="reviewTxt">
                     <p>
-                      There are many variations of passages of Lorem Ipsum available, but the
-                      majority have suffered alteration in some form, by injected humour, or
-                      randomised words which don't look even slightly believable. If you are
-                      going to use a passage of Lorem Ipsum, you need to be sure there isn't
-                      anything embarrassing hidden in the middle of text. There are many
-                      variations of passages of Lorem Ipsum available, but the majority have
-                      suffered alteration in some form, by injected humour, or randomised
-                      words.
+                      There are many variations of passages of Lorem Ipsum
+                      available, but the majority have suffered alteration in
+                      some form, by injected humour, or randomised words which
+                      don't look even slightly believable. If you are going to
+                      use a passage of Lorem Ipsum, you need to be sure there
+                      isn't anything embarrassing hidden in the middle of text.
+                      There are many variations of passages of Lorem Ipsum
+                      available, but the majority have suffered alteration in
+                      some form, by injected humour, or randomised words.
                     </p>
                   </div>
                 </div>
@@ -612,11 +651,26 @@ function ProductDetail() {
                     <h4>Rate this Product</h4>
                     <p>Tell others what you think</p>
                     <div className="rvwRtngGreyStars">
-                      <i className="fa fa-star-o greyStar" aria-hidden="true"></i>
-                      <i className="fa fa-star-o greyStar" aria-hidden="true"></i>
-                      <i className="fa fa-star-o greyStar" aria-hidden="true"></i>
-                      <i className="fa fa-star-o greyStar" aria-hidden="true"></i>
-                      <i className="fa fa-star-o greyStar" aria-hidden="true"></i>
+                      <i
+                        className="fa fa-star-o greyStar"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        className="fa fa-star-o greyStar"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        className="fa fa-star-o greyStar"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        className="fa fa-star-o greyStar"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        className="fa fa-star-o greyStar"
+                        aria-hidden="true"
+                      ></i>
                     </div>
                   </div>
                 </div>
@@ -625,10 +679,15 @@ function ProductDetail() {
                 <div className="col-sm-12">
                   <div className="comentFormBlk">
                     <Form className="comentFormInr">
-                      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlTextarea1"
+                      >
                         <Form.Label>Write a comment</Form.Label>
                         <Form.Control as="textarea" rows={6} />
-                        <Button className="btnCommon mt-3 pull-right">Submit</Button>{" "}
+                        <Button className="btnCommon mt-3 pull-right">
+                          Submit
+                        </Button>{" "}
                       </Form.Group>
                     </Form>
                   </div>
@@ -659,7 +718,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -688,15 +749,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -715,7 +793,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -744,15 +824,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -773,7 +870,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -802,15 +901,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -829,7 +945,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -858,15 +976,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -885,7 +1020,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -914,15 +1051,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -941,7 +1095,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -970,15 +1126,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -997,7 +1170,9 @@ function ProductDetail() {
                       <div className="prdctListMedia">
                         <div
                           className="prdctListImg"
-                          style={{ backgroundImage: `url("img/productImg4.jpg")` }}
+                          style={{
+                            backgroundImage: `url("img/productImg4.jpg")`,
+                          }}
                         >
                           <div className="prdctListOverlay"></div>
                         </div>
@@ -1026,15 +1201,32 @@ function ProductDetail() {
                         <div className="prdctListTitle">
                           <h4>
                             {" "}
-                            <Link to="/">Scratch Resistant Prefab Kitchen...</Link>
+                            <Link to="/">
+                              Scratch Resistant Prefab Kitchen...
+                            </Link>
                           </h4>
                         </div>
                         <div className="rvwRtngPrgrsStars">
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                          <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
+                          <i
+                            className="fa fa-star ylowStar"
+                            aria-hidden="true"
+                          ></i>
                           <span>(981)</span>
                         </div>
                         <div className="prdctListInfo">
@@ -1058,26 +1250,29 @@ function ProductDetail() {
             <div className="abtHomeInfo">
               <h3>Different Types of Marble </h3>
               <p>
-                Quartzite Marble Collection | Onyx Marble Collection | Granite Marble
-                Collection | White Marble | Beige Marble | Grey Marble | Green Marble | Pink
-                Marble | Red Marble | Blue Marble | Brown Marble | Black Marble | Onyx Marble
-                Collection | Granite Marble Collection | White Marble | Beige Marble | Grey
-                Marble | Green Marble | Pink Marble | Red Marble | Blue Marble | Brown Marble |
+                Quartzite Marble Collection | Onyx Marble Collection | Granite
+                Marble Collection | White Marble | Beige Marble | Grey Marble |
+                Green Marble | Pink Marble | Red Marble | Blue Marble | Brown
+                Marble | Black Marble | Onyx Marble Collection | Granite Marble
+                Collection | White Marble | Beige Marble | Grey Marble | Green
+                Marble | Pink Marble | Red Marble | Blue Marble | Brown Marble |
                 Black Marble
               </p>
               <h3>Other Categories</h3>
               <p>
-                Bathroom Tiles | Kitchen Tiles | Living Room Tiles | Bedroom Tiles | Outdoor
-                Tiles | Commercial Tiles | Ceramic Wall Tiles | Vitrified Double Charge Tiles |
-                Made In Italy Tiles | Floor Tiles | Wall Tiles | Marble | Mosaico
+                Bathroom Tiles | Kitchen Tiles | Living Room Tiles | Bedroom
+                Tiles | Outdoor Tiles | Commercial Tiles | Ceramic Wall Tiles |
+                Vitrified Double Charge Tiles | Made In Italy Tiles | Floor
+                Tiles | Wall Tiles | Marble | Mosaico
               </p>
               <h3>Product</h3>
               <p>
-                Quartzite Marble Collection | Onyx Marble Collection | Granite Marble
-                Collection | White Marble | Beige Marble | Grey Marble | Green Marble | Pink
-                Marble | Red Marble | Blue Marble | Brown Marble | Black Marble | Onyx Marble
-                Collection | Granite Marble Collection | White Marble | Beige Marble | Grey
-                Marble | Green Marble | Pink Marble | Red Marble | Blue Marble | Brown Marble |
+                Quartzite Marble Collection | Onyx Marble Collection | Granite
+                Marble Collection | White Marble | Beige Marble | Grey Marble |
+                Green Marble | Pink Marble | Red Marble | Blue Marble | Brown
+                Marble | Black Marble | Onyx Marble Collection | Granite Marble
+                Collection | White Marble | Beige Marble | Grey Marble | Green
+                Marble | Pink Marble | Red Marble | Blue Marble | Brown Marble |
                 Black Marble
               </p>
             </div>
