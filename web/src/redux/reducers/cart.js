@@ -6,9 +6,11 @@ export let cartReducer = (state = initialState, action) => {
 			let { product, quantity, variant } = action.payload
 			let items = [...state]
 			let currenItemIndex = items.findIndex(i => i.product._id === product._id && i.variant == variant)
+			console.log(currenItemIndex)
 			if (currenItemIndex !== -1) {
 				items.splice(currenItemIndex, 1)
 			}
+			console.log(items)
 			return [...items, { product, quantity, variant }];
 		}
 		case 'REMOVE_CART_ITEM': {

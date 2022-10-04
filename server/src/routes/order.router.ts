@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from "express";
-import OrderModel from "../Entity/Order";
+import { ObjectId } from "mongodb";
 import { Order } from "../interfaces";
 // import { Order } from "../Entity/Order";
 import { LOG } from "../logger";
@@ -10,21 +10,42 @@ orderRouter.use(express.json());
 
 orderRouter.post("/make", async (req: Request, res: Response) => {
     try {
-        // console.log(request.body.order)
-
         let orderData: Order = req.body.order;
         orderData = await OrderService.create(orderData);
         res.status(200).json({orderData})
-
-        // console.log("Hii")
-        // console.log(orderData)
-        // const generateOrder = new OrderModel(orderData);
-        // console.log(generateOrder)
-        // generateOrder.save().then(saveOrder => {
-        //     console.log(saveOrder)
-        //     res.send(saveOrder)
-        // })
     } catch (e: any) {
+        LOG.error(e);
+        res.status(500).json({ error: e.message });
+        console.log(e)
+    }
+})
+
+orderRouter.get("/getOrderForUser/:userId", async (req:Request, res:Response) => {
+    let UserId: string = req?.params?.userId;
+    try {
+        res.status(200).json({ order: await OrderService.getByUser(UserId) });
+    } catch (e:any) {
+        LOG.error(e);
+        res.status(500).json({ error: e.message });
+        console.log(e)
+    }
+})
+
+orderRouter.get("/getOrderForSeller/:sellerId", async (req:Request, res:Response) => {
+    let SellerId: string = req?.params?.sellerId;
+    try {
+        res.status(200).json({ order: await OrderService.getBySeller(SellerId) });
+    } catch (e:any) {
+        LOG.error(e);
+        res.status(500).json({ error: e.message });
+        console.log(e)
+    }
+})
+
+orderRouter.get("/getAllOrder", async (req:Request, res:Response) => {
+    try {
+        res.status(200).json({ order: await OrderService.get() });
+    } catch (e:any) {
         LOG.error(e);
         res.status(500).json({ error: e.message });
         console.log(e)

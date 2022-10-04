@@ -21,13 +21,14 @@ function ShopCategory() {
           <Row>
             {categories?.map((category) => (
               <Col lg={3} md={6}>
-                <div className="categoryItem" style={{ cursor: 'pointer' }} onClick={() => { navigate(`/category`, { state: category }) }}>
+                <div className="categoryItem" style={{ cursor: 'pointer' }}>
                   <div className="categoryMedia">
-                    <div className="categoryImg" style={{ backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})` }}>
+                    <div className="categoryImg" style={{ backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})` }} onClick={() => { navigate(`/category`, { state: category }) }}>
                       <div className="categoryOverlay"></div>
                     </div>
                     <span className="categoryBtn" style={{ display: 'flex' }}>
-                      <button className="btnCommon" onClick={() => { navigate(`/category`, { state: category }) }}>Shop Now</button>
+                      {console.log("category",category.category._id)}
+                      <button className="btnCommon" onClick={() => { navigate(`/productlist`, { state: category.category._id })}}>Show_Products</button>
                     </span>
                   </div>
                   <div className="categoryTitle">

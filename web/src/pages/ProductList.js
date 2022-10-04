@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -18,17 +18,25 @@ function ProductList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  console.log("loc:",location)
   let selectedCategory = location?.state?.category;
+  console.log("selectedCategory",selectedCategory)
   let flag = 1;
   const categories = useSelector((s) => s.categories);
   let currentCategory = [{}];
-  currentCategory = categories.filter((i) => i.category._id == selectedCategory?._id);
+  let mon = selectedCategory?selectedCategory:categories[0]?.category?._id
+  console.log("selectedCategory._id",selectedCategory)
+  console.log("mon",mon)
+  currentCategory = categories.filter((i) => i.category._id == mon);
+  console.log("currentCategory",currentCategory)
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState(currentCategory[0]);
   const [products, setProducts] = useState();
 
   console.log(products);
+  console.log(category);
+  window.scrollTo(0, 0);
 
   useEffect(() => {
     if (category) {
@@ -102,6 +110,7 @@ function ProductList() {
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
                     onClick={() => {
+                      console.log(cat)
                       setCategory(cat);
                     }}
                   >
@@ -170,7 +179,7 @@ function ProductList() {
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {category?.subcategories?.map((subcategory, key) => (
+                                {categories.category?.subcategories?.map((subcategory, key) => (
                                   <li index={key}>
                                     <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
                                   </li>
@@ -505,7 +514,7 @@ function ProductList() {
                               </div>
                               <div className="prdctListInfo">
                                 <p
-                                  dangerouslySetInnerHTML={{ __html: product.description }}
+                                  dangerouslySetInnerHTML={{ __html: product.description.slice(0,100)+"..." }}
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">
