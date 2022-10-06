@@ -154,7 +154,7 @@ function Category() {
                                         <a
                                           style={{ cursor: "pointer" }}
                                           onClick={() => {
-                                            linkProductList(category._id);
+                                            linkProductList(subcategory._id);
                                           }}
                                           className="btnCommon"
                                         >

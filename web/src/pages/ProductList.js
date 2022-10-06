@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
+import axios from "../API/axios";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
@@ -18,17 +19,18 @@ function ProductList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("loc:",location)
+  console.log("loc:", location)
   let selectedCategory = location?.state?.category;
-  console.log("selectedCategory",selectedCategory)
+  console.log("selectedCategory", selectedCategory)
   let flag = 1;
   const categories = useSelector((s) => s.categories);
+  console.log("categories", categories)
   let currentCategory = [{}];
-  let mon = selectedCategory?selectedCategory:categories[0]?.category?._id
-  console.log("selectedCategory._id",selectedCategory)
-  console.log("mon",mon)
+  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
+  console.log("selectedCategory._id", selectedCategory)
+  console.log("mon", mon)
   currentCategory = categories.filter((i) => i.category._id == mon);
-  console.log("currentCategory",currentCategory)
+  console.log("currentCategory", currentCategory)
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState(currentCategory[0]);
@@ -37,6 +39,7 @@ function ProductList() {
   console.log(products);
   console.log(category);
   window.scrollTo(0, 0);
+  
 
   useEffect(() => {
     if (category) {
@@ -53,6 +56,20 @@ function ProductList() {
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
   };
+  
+  const handleSubcategory = async (e,subcategory)=>{
+     const {_id} = subcategory || {};
+    const data = {
+      subCategoryId : _id,
+    } ;
+    try{
+      const res = await axios.post(`/product/getProductsBySubCategory`,data)
+      console.log("res js",res.data.data)
+      setProducts(res.data.data)
+    }catch(error){
+      console.log("error",error)
+    }
+  }
 
   const selectRef2 = useRef();
   useEffect(() => {
@@ -69,32 +86,32 @@ function ProductList() {
       <Header />
       <article className="categoryInrBlk hdrBrNone wrapper">
         {/* <div className="greyBg2 py-4 mb-5"> */}
-          <div className="container">
-            {/* <div className="row d-flex align-items-center justify-content-between">
+        <div className="container">
+          {/* <div className="row d-flex align-items-center justify-content-between">
               <div className="col">
                 <div className="bredCrumbHdng">
                   <h3>Shop DBHouz</h3>
                 </div>
               </div> */}
-              <div className="col-auto">
-                <div className="breadcrumbsCol py-20">
-                  <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                      <li className="breadcrumb-item">
-                        <a href="/">Home</a>
-                      </li>
-                      <li className="breadcrumb-item">
-                        <a href="/productlist">Products</a>
-                      </li>
-                      <li className="breadcrumb-item">
-                        <a href="/category">Category</a>
-                      </li>
-                    </ol>
-                  </nav>
-                </div>
-              </div>
-            {/* </div> */}
+          <div className="col-auto">
+            <div className="breadcrumbsCol py-20">
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item">
+                    <a href="/">Home</a>
+                  </li>
+                  <li className="breadcrumb-item">
+                    <a href="/productlist">Products</a>
+                  </li>
+                  <li className="breadcrumb-item">
+                    <a href="/category">Category</a>
+                  </li>
+                </ol>
+              </nav>
+            </div>
           </div>
+          {/* </div> */}
+        </div>
         {/* </div> */}
       </article>
       <article className="NavCatInrBlck wrapper">
@@ -179,17 +196,26 @@ function ProductList() {
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {categories.category?.subcategories?.map((subcategory, key) => (
+                                {category?.subCategories?.map((subcategory, key) => {
+                                  return (
+                                    <li index={key}>
+                                      <a style={{ cursor: "pointer" }} onClick={(e)=>handleSubcategory(e,subcategory)}>{subcategory.name}</a>
+                                    </li>
+                                  );
+                                })}
+                                {/* {categories.category?.subcategories?.map((subcategory, key) => {
+                                  return (
                                   <li index={key}>
                                     <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
                                   </li>
-                                ))}
+                                );
+                                })} */}
                               </ul>
                             </div>
                           </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
-                          <Accordion.Header>Color</Accordion.Header>
+                          {/* <Accordion.Header>Color</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -272,10 +298,10 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body> */}
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
-                          <Accordion.Header>Size</Accordion.Header>
+                          {/* <Accordion.Header>Size</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -355,40 +381,40 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body>*/}
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
-                          <Accordion.Header>Price</Accordion.Header>
+                          {/* <Accordion.Header>Price</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
                                 <li>
-                                 Under $500
+                                  Under $500
                                 </li>
                                 <li>
-                                 $500 - $750
+                                  $500 - $750
                                 </li>
                                 <li>
                                   $1,000 - $1,500
                                 </li>
                                 <li>
-                                 $1,500 - $2,000
+                                  $1,500 - $2,000
                                 </li>
                                 <li>
-                                 $2,000 - $5,000
+                                  $2,000 - $5,000
                                 </li>
                                 <li>
                                   $5,000 - $10,000
                                 </li>
                                 <li>
-                                 $15,000 - $20,000
+                                  $15,000 - $20,000
                                 </li>
                                 <li>
                                   Over $20,000
                                 </li>
                               </ul>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body>*/}
                         </Accordion.Item>
                       </Accordion>
                     </div>
@@ -487,7 +513,7 @@ function ProductList() {
                                     productDetails(product);
                                   }}
                                 >
-                                  View Detail 
+                                  View Detail
                                 </a>
                               </div>
                             </div>
@@ -514,7 +540,7 @@ function ProductList() {
                               </div>
                               <div className="prdctListInfo">
                                 <p
-                                  dangerouslySetInnerHTML={{ __html: product.description.slice(0,100)+"..." }}
+                                  dangerouslySetInnerHTML={{ __html: product.description.slice(0, 100) + "..." }}
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">

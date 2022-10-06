@@ -132,16 +132,17 @@ function Cart() {
                                                     <div className="col-sm-3">
                                                         <div className="countRow d-flex">
                                                             <button onClick={() => {
-                                                                dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity + 1, cartItem.variant))
-                                                            }} className="countBtn ">+</button>
-                                                            <div className="countTotal">{cartItem.quantity}</div>
-                                                            <button onClick={() => {
                                                                 if (cartItem.quantity === 1) {
                                                                     dispatch(stateActions.removeCartItem(cartItem.product._id))
                                                                 } else {
                                                                     dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity - 1, cartItem.variant))
                                                                 }
                                                             }} className="countBtn">-</button>
+                                                             <div className="countTotal">{cartItem.quantity}</div>
+                                                             <button onClick={() => {
+                                                                dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity + 1, cartItem.variant))
+                                                            }} className="countBtn ">+</button>
+                                                           
                                                         </div>
                                                     </div>
                                                     <div className="col-sm-2 prodctDtlPrice ">
@@ -365,7 +366,7 @@ function Cart() {
                           <p>Dalance as per the offer terms and conditions</p>
                         </div>
                         <div className="promoAplyBtn pb-2">
-                          <button className="btnCommon btnDark ">Apply</button>
+                          <button disabled className="btnCommon btnDark ">Apply</button>
                         </div>
                       </Form>
                     </div>

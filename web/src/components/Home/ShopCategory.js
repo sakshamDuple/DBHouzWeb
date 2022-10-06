@@ -28,7 +28,7 @@ function ShopCategory() {
                     </div>
                     <span className="categoryBtn" style={{ display: 'flex' }}>
                       {console.log("category",category.category._id)}
-                      <button className="btnCommon" onClick={() => { navigate(`/productlist`, { state: category.category._id })}}>Show_Products</button>
+                      <button className="btnCommon" style={{ width: 'auto' }} onClick={() => { navigate(`/productlist`, { state: category.category._id })}}>Show Products</button>
                     </span>
                   </div>
                   <div className="categoryTitle">

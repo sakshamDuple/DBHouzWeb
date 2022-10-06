@@ -71,6 +71,8 @@ function Header() {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -93,25 +95,45 @@ function Header() {
       );
   };
 
-  // const validatePassword = (password) => {
-  //    return String(password)
-  //       .match(
-  //          /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-  //       );
-  // }
+  const validatePassword = (password) => {
+    return String(password)
+      .match(
+        /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+      );
+  }
+
+  const handlelogin = (e) => {
+    e.preventDefault();
+    if (loginEmail === " " || undefined) {
+      return setError(`Please enter a Email`);
+    }
+    if (loginPassword === " " || undefined) {
+      return setError(`Please enter a Password`);
+    }
+    RestUser.userLogin(loginEmail, loginPassword)
+      .then(({ user, token }) => {
+        console.log(`Got 2`);
+        dispatch(stateActions.setUser("user", user, token));
+        loginModel(false);
+        navigate(`/`);
+        // registerShow(false);
+      })
+      .catch((e) => setError(e.message));
+  }
 
   const handleSignUp = (e) => {
     e.preventDefault();
     if (!email || !validateEmail(email)) {
-      setError(`Please enter a valid Email`);
-    } else if (!password /*|| !validatePassword(password)*/) {
-      setError(`Please enter a valid Password`);
-    } else if (password !== confirmPassword) {
-      setError(`Passwords do not match`);
-    } else {
-      if (checked !== true) {
-        setError(`Please accept ourTerms of use and ourPrivacy policy `);
-      }
+      return setError(`Please enter a valid Email`);
+    }
+    if (!password || !validatePassword(password)) {
+      return setError(`Please enter a valid Password`);
+    }
+    if (password !== confirmPassword) {
+      return setError(`Passwords do not match`);
+    }
+    if (checked !== true) {
+      return setError(`Please accept ourTerms of use and ourPrivacy policy `);
     }
     RestUser.userSignup(email, password)
       .then((res) => {
@@ -398,7 +420,8 @@ function Header() {
                                 <input
                                   type="email"
                                   className="form-control"
-                                  id=""
+                                  value={loginEmail}
+                                  onChange={(e) => setLoginEmail(e.target.value)}
                                   placeholder="info@Dbhouz.com"
                                 />
                               </div>
@@ -409,7 +432,8 @@ function Header() {
                                 <input
                                   type="password"
                                   className="form-control"
-                                  id=""
+                                  value={loginPassword}
+                                  onChange={(e) => setLoginPassword(e.target.value)}
                                   placeholder="Password"
                                 />
                               </div>
@@ -443,6 +467,7 @@ function Header() {
                                 <button
                                   type="submit"
                                   className="btn btnCommon btnRadiusNone w-100"
+                                  onClick={handlelogin}
                                 >
                                   Login{" "}
                                 </button>
@@ -763,10 +788,10 @@ function Header() {
                                 </Link>
                               </h4>
                               <h5 onClick={(e) => {
-                                    dispatch(
-                                      stateActions.removeCartItem(cartItem.product?._id)
-                                    );
-                                  }}>
+                                dispatch(
+                                  stateActions.removeCartItem(cartItem.product?._id)
+                                );
+                              }}>
                                 <span>{cartItem.quantity} × </span>£{cartItem.variant?.price}
                               </h5>
                             </div>

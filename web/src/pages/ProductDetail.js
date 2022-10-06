@@ -301,15 +301,15 @@ function ProductDetail() {
                       </div>
                       <div className="col-auto pl-0">
                         <div className="countRow d-flex">
+                          <button onClick={decrementCount} className="countBtn">
+                            -
+                          </button>
+                          <div className="countTotal">{count}</div>
                           <button
                             onClick={incrementCount}
                             className="countBtn "
                           >
                             +
-                          </button>
-                          <div className="countTotal">{count}</div>
-                          <button onClick={decrementCount} className="countBtn">
-                            -
                           </button>
                         </div>
                       </div>
