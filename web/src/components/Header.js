@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button, Modal, Dropdown, Container, Row, Col, Offcanvas } from "react-bootstrap";
 import RightArrow from "../img/rightArrowIcon.svg";
 import { Rest, RestAdmin, RestUser } from "../rest";
@@ -62,6 +62,11 @@ function Header() {
         break;
     }
   }
+  const location = useLocation();
+  // console.log(props, " props");
+  console.log(location, " useLocation Hook");
+  const data = location.state?.data;
+  console.log(data, " data");
   const categories = useSelector((s) => s.categories);
   const cart = useSelector((s) => s.cart);
   let cartTotalAmount = 0;
@@ -792,7 +797,7 @@ function Header() {
                                   stateActions.removeCartItem(cartItem.product?._id)
                                 );
                               }}>
-                                <span>{cartItem.quantity} × </span>£{cartItem.variant?.price}
+                                <span>{cartItem.quantity} × </span>${cartItem.variant?.price}
                               </h5>
                             </div>
                           </div>
@@ -814,7 +819,7 @@ function Header() {
                     <div className="shopping-cart-footer">
                       <div className="shopping-cart-total">
                         <h4>
-                          Total <span>£{cartTotalAmount}</span>
+                          Total <span>${cartTotalAmount}</span>
                         </h4>
                       </div>
                       <div className="shopping-cart-button">

@@ -1,8 +1,8 @@
 import { store } from "./index";
 import { AddMerchant } from "./components";
 
-// export const Rest = "http://2c98-223-178-213-55.ngrok.io/rest";
-export const Rest = "http://139.59.36.222:12001/rest"
+// export const Rest = "http://139.59.36.222:12001/rest"
+export const Rest = process.env.REACT_APP_API_HOST;
 
 const post = async (url, payload, { errorMessage, jwt }) => {
   var appState = store.getState();

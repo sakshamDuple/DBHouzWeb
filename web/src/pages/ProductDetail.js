@@ -32,6 +32,7 @@ window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
 function ProductDetail() {
+  const [visible, setVisible] = useState(false);
   let [count, setCount] = useState(1);
   let [selectedVariant, setSelectedVariant] = useState(0);
   const dispatch = useDispatch();
@@ -206,8 +207,8 @@ function ProductDetail() {
                         VAT Included
                       </div> */}
                     <div className="gst">
-                      {((product.variants[selectedVariant]?.price / 100) * 18).toFixed(2)}$
-                      gst
+                      ${((product.variants[selectedVariant]?.price / 100) * 18).toFixed(2)}
+                      vat
                     </div>
                     </div>
                     {console.log("product:", product)}
@@ -327,7 +328,7 @@ function ProductDetail() {
                                   product.variants[selectedVariant]
                                 )
                               );
-                              console.log("added to cart");
+                              setVisible(true);
                             }}
                             className="btnCommon"
                           >
@@ -343,6 +344,7 @@ function ProductDetail() {
                             </span>
                           </Link>
                         </div>
+                        {visible?"Added To Cart":""}
                       </div>
                     </div>
                     <div className="ViewBtn">
@@ -700,7 +702,7 @@ function ProductDetail() {
       <article className="wrapper py-3 simiLarPrdctBlk prodctDtlSimilr ">
         <div className="container">
           <div className="mainHeading headingCenter pb-4">
-            <h2>Similar Products</h2>
+            <h2>People Also Searched For These Products</h2>
           </div>
           <div className="newsSliderOuter pb-3 ">
             <div className="similarPrdctSlidr crslCntrls2 crslCntrls3">

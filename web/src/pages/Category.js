@@ -7,6 +7,7 @@ import MaterialCat from "../components/Home/MaterialCat";
 import HomeAbout from "../components/Home/HomeAbout";
 import { Rest, RestAdmin } from "../rest";
 import { useSelector } from "react-redux";
+import { Prev } from "react-bootstrap/esm/PageItem";
 
 function Category() {
   const navigate = useNavigate();
@@ -19,6 +20,11 @@ function Category() {
   const linkProductList = (category) => {
     console.log("category",category)
     navigate("/productlist", { state: { category } });
+  };
+  const linkSubProductList = (category,subcategory) => {
+    console.log("category",category)
+    console.log("subcategory",subcategory)
+    navigate("/productlist", { state: { category,subcategory } });
   };
   window.scrollTo(0, 0);
 
@@ -92,6 +98,7 @@ function Category() {
                 <div className="catgryListRow DBcategoryList">
                   <div className="row mb-4 DBcategoryList-row">
                     {categories.map((category, index) => {
+                      console.log("category",category)
                       let subcategories = category.subCategories
                       return(
                       <>
@@ -138,7 +145,7 @@ function Category() {
                                   <a
                                     style={{ cursor: "pointer" }}
                                     onClick={() => {
-                                      linkProductList(subcategory._id);
+                                      linkSubProductList(category.category._id,subcategory._id);
                                     }}
                                   >
                                     <div className="categoryListMedia">
@@ -154,7 +161,7 @@ function Category() {
                                         <a
                                           style={{ cursor: "pointer" }}
                                           onClick={() => {
-                                            linkProductList(subcategory._id);
+                                            linkSubProductList(category.category._id,subcategory._id);
                                           }}
                                           className="btnCommon"
                                         >

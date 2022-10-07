@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink, } from "react-router-dom";
+import { Link, Navigate, NavLink,useNavigate } from "react-router-dom";
 import { Button, Modal, Dropdown, Offcanvas, Accordion, Form } from "react-bootstrap";
 import axios from "../API/axios";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { stateActions } from "../redux/stateActions";
 import $ from "jquery";
 import 'rc-slider/assets/index.css';
 import { useDispatch, useSelector } from "react-redux";
@@ -45,9 +46,11 @@ function Checkout() {
     const [formData, setFormData] = useState(initialFormData);
     const [credit, setCredit] = useState(initialCredit);
     const [show, setShow] = useState(false);
+    const [data, setData] = useState(true);
     const [productData, setProductData] = useState([
     ]);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const selectRef1 = useRef();
     useEffect(() => {
         $(selectRef1.current).niceSelect();
@@ -114,98 +117,40 @@ function Checkout() {
                 firstName, lastName, userId, phone, email
             } = {},
         } = formData || {};
-        // let data = {
-        //     order: {
-        //         products: productData,
-        //         address: {
-        //             country: country,
-        //             state: state,
-        //             city: city,
-        //             postal_code: postal_code,
-        //             main_address_text: main_address_text,
-        //         },
-        //         total_price: cartTotalAmount,
-        //         customerDetail: {
-        //             name: firstName + " " + lastName,
-        //             userId: userId,
-        //             phone: phone,
-        //             email: email,
-        //         },
-        //         discount: ["sdfghjkl"],
-        //         coupon: ["asderftgyhjukl"],
-        //         transactionDetail: {
-        //             transactionMenthod: "DEBIT_CARD",
-        //             status: "successful",
-        //             transactionNumber: 762153812830,
-        //         }
-        //     }
-        // };
-        // // data = JSON.stringify(data)
-        // console.log("data", data)
-        // try {
-        //     const res = await axios.post(`/order/make`, data);
-        //     console.log("res", res);
-        //     return (window.alert("Successful Place Order"));
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        var data = JSON.stringify({
-            "order": {
-                "products": [
-                    {
-                        "sellerId": "63319113c2393142354ff861",
-                        "productId": "63319113c2393142354ff018"
-                    },
-                    {
-                        "sellerId": "63319113c2393142354ff521",
-                        "productId": "63319113c2393142354ff619"
-                    }
-                ],
-                "address": {
-                    "country": "ihe",
-                    "state": "ieyuh",
-                    "city": "lwiej",
-                    "postal_code": 29783,
-                    "main_address_text": "kwueuh"
+        let data = {
+            order: {
+                products: productData,
+                address: {
+                    country: country,
+                    state: state,
+                    city: city,
+                    postal_code: postal_code,
+                    main_address_text: main_address_text,
                 },
-                "total_price": 18728,
-                "customerDetail": {
-                    "name": "Saksham Verma",
-                    "userId": "63319113c23931423523f911",
-                    "phone": 7986471769,
-                    "email": "sakshamverma1222k@gmail.com"
+                total_price: cartTotalAmount,
+                customerDetail: {
+                    name: firstName + " " + lastName,
+                    userId: userId,
+                    phone: phone,
+                    email: email,
                 },
-                "discount": [
-                    "jksgd"
-                ],
-                "coupon": [
-                    "uyidh"
-                ],
-                "transactionDetail": {
-                    "transactionMethod": "DEBIT_CARD",
-                    "status": "successful",
-                    "transactionNumber": 721786538313370100
+                discount: ["sdfghjkl"],
+                coupon: ["asderftgyhjukl"],
+                transactionDetail: {
+                    transactionMethod: "DEBIT_CARD",
+                    status: "successful",
+                    transactionNumber: 762153812830,
                 }
             }
-        });
-
-        var config = {
-            method: 'post',
-            url: 'http://139.59.36.222:12001/rest/order/make',
-            headers: {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYzMzE3NjQxZTgxYTI5ZmMxNWNiMzhlNyIsImVtYWlsIjoic3loeXpAbWFpbGluYXRvci5jb20iLCJ0eXBlIjoibWVyY2hhbnQifSwiaWF0IjoxNjY0MTg1OTIxfQ.kgs09r74P3HizHyvh-48v8ctUOU69VU01U2hEVtlSXs',
-                'Content-Type': 'application/json'
-            },
-            data: data
         };
-
-        axios(config)
-            .then(response =>
-                console.log('response', JSON.stringify(response.data))
-            ).catch(function (error) {
-                console.log(error);
-            })
-
+        console.log("data", data)
+        try {
+            const res = await axios.post(`/order/make`, data);
+            console.log("res", res);
+            return (window.alert("Successful Place Order"));
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -220,7 +165,7 @@ function Checkout() {
                                     <div className="row d-flex align-items-center">
                                         {Type != "user" ? <div className="col">
                                             <div className="checkOutLoginBts">
-                                                <Link to="/" className="btnCommon btnDark">Register Account</Link>
+                                                <Link to="/" state={{ data: data }} className="btnCommon btnDark">Register Account</Link>
                                                 <Link to="/" className="btnCommon">Login</Link>
                                             </div>
                                         </div> : ""}
@@ -307,7 +252,7 @@ function Checkout() {
                                                         }}
                                                     />
                                                 </div>
-                                                <div className="col-6">
+                                                <div className="col-6 numberFieldArrow ">
                                                     <label htmlFor="firstNameFld" className="form-label">Phone*</label>
                                                     <input type="number" className="form-control"
                                                         onChange={(e) => {
@@ -376,8 +321,8 @@ function Checkout() {
                                                         }}
                                                     />
                                                 </div>
-                                                <div className="col-6">
-                                                    <label htmlFor="passwordFld" className="form-label">Postal Code*</label>
+                                                <div className="col-6 numberFieldArrow">
+                                                    <label htmlFor="passwordFld" className="form-label ">Postal Code*</label>
                                                     <input type="number" className="form-control"
                                                         value={formData.address.postal_code}
                                                         onChange={(e) => {
@@ -652,7 +597,7 @@ function Checkout() {
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
                                                 <li>Total MRP<span>${cartTotalAmount + cartTotalAmount * 18 / 100}</span></li>
-                                                <li>GST<span className="discntPrice" >+${cartTotalAmount * 18 / 100}</span></li>
+                                                <li>VAT<span className="discntPrice" >+${cartTotalAmount * 18 / 100}</span></li>
                                                 <li>Discount on MRP<span className="discntPrice" >-${cartTotalAmount * 36 / 100}</span></li>
                                                 <li>Convenience Fee<span className="oferPrice">$0 <span className="discntPrice">Free</span></span></li>
                                             </ul>
@@ -669,7 +614,7 @@ function Checkout() {
                                         <div className="col-auto">
                                             <div className="totlGstBlk">
                                                 <h5>${cartTotalAmount}</h5>
-                                                <p>Inc. GST</p>
+                                                <p>Inc. VAT</p>
                                             </div>
                                         </div>
                                     </div>

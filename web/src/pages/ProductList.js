@@ -22,6 +22,8 @@ function ProductList() {
   console.log("loc:", location)
   let selectedCategory = location?.state?.category;
   console.log("selectedCategory", selectedCategory)
+  let selectedSubCategory = location?.state?.subcategory;
+  let item =  selectedSubCategory ? selectedSubCategory : categories[0]?.category?._id
   let flag = 1;
   const categories = useSelector((s) => s.categories);
   console.log("categories", categories)
@@ -29,7 +31,7 @@ function ProductList() {
   let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
   console.log("selectedCategory._id", selectedCategory)
   console.log("mon", mon)
-  currentCategory = categories.filter((i) => i.category._id == mon);
+  currentCategory = categories.filter((i) => i.category._id == mon );
   console.log("currentCategory", currentCategory)
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
@@ -191,6 +193,39 @@ function ProductList() {
                     </div>
                     <div className="filtrAcordion">
                       <Accordion defaultActiveKey="0">
+                      <Accordion.Item eventKey="3">
+                          {/* <Accordion.Header>Price</Accordion.Header>
+                          <Accordion.Body> */}
+                            {/* <div className="filtrList mb-2">
+                              <ul>
+                                <li>
+                                  Under $500
+                                </li>
+                                <li>
+                                  $500 - $750
+                                </li>
+                                <li>
+                                  $1,000 - $1,500
+                                </li>
+                                <li>
+                                  $1,500 - $2,000
+                                </li>
+                                <li>
+                                  $2,000 - $5,000
+                                </li>
+                                <li>
+                                  $5,000 - $10,000
+                                </li>
+                                <li>
+                                  $15,000 - $20,000
+                                </li>
+                                <li>
+                                  Over $20,000
+                                </li>
+                              </ul>
+                            </div> */}
+                          {/* </Accordion.Body> */}
+                        </Accordion.Item> 
                         <Accordion.Item eventKey="1">
                           <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
@@ -383,39 +418,7 @@ function ProductList() {
                             </div>
                           </Accordion.Body>*/}
                         </Accordion.Item>
-                        <Accordion.Item eventKey="3">
-                          {/* <Accordion.Header>Price</Accordion.Header>
-                          <Accordion.Body>
-                            <div className="filtrList mb-2">
-                              <ul>
-                                <li>
-                                  Under $500
-                                </li>
-                                <li>
-                                  $500 - $750
-                                </li>
-                                <li>
-                                  $1,000 - $1,500
-                                </li>
-                                <li>
-                                  $1,500 - $2,000
-                                </li>
-                                <li>
-                                  $2,000 - $5,000
-                                </li>
-                                <li>
-                                  $5,000 - $10,000
-                                </li>
-                                <li>
-                                  $15,000 - $20,000
-                                </li>
-                                <li>
-                                  Over $20,000
-                                </li>
-                              </ul>
-                            </div>
-                          </Accordion.Body>*/}
-                        </Accordion.Item>
+                        
                       </Accordion>
                     </div>
                   </div>

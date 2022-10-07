@@ -1964,6 +1964,10 @@ img {
      color: #232F3E;
      font-size: 15px;
 }
+.numberFieldArrow input::-webkit-outer-spin-button, .numberFieldArrow input::-webkit-inner-spin-button {
+    appearance: none;
+    -webkit-appearance: none;
+}
  .formStyle textarea.form-control {
      height: 150px;
 }

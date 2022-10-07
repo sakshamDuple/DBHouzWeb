@@ -146,12 +146,12 @@ function Cart() {
                                                         </div>
                                                     </div>
                                                     <div className="col-sm-2 prodctDtlPrice ">
-                                                        <div className="cartPrice"> £{cartItem.variant?.price}</div>
+                                                        <div className="cartPrice"> ${cartItem.variant?.price}</div>
                                                         {/* <div className="discntPrice">£100.43 Inc VAT</div> */}
                                                     </div>
                                                     <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
                                                         <div className="carTotalPrice">
-                                                            <Link to="/checkout">£{cartItem.quantity * cartItem.variant?.price}</Link>
+                                                            <Link to="/checkout">${cartItem.quantity * cartItem.variant?.price}</Link>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -376,7 +376,7 @@ function Cart() {
                           {/* <li><b>Promo Code Applied</b><span>$10</span></li> */}
                           <li>
                             <b>Total Cost</b>
-                            <span>£{cartTotalAmount}</span>
+                            <span>${cartTotalAmount}</span>
                           </li>
                         </ul>
                       </div>
