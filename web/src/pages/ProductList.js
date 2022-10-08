@@ -19,29 +19,20 @@ function ProductList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("loc:", location)
   let selectedCategory = location?.state?.category;
-  console.log("selectedCategory", selectedCategory)
-  let selectedSubCategory = location?.state?.subcategory;
-  let item =  selectedSubCategory ? selectedSubCategory : categories[0]?.category?._id
+  // let selectedSubCategory = location?.state?.subcategory;
   let flag = 1;
   const categories = useSelector((s) => s.categories);
-  console.log("categories", categories)
   let currentCategory = [{}];
-  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
-  console.log("selectedCategory._id", selectedCategory)
-  console.log("mon", mon)
-  currentCategory = categories.filter((i) => i.category._id == mon );
-  console.log("currentCategory", currentCategory)
+  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id;
+  currentCategory = categories.filter((i) => {
+    return i.category._id == mon
+  });
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState(currentCategory[0]);
   const [products, setProducts] = useState();
-
-  console.log(products);
-  console.log(category);
   window.scrollTo(0, 0);
-  
 
   useEffect(() => {
     if (category) {
@@ -55,21 +46,38 @@ function ProductList() {
     }
   }, [category]);
 
+
+  // useEffect(async () => {
+  //   if (selectedSubCategory) {
+  //     setLoading(true);
+  //     const data = {
+  //       subCategoryId: _id,
+  //     };
+  //     try {
+  //       const res = await axios.post(`/product/getProductsBySubCategory`, data)
+  //       console.log("res js", res.data.data)
+  //       setProducts(res.data.data)
+  //     } catch (error) {
+  //       console.log("error", error)
+  //     }
+  //   }
+  // }, [selectedSubCategory]);
+
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
   };
-  
-  const handleSubcategory = async (e,subcategory)=>{
-     const {_id} = subcategory || {};
+
+  const handleSubcategory = async (e, subcategory) => {
+    const { _id } = subcategory || {};
     const data = {
-      subCategoryId : _id,
-    } ;
-    try{
-      const res = await axios.post(`/product/getProductsBySubCategory`,data)
-      console.log("res js",res.data.data)
+      subCategoryId: _id,
+    };
+    try {
+      const res = await axios.post(`/product/getProductsBySubCategory`, data)
+      console.log("res js", res.data.data)
       setProducts(res.data.data)
-    }catch(error){
-      console.log("error",error)
+    } catch (error) {
+      console.log("error", error)
     }
   }
 
@@ -193,10 +201,10 @@ function ProductList() {
                     </div>
                     <div className="filtrAcordion">
                       <Accordion defaultActiveKey="0">
-                      <Accordion.Item eventKey="3">
+                        <Accordion.Item eventKey="3">
                           {/* <Accordion.Header>Price</Accordion.Header>
                           <Accordion.Body> */}
-                            {/* <div className="filtrList mb-2">
+                          {/* <div className="filtrList mb-2">
                               <ul>
                                 <li>
                                   Under $500
@@ -225,26 +233,23 @@ function ProductList() {
                               </ul>
                             </div> */}
                           {/* </Accordion.Body> */}
-                        </Accordion.Item> 
+                        </Accordion.Item>
                         <Accordion.Item eventKey="1">
                           <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {category?.subCategories?.map((subcategory, key) => {
+                                {category?.subCategories.map((subcategory, key) => {
                                   return (
                                     <li index={key}>
-                                      <a style={{ cursor: "pointer" }} onClick={(e)=>handleSubcategory(e,subcategory)}>{subcategory.name}</a>
+                                      <a style={{ cursor: "pointer" }}
+                                        onClick={(e) => handleSubcategory(e, subcategory)}
+                                      >
+                                        {subcategory.name}
+                                      </a>
                                     </li>
                                   );
                                 })}
-                                {/* {categories.category?.subcategories?.map((subcategory, key) => {
-                                  return (
-                                  <li index={key}>
-                                    <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
-                                  </li>
-                                );
-                                })} */}
                               </ul>
                             </div>
                           </Accordion.Body>
@@ -418,7 +423,7 @@ function ProductList() {
                             </div>
                           </Accordion.Body>*/}
                         </Accordion.Item>
-                        
+
                       </Accordion>
                     </div>
                   </div>

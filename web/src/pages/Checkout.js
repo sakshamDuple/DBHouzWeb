@@ -46,7 +46,6 @@ function Checkout() {
     const [formData, setFormData] = useState(initialFormData);
     const [credit, setCredit] = useState(initialCredit);
     const [show, setShow] = useState(false);
-    const [data, setData] = useState(true);
     const [productData, setProductData] = useState([
     ]);
     const dispatch = useDispatch();
@@ -80,6 +79,13 @@ function Checkout() {
         let price = i.variant?.price;
         cartTotalAmount += price * i.quantity;
     });
+    const handleSignup = ()=>{
+        navigate("/", { state: { showSignup: true } });
+    } 
+
+   const handleLogin = ()=>{
+    navigate("/", { state: { showLogin: true } });
+   }
 
     let Type = window.localStorage.getItem("utype");
     useEffect(() => {
@@ -165,8 +171,8 @@ function Checkout() {
                                     <div className="row d-flex align-items-center">
                                         {Type != "user" ? <div className="col">
                                             <div className="checkOutLoginBts">
-                                                <Link to="/" state={{ data: data }} className="btnCommon btnDark">Register Account</Link>
-                                                <Link to="/" className="btnCommon">Login</Link>
+                                                <button onClick={handleSignup} className="btnCommon">Register Account</button>
+                                                <button onClick={handleLogin} className="btnCommon">Login</button>
                                             </div>
                                         </div> : ""}
                                         {show ?

@@ -15,16 +15,14 @@ function Category() {
   let category = location.state?.category;
   const categories = useSelector((s) => s.categories);
   let lenCat = categories.length
-  const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i=> React.createRef()), []);
+  const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i => React.createRef()), []);
 
   const linkProductList = (category) => {
-    console.log("category",category)
+    console.log("category", category)
     navigate("/productlist", { state: { category } });
   };
-  const linkSubProductList = (category,subcategory) => {
-    console.log("category",category)
-    console.log("subcategory",subcategory)
-    navigate("/productlist", { state: { category,subcategory } });
+  const linkSubProductList = (category, subcategory) => {
+    navigate("/productlist", { state: { category, subcategory } });
   };
   window.scrollTo(0, 0);
 
@@ -69,23 +67,24 @@ function Category() {
                     behavior: "smooth",
                   });
                 }
-                return(
-                <li>
-                  <div
-                    onClick={() => handleChange(inputRefs[index])}
-                    style={{
-                      color: "#FFFFFF",
-                      cursor: "pointer",
-                      background:
-                        category?.name === cat.category.name
-                          ? "#F2672A"
-                          : "#232F3E",
-                    }}
-                  >
-                    {cat.category.name}
-                  </div>
-                </li>
-              )})}
+                return (
+                  <li>
+                    <div
+                      onClick={() => handleChange(inputRefs[index])}
+                      style={{
+                        color: "#FFFFFF",
+                        cursor: "pointer",
+                        background:
+                          category?.name === cat.category.name
+                            ? "#F2672A"
+                            : "#232F3E",
+                      }}
+                    >
+                      {cat.category.name}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </div>
         </div>
@@ -98,88 +97,89 @@ function Category() {
                 <div className="catgryListRow DBcategoryList">
                   <div className="row mb-4 DBcategoryList-row">
                     {categories.map((category, index) => {
-                      console.log("category",category)
+                      console.log("category", category)
                       let subcategories = category.subCategories
-                      return(
-                      <>
-                        <div ref={inputRefs[index]} id={`${category.category._id}`} className={`col-sm-4 DBcategoryList-main `}>
-                          <div className="categoryListItem ">
-                            <a
-                              style={{ cursor: "pointer" }}
-                              onClick={() => {
-                                linkProductList(category.category._id);
-                              }}
-                            >
-                              <div className="categoryListMedia">
-                                <div
-                                  className="categoryListImg"
-                                  style={{
-                                    backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})`,
-                                  }}
-                                >
-                                  <div className="categoryListOverlay"></div>
-                                </div>
-                                <span className="categoryListBtn">
-                                  <a
-                                    style={{ cursor: "pointer" }}
-                                          onClick={() => {
-                                            linkProductList(category._id);
-                                          }}
-                                    className="btnCommon"
-                                  >
-                                    View Product
-                                  </a>
-                                </span>
-                              </div>
-                              <div className="categoryListTitle">
-                                <h4>{category?.category.name}</h4>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-                        <div className="col-sm-8 DBcategoryList-sub">
-                          <div className="row">
-                            {subcategories.map((subcategory) => (
-                              <div className="col-sm-4 DBcategoryList-subCard">
-                                <div className="categoryListItem">
-                                  <a
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      linkSubProductList(category.category._id,subcategory._id);
+                      return (
+                        <>
+                          <div ref={inputRefs[index]} id={`${category.category._id}`} className={`col-sm-4 DBcategoryList-main `}>
+                            <div className="categoryListItem ">
+                              <a
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  linkProductList(category.category._id);
+                                }}
+                              >
+                                <div className="categoryListMedia">
+                                  <div
+                                    className="categoryListImg"
+                                    style={{
+                                      backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})`,
                                     }}
                                   >
-                                    <div className="categoryListMedia">
-                                      <div
-                                        className="categoryListImg"
-                                        style={{
-                                          backgroundImage: `url(${Rest}/documents/get/${subcategory.imageDocumentId})`,
-                                        }}
-                                      >
-                                        <div className="categoryListOverlay"></div>
-                                      </div>
-                                      <span className="categoryListBtn">
-                                        <a
-                                          style={{ cursor: "pointer" }}
-                                          onClick={() => {
-                                            linkSubProductList(category.category._id,subcategory._id);
-                                          }}
-                                          className="btnCommon"
-                                        >
-                                          View Product
-                                        </a>
-                                      </span>
-                                    </div>
-                                    <div className="categoryListTitle">
-                                      <h4>{subcategory.name}</h4>
-                                    </div>
-                                  </a>
+                                    <div className="categoryListOverlay"></div>
+                                  </div>
+                                  <span className="categoryListBtn">
+                                    <a
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        linkProductList(category._id);
+                                      }}
+                                      className="btnCommon"
+                                    >
+                                      View Product
+                                    </a>
+                                  </span>
                                 </div>
-                              </div>
-                            ))}
+                                <div className="categoryListTitle">
+                                  <h4>{category?.category.name}</h4>
+                                </div>
+                              </a>
+                            </div>
                           </div>
-                        </div>
-                      </>
-                    )})}
+                          <div className="col-sm-8 DBcategoryList-sub">
+                            <div className="row">
+                              {subcategories.map((subcategory) => (
+                                <div className="col-sm-4 DBcategoryList-subCard">
+                                  <div className="categoryListItem">
+                                    <a
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        linkSubProductList(category.category._id, subcategory._id);
+                                      }}
+                                    >
+                                      <div className="categoryListMedia">
+                                        <div
+                                          className="categoryListImg"
+                                          style={{
+                                            backgroundImage: `url(${Rest}/documents/get/${subcategory.imageDocumentId})`,
+                                          }}
+                                        >
+                                          <div className="categoryListOverlay"></div>
+                                        </div>
+                                        <span className="categoryListBtn">
+                                          <a
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => {
+                                              linkSubProductList(category.category._id, subcategory._id);
+                                            }}
+                                            className="btnCommon"
+                                          >
+                                            View Product
+                                          </a>
+                                        </span>
+                                      </div>
+                                      <div className="categoryListTitle">
+                                        <h4>{subcategory.name}</h4>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )
+                    })}
                   </div>
                 </div>
               </div>

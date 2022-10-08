@@ -62,11 +62,6 @@ function Header() {
         break;
     }
   }
-  const location = useLocation();
-  // console.log(props, " props");
-  console.log(location, " useLocation Hook");
-  const data = location.state?.data;
-  console.log(data, " data");
   const categories = useSelector((s) => s.categories);
   const cart = useSelector((s) => s.cart);
   let cartTotalAmount = 0;
@@ -88,10 +83,20 @@ function Header() {
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
   const [formError, setFormError] = useState();
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const user = useSelector((s) => s.user);
-
-  console.log(user.user);
-
+  const location = useLocation();
+  useEffect(() => {
+    if (location?.state?.showSignup) {
+      setShowSignUpModal(location?.state?.showSignup)
+    }
+  }, [location])
+  useEffect(() => {
+    if (location?.state?.showLogin) {
+      setShowSignUpModal(location?.state?.showLogin)
+    }
+  }, [location])
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -248,8 +253,12 @@ function Header() {
                 {/* Register-Modal */}
                 <Modal
                   size="lg"
-                  show={signUp}
-                  onHide={() => registerShow(false)}
+                  show={showSignUpModal ? showSignUpModal : signUp}
+                  onHide={() => {
+                    registerShow(false)
+                    setShowSignUpModal(false)
+                    navigate('/', { state: { showSignup: false } })
+                  }}
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
@@ -395,8 +404,12 @@ function Header() {
                 {/* Login-Modal */}
                 <Modal
                   size="lg"
-                  show={logins}
-                  onHide={() => loginModel(false)}
+                  show={showLoginModal ? showLoginModal : logins}
+                  onHide={() => {
+                    loginModel(false)
+                    setShowLoginModal(false)
+                    navigate('/', { state: { showLogin: false } })
+                  }}
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
@@ -903,7 +916,7 @@ function Header() {
           </Row>
         </Container>
       </article>
-    </header>
+    </header >
   );
 }
 export default Header;
