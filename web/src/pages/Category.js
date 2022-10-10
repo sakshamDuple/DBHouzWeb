@@ -19,10 +19,12 @@ function Category() {
 
   const linkProductList = (category) => {
     console.log("category", category)
-    navigate(`/productlist?category=${category}`, { state: { category } });
+    navigate(`/productlist`, { state: { category } });
+    //  navigate(`/productlist?category=${category}`);
   };
-  const linkSubProductList = (category, subcategory) => {
-    navigate(`/productlist?category=${category}&subcategory=${subcategory}`, { state: { category, subcategory } });
+  const linkSubProductList = (category,subcategory) => {
+    navigate(`/productlist`, { state: { subcategory } });
+    //  navigate(`/productlist?category=${category}&subcategory=${subcategory}`, { state: { category, subcategory } });
   };
   window.scrollTo(0, 0);
 
@@ -144,7 +146,7 @@ function Category() {
                                     <a
                                       style={{ cursor: "pointer" }}
                                       onClick={() => {
-                                        linkSubProductList(category.category._id, subcategory._id);
+                                        linkSubProductList( category.category._id,subcategory._id);
                                       }}
                                     >
                                       <div className="categoryListMedia">

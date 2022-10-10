@@ -153,7 +153,10 @@ function Checkout() {
         try {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
-            return (window.alert("Successful Place Order"));
+            return (
+                window.alert("Successful Place Order"),
+                navigate("/")
+                );
         } catch (error) {
             console.log(error);
         }
@@ -195,7 +198,7 @@ function Checkout() {
                                                             <p>Email : <span>{formData?.customerDetail?.email}</span></p>
                                                         </div>
                                                         <div className="prflUsrImg">
-                                                            <img src="img/userImgIcon.png" />
+                                                            <img src="img/dummy.png" />
                                                         </div>
                                                     </div>
                                                 </div>

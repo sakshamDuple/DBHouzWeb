@@ -20,11 +20,6 @@ require("jquery-nice-select");
 function OrderHistory() {
     const [getData, setGetData] = useState();
     const user = useSelector((s) => s.user);
-    // const getData =() => {
-    //     const users = user.map((i) => {
-    //        console.log("i",i)
-    //     }
-    // }
     useEffect(async () => {
         let accessToken = window.localStorage.getItem("JWT");
         console.log("at", accessToken)
@@ -34,7 +29,6 @@ function OrderHistory() {
         const { user: { _id } = {} } = n || {};
         const userId = _id;
         console.log("userId", userId)
-        setToken(_id);
         try {
             const res = await axios.get(`/order/getOrderForUser/${userId}`);
             console.log("res jagvir", res)
@@ -158,9 +152,9 @@ function OrderHistory() {
                                                 <tbody>
                                                     {getData?.map((item, index) => {
                                                         console.log("item", item)
-                                                        const { _id, createdAt, order_status, total_price,expectedDeliveryDate,
-                                                            transactionDetail : {transactionMethod} ={},
-                                                         } = item || {};
+                                                        const { _id, createdAt, order_status, total_price, expectedDeliveryDate,
+                                                            transactionDetail: { transactionMethod } = {},
+                                                        } = item || {};
                                                         let ShippingDate = new Date(expectedDeliveryDate);
                                                         let y = ShippingDate.getFullYear();
                                                         let mm = ShippingDate.toLocaleString('default', { month: 'short' });
@@ -180,9 +174,8 @@ function OrderHistory() {
                                                                 <td><Link to="/">View Details</Link></td>
                                                             </tr>
                                                         );
-                                                    })
-                                                    }
-                                                    <tr>
+                                                    })}
+                                                    {/* <tr>
                                                         <td>#4549</td>
                                                         <td>Mar 05,2022</td>
                                                         <td className="cancled">Cancelled </td>
@@ -190,7 +183,7 @@ function OrderHistory() {
                                                         <td>Mar 24,2022</td>
                                                         <td>$112.00</td>
                                                         <td><Link to="/">View Details</Link></td>
-                                                    </tr>
+                                                    </tr> */}
                                                 </tbody>
                                             </Table>
                                         </div>

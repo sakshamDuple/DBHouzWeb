@@ -3281,6 +3281,9 @@ img {
 }
 /* product detail End */
 /*checkout Side Bar Start */
+.prflUsrImg img {
+    width: 25px;
+}
  .sdbrProMedia a {
      display: block;
      border-radius: 6px;

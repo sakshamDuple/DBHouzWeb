@@ -1,78 +1,101 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams,useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import $ from "jquery";
-import axios from "../API/axios";
 import "rc-slider/assets/index.css";
 import HomeAbout from "../components/Home/HomeAbout";
 import { useDispatch, useSelector } from "react-redux";
 import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
+import axios from "../API/axios";
+import { strictValidArrayWithLength } from "../utils/commonutils";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
+
+const initialFilter = {
+  page: 0,
+  sort: '',
+  limit: 10,
+  catagoery:'',
+  sub_catagoery: '',
+}
 
 function ProductList() {
   const index = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("loc:", location)
+  let [searchParams, setSearchParams] = useSearchParams();
+
   let selectedCategory = location?.state?.category;
-  let selectedSubCategory = location.state?.subcategory;
-  console.log("selectedSubCategory", selectedSubCategory)
+  // let selectedSubCategory = location?.state?.subcategory;
   let flag = 1;
   const categories = useSelector((s) => s.categories);
-  console.log("categories", categories)
-  let currentCategory = [{}];
-  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
-  console.log("mon", mon)
-  // || i.subCategories.filter((id) => id._id) == mon
-  currentCategory = categories.filter((i) => i.category._id == mon );
-  console.log("currentCategory", currentCategory)
+  
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
-  const [category, setCategory] = useState(currentCategory[0]);
+  const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
-  console.log("category", category)
+  const [filters, setFilters] = useState(initialFilter);
   window.scrollTo(0, 0);
 
   useEffect(() => {
-    if (category) {
+    if(!strictValidArrayWithLength(categories)) return
+    const selectedCategory = searchParams.get('category')
+    const sub_cat = searchParams.get('subcategory')
+    const currentCategory = categories.filter((i) => {
+      return i.category._id == selectedCategory
+    }) || categories[0];
+  
+   setCategory(currentCategory)
+  }, [categories]);
+
+  useEffect(() => {
+    const selectedCategory = searchParams.get('category');
+    if (selectedCategory) {
       setLoading(true);
-      if (selectedSubCategory) {
-        console.log("selectedSubCategory")
-        return handleSubcategory(selectedSubCategory)
-      }
-      else {
-        RestClient.getProductsByCategoryId(category.category._id)
-          .then((res) => {
-            setProducts(res.data);
-            setLoading(false);
-          })
-          .catch(console.error);
-      }
+      RestClient.getProductsByCategoryId({categoryId: selectedCategory, limit: 10})
+        .then((res) => {
+          setProducts(res.data);
+          setLoading(false);
+        })
+        .catch(console.error);
     }
-  }, [category]);
+  }, [searchParams]);
+
+
+  // useEffect(async () => {
+  //   if (selectedSubCategory) {
+  //     setLoading(true);
+  //     const data = {
+  //       subCategoryId: _id,
+  //     };
+  //     try {
+  //       const res = await axios.post(`/product/getProductsBySubCategory`, data)
+  //       console.log("res js", res.data.data)
+  //       setProducts(res.data.data)
+  //     } catch (error) {
+  //       console.log("error", error)
+  //     }
+  //   }
+  // }, [selectedSubCategory]);
 
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
   };
 
-  const handleSubcategory = async (subcategory) => {
+  const handleSubcategory = async (e, subcategory) => {
     const { _id } = subcategory || {};
     const data = {
-      subCategoryId: subcategory,
+      subCategoryId: _id,
     };
     try {
       const res = await axios.post(`/product/getProductsBySubCategory`, data)
       console.log("res js", res.data.data)
-      return (
-        setProducts(res.data.data),
-        setLoading(false)
-      );
+      setProducts(res.data.data)
     } catch (error) {
       console.log("error", error)
     }
@@ -86,6 +109,7 @@ function ProductList() {
   useEffect(() => {
     $(selectRef3.current).niceSelect();
   }, []);
+  // console.log("searchParams",searchParams && searchParams)
 
   console.log(index);
   return (
@@ -125,7 +149,7 @@ function ProductList() {
         <div className="container">
           <div className="NavCatInr">
             <ul>
-              {categories.map((cat, index) => (
+              {strictValidArrayWithLength(categories) && categories.map((cat, index) => (
                 <li key={index}>
                   <div
                     style={{
@@ -134,7 +158,10 @@ function ProductList() {
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
                     onClick={() => {
-                      console.log(cat)
+                      console.log(cat);
+                      // setSearchParams({...searchParams,
+                      //   categoryId: cat.category._id,
+                      // })
                       setCategory(cat);
                     }}
                   >
@@ -198,19 +225,58 @@ function ProductList() {
                     </div>
                     <div className="filtrAcordion">
                       <Accordion defaultActiveKey="0">
+                        <Accordion.Item eventKey="3">
+                          {/* <Accordion.Header>Price</Accordion.Header>
+                          <Accordion.Body> */}
+                          {/* <div className="filtrList mb-2">
+                              <ul>
+                                <li>
+                                  Under $500
+                                </li>
+                                <li>
+                                  $500 - $750
+                                </li>
+                                <li>
+                                  $1,000 - $1,500
+                                </li>
+                                <li>
+                                  $1,500 - $2,000
+                                </li>
+                                <li>
+                                  $2,000 - $5,000
+                                </li>
+                                <li>
+                                  $5,000 - $10,000
+                                </li>
+                                <li>
+                                  $15,000 - $20,000
+                                </li>
+                                <li>
+                                  Over $20,000
+                                </li>
+                              </ul>
+                            </div> */}
+                          {/* </Accordion.Body> */}
+                        </Accordion.Item>
                         <Accordion.Item eventKey="1">
-                          {/* <Accordion.Header>Sub Categories</Accordion.Header>
+                          <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {categories.category?.subcategories?.map((subcategory, key) => (
-                                  <li index={key}>
-                                    <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
-                                  </li>
-                                ))}
+                                {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
+                                  return (
+                                    <li index={key}>
+                                      <a style={{ cursor: "pointer" }}
+                                        onClick={(e) => handleSubcategory(e, subcategory)}
+                                      >
+                                        {subcategory.name}
+                                      </a>
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
                           {/* <Accordion.Header>Color</Accordion.Header>
@@ -379,41 +445,9 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>*/}
                         </Accordion.Item>
-                        <Accordion.Item eventKey="3">
-                          {/* <Accordion.Header>Price</Accordion.Header>
-                          <Accordion.Body>
-                            <div className="filtrList mb-2">
-                              <ul>
-                                <li>
-                                  <Link to="/">Under $500</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$500 - $750</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$1,000 - $1,500</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$1,500 - $2,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$2,000 - $5,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$5,000 - $10,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$15,000 - $20,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">Over $20,000</Link>
-                                </li>
-                              </ul>
-                            </div>
-                          </Accordion.Body> */}
-                        </Accordion.Item>
+
                       </Accordion>
                     </div>
                   </div>
