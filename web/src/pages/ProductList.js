@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams,useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -11,40 +11,60 @@ import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
 import axios from "../API/axios";
+import { strictValidArrayWithLength } from "../utils/commonutils";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
+
+const initialFilter = {
+  page: 0,
+  sort: '',
+  limit: 10,
+  catagoery:'',
+  sub_catagoery: '',
+}
 
 function ProductList() {
   const index = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  let [searchParams, setSearchParams] = useSearchParams();
+
   let selectedCategory = location?.state?.category;
   // let selectedSubCategory = location?.state?.subcategory;
   let flag = 1;
   const categories = useSelector((s) => s.categories);
-  let currentCategory = [{}];
-  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id;
-  currentCategory = categories.filter((i) => {
-    return i.category._id == mon
-  });
+  
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
-  const [category, setCategory] = useState(currentCategory[0]);
+  const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
+  const [filters, setFilters] = useState(initialFilter);
   window.scrollTo(0, 0);
 
   useEffect(() => {
-    if (category) {
+    if(!strictValidArrayWithLength(categories)) return
+    const selectedCategory = searchParams.get('category')
+    const sub_cat = searchParams.get('subcategory')
+    const currentCategory = categories.filter((i) => {
+      return i.category._id == selectedCategory
+    }) || categories[0];
+  
+   setCategory(currentCategory)
+  }, [categories]);
+
+  useEffect(() => {
+    const selectedCategory = searchParams.get('category');
+    if (selectedCategory) {
       setLoading(true);
-      RestClient.getProductsByCategoryId(category.category._id)
+      RestClient.getProductsByCategoryId({categoryId: selectedCategory, limit: 10})
         .then((res) => {
           setProducts(res.data);
           setLoading(false);
         })
         .catch(console.error);
     }
-  }, [category]);
+  }, [searchParams]);
 
 
   // useEffect(async () => {
@@ -89,6 +109,7 @@ function ProductList() {
   useEffect(() => {
     $(selectRef3.current).niceSelect();
   }, []);
+  // console.log("searchParams",searchParams && searchParams)
 
   console.log(index);
   return (
@@ -128,7 +149,7 @@ function ProductList() {
         <div className="container">
           <div className="NavCatInr">
             <ul>
-              {categories.map((cat, index) => (
+              {strictValidArrayWithLength(categories) && categories.map((cat, index) => (
                 <li key={index}>
                   <div
                     style={{
@@ -137,7 +158,10 @@ function ProductList() {
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
                     onClick={() => {
-                      console.log(cat)
+                      console.log(cat);
+                      // setSearchParams({...searchParams,
+                      //   categoryId: cat.category._id,
+                      // })
                       setCategory(cat);
                     }}
                   >
@@ -239,7 +263,7 @@ function ProductList() {
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {category?.subCategories.map((subcategory, key) => {
+                                {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
                                   return (
                                     <li index={key}>
                                       <a style={{ cursor: "pointer" }}

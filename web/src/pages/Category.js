@@ -19,10 +19,10 @@ function Category() {
 
   const linkProductList = (category) => {
     console.log("category", category)
-    navigate("/productlist", { state: { category } });
+    navigate(`/productlist?category=${category}`, { state: { category } });
   };
   const linkSubProductList = (category, subcategory) => {
-    navigate("/productlist", { state: { category, subcategory } });
+    navigate(`/productlist?category=${category}&subcategory=${subcategory}`, { state: { category, subcategory } });
   };
   window.scrollTo(0, 0);
 
