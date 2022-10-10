@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useLocation, useParams,useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import $ from "jquery";
 import "rc-slider/assets/index.css";
-import HomeAbout from "../components/Home/HomeAbout";
+import HomeAbout from "../../components/Home/HomeAbout";
 import { useDispatch, useSelector } from "react-redux";
-import { Rest, RestClient } from "../rest";
+import { Rest, RestClient } from "../../rest";
 import { PuffLoader } from "react-spinners";
-import { stateActions } from "../redux/stateActions";
-import axios from "../API/axios";
-import { strictValidArrayWithLength } from "../utils/commonutils";
+import { stateActions } from "../../redux/stateActions";
+import axios from "../../API/axios";
+import { strictValidArrayWithLength } from "../../utils/commonutils";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
@@ -30,7 +30,7 @@ function ProductList() {
   const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
 
-  let selectedCategory = location?.state?.category;
+  // let selectedCategory = location?.state?.category;
   // let selectedSubCategory = location?.state?.subcategory;
   let flag = 1;
   const categories = useSelector((s) => s.categories);
@@ -55,7 +55,10 @@ function ProductList() {
 
   useEffect(() => {
     const selectedCategory = searchParams.get('category');
-    if (selectedCategory) {
+    const sub_cat = searchParams.get('subcategory');
+    if(sub_cat){
+      return handleSubcategory(sub_cat)
+    }else{
       setLoading(true);
       RestClient.getProductsByCategoryId({categoryId: selectedCategory, limit: 10})
         .then((res) => {
@@ -267,7 +270,7 @@ function ProductList() {
                                   return (
                                     <li index={key}>
                                       <a style={{ cursor: "pointer" }}
-                                        onClick={(e) => handleSubcategory(e, subcategory)}
+                                        onClick={() => handleSubcategory(subcategory)}
                                       >
                                         {subcategory.name}
                                       </a>

@@ -328,21 +328,21 @@ export let RestClient = {
       errorMessage: "Unable to get categpries List!",
     });
   },
-  // async getProductsByCategoryId(filters) {
-  //   const {page = 0, sort = '_id', limit = 10, categoryId, ...rest} = filters;
-  //   console.log("getProductid is ", categoryId);
-  //   return await post(
-  //     `/categories/getProductsByCategory?page=${page}&sort=&${sort}&limit=${limit}`,
-  //     { categoryId , ...rest},
-  //     { errorMessage: "Unable to get products!" }
-  //   );
-  // },
-  async getProductsByCategoryId(categoryId) {
+  async getProductsByCategoryId(filters) {
+    const {page = 0, sort = '_id', limit = 10, categoryId, ...rest} = filters;
     console.log("getProductid is ", categoryId);
     return await post(
-      "/categories/getProductsByCategory",
-      { categoryId },
+      `/categories/getProductsByCategory?page=${page}&sort=&${sort}&limit=${limit}`,
+      { categoryId , ...rest},
       { errorMessage: "Unable to get products!" }
     );
   },
+  // async getProductsByCategoryId(categoryId) {
+  //   console.log("getProductid is ", categoryId);
+  //   return await post(
+  //     "/categories/getProductsByCategory",
+  //     { categoryId },
+  //     { errorMessage: "Unable to get products!" }
+  //   );
+  // },
 };

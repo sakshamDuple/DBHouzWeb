@@ -740,11 +740,12 @@ function Header() {
                     <div className="col-sm-auto">
                       <div className="form-group">
                         <select className="form-select">
-                          <option>Categories List</option>
-                          <option>Categories List 1</option>
-                          <option>Categories List 2</option>
-                          <option>Categories 3</option>
-                          <option>Categories List 4</option>
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                          {categories.map((category) => {
+                            return (
+                              <option>{category.category.name}</option>
+                            );
+                          })}
                         </select>
                       </div>
                     </div>
