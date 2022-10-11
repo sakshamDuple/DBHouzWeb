@@ -126,7 +126,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -185,7 +185,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -243,7 +243,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -301,7 +301,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -359,7 +359,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -417,7 +417,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -475,7 +475,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -533,7 +533,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -591,7 +591,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">
@@ -649,7 +649,7 @@ function OrderList() {
                                                 <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                             <td className="actions">

@@ -2522,10 +2522,23 @@ img {
      margin-top: -36.5px;
      transition: all ease 0.5s;
 }
+.prdctNwHvrBtns {
+    position: absolute;
+    left: 42%;
+    top: 43%;
+    text-align: center;
+    margin-left:-310px;
+    margin-top: -36.5px;
+    transition: all ease 0.5s;
+}
+
  .prdctListItem:hover .prdctHvrBtns {
      margin-left: -55.5px;
 }
- .prdctHvrBtns .btnCommon {
+.prdctListItem:hover .prdctNwHvrBtns {
+    margin-left: -55.5px;
+}
+.prdctHvrBtns .btnCommon {
      min-width: 109px!important;
      border-radius: 4px;
      padding: 0px 10px;

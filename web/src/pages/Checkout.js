@@ -86,6 +86,7 @@ function Checkout() {
    const handleLogin = ()=>{
     navigate("/", { state: { showLogin: true } });
    }
+   window.scrollTo(0, 0);
 
     let Type = window.localStorage.getItem("utype");
     useEffect(() => {
@@ -333,7 +334,6 @@ function Checkout() {
                                                 <div className="col-6 numberFieldArrow">
                                                     <label htmlFor="passwordFld" className="form-label ">Postal Code*</label>
                                                     <input type="number" className="form-control"
-                                                        value={formData.address.postal_code}
                                                         onChange={(e) => {
                                                             setFormData((prev) => {
                                                                 const { address } = prev;
@@ -384,7 +384,7 @@ function Checkout() {
                                                 {/* <div className="form-check">
                                                         <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
                                                         <label className="form-check-label" htmlFor="flexRadioDefault2">
-                                                            EMS (Express Mail Service): $18.00
+                                                            EMS (Express Mail Service): £18.00
                                                         </label>
                                                     </div> */}
                                             </div>
@@ -595,7 +595,7 @@ function Checkout() {
                                                             <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                                         </div>
                                                         <div className="prodctListPrice">
-                                                            <div className="price">$83.69</div>
+                                                            <div className="price">£83.69</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -605,10 +605,10 @@ function Checkout() {
                                     <div className="chckoutPymtSideBrBlk">
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
-                                                <li>Total MRP<span>${cartTotalAmount + cartTotalAmount * 18 / 100}</span></li>
-                                                <li>VAT<span className="discntPrice" >+${cartTotalAmount * 18 / 100}</span></li>
-                                                <li>Discount on MRP<span className="discntPrice" >-${cartTotalAmount * 36 / 100}</span></li>
-                                                <li>Convenience Fee<span className="oferPrice">$0 <span className="discntPrice">Free</span></span></li>
+                                                <li>Total MRP<span>£{cartTotalAmount + cartTotalAmount * 18 / 100}</span></li>
+                                                <li>VAT<span className="discntPrice" >+£{cartTotalAmount * 18 / 100}</span></li>
+                                                <li>Discount on MRP<span className="discntPrice" >-£{cartTotalAmount * 36 / 100}</span></li>
+                                                <li>Convenience Fee<span className="oferPrice">£0 <span className="discntPrice">Free</span></span></li>
                                             </ul>
                                         </div>
 
@@ -622,7 +622,7 @@ function Checkout() {
                                         </div>
                                         <div className="col-auto">
                                             <div className="totlGstBlk">
-                                                <h5>${cartTotalAmount}</h5>
+                                                <h5>£{cartTotalAmount}</h5>
                                                 <p>Inc. VAT</p>
                                             </div>
                                         </div>

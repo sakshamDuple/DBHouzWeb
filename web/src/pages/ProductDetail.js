@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  Button,
-  Tabs,
-  Tab,
-  Table,
-  Form,
-} from "react-bootstrap";
+import { Button, Tabs, Tab, Table, Form } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { stateActions } from "../redux/stateActions";
@@ -35,6 +29,7 @@ function ProductDetail() {
   const [visible, setVisible] = useState(false);
   let [count, setCount] = useState(1);
   let [selectedVariant, setSelectedVariant] = useState(0);
+  const [peopleAlsoSearcherFor, setPeopleAlsoSearcherFor] = useState();
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [color, setColor] = useState([]);
@@ -74,7 +69,15 @@ function ProductDetail() {
     else return "0 x 0 x 0 inches";
   };
 
+  async function filterPeopleAlsoSearcherFor() {
+    let products = await RestClient.getProductsByCategoryId(product.categoryId);
+    products = products.data.filter((s) => s._id !== product._id);
+    setPeopleAlsoSearcherFor(products);
+  }
+  console.log(peopleAlsoSearcherFor);
+
   useEffect(() => {
+    filterPeopleAlsoSearcherFor();
     getColors();
   }, [product]);
 
@@ -197,24 +200,32 @@ function ProductDetail() {
                       <span>11 reviews</span>
                     </div>
                     <div className="prodctDtlPriceLrge d-flex align-items-center">
-                      <div className="price">{`$ ${
+                      <div className="price">{`£ ${
                         product.variants[selectedVariant]
-                          ? (product.variants[selectedVariant].price*82/100).toFixed(2)
+                          ? (
+                              (product.variants[selectedVariant].price * 82) /
+                              100
+                            ).toFixed(2)
                           : 0
-                      }`}</div>+
+                      }`}</div>
+                      +
                       {/* <div className="prcentOff px-3">
-                        {(product.variants[selectedVariant].price / 100) * 8}$
+                        {(product.variants[selectedVariant].price / 100) * 8}£
                         VAT Included
                       </div> */}
-                    <div className="gst">
-                      ${((product.variants[selectedVariant]?.price / 100) * 18).toFixed(2)}
-                      vat
-                    </div>
+                      <div className="gst">
+                      £
+                        {(
+                          (product.variants[selectedVariant]?.price / 100) *
+                          18
+                        ).toFixed(2)}
+                        vat
+                      </div>
                     </div>
                     {console.log("product:", product)}
                     <div className="leftStock">
-                      {product.variants[selectedVariant]?.availableQuantity} item
-                      left in Stock
+                      {product.variants[selectedVariant]?.availableQuantity}{" "}
+                      item left in Stock
                     </div>
                     <div className="prdctDtlSize d-flex align-items-center py-3">
                       <div className="btn-label">
@@ -254,7 +265,7 @@ function ProductDetail() {
                                 {variant.size} Foot /{" "}
                                 {getSingleColors(variant.colorId)}
                                 <br />
-                                <span>${variant?.price}</span>
+                                <span>£{variant?.price}</span>
                               </button>
                             ))}
                         </div>
@@ -337,14 +348,27 @@ function ProductDetail() {
                               <img src="img/cartWhite.png" />
                             </span>
                           </a>
-                          <Link to="/checkout" className="btnCommon btnDark">
+                          <Link
+                            to="/checkout"
+                            className="btnCommon btnDark"
+                            onClick={() => {
+                              dispatch(
+                                stateActions.addCartItem(
+                                  product,
+                                  count,
+                                  product.variants[selectedVariant]
+                                )
+                              );
+                              setVisible(true);
+                            }}
+                          >
                             Buy Now
                             <span>
                               <img src="img/buyLableIcon.svg" />
                             </span>
                           </Link>
                         </div>
-                        {visible?"Added To Cart":""}
+                        {visible ? "Added To Cart" : ""}
                       </div>
                     </div>
                     <div className="ViewBtn">
@@ -401,12 +425,12 @@ function ProductDetail() {
               id="uncontrolled-tab-example"
               className="mb-3"
             >
-              <Tab eventKey="home" title="Discription">
+              <Tab eventKey="home" title="Description">
                 <div className="prdctDtlTabInfo">
                   {console.log(product.description)}
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: product.description
+                      __html: product.description,
                     }}
                   ></p>
                   <br />
@@ -710,537 +734,125 @@ function ProductDetail() {
                 modules={[Navigation, Pagination, Scrollbar, A11y]}
                 navigation
                 spaceBetween={2}
-                slidesPerView={6}
+                slidesPerView={4}
                 centeredSlides={false}
-                loop={false}
+                loop={true}
               >
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                          <div className="oferPrice">$65.00</div>
-                          <div className="discntPrice">(31% off)</div>
+                {peopleAlsoSearcherFor?.map((element, index) => {
+                  return (
+                    <SwiperSlide>
+                      <div className="similarItem">
+                        <div className="prdctListItem">
+                          <div className="prdctListMedia">
+                            <div
+                              className="prdctListImg"
+                              style={{
+                                backgroundImage: element.images[0]
+                                  ? `url("${Rest}/documents/get/${element.images[0].documentId}")`
+                                  : `url("img/productDtilImg.jpg")`,
+                              }}
+                            >
+                              <div className="prdctListOverlay"></div>
+                            </div>
+                            <div className="prdctHovrCard">
+                              <Link to="/">
+                                <span className="prdctListWishListIcon">
+                                  <img src="img/wishListIconDark.svg" />
+                                </span>
+                              </Link>
+                              <Link to="/">
+                                <span className="prdctListIcon">
+                                  <img src="img/prdctListIcon.svg" />
+                                </span>
+                              </Link>
+                            </div>
+                            <div className="prdctNwHvrBtns">
+                              <Link
+                                to="/cart"
+                                className="btnCommon"
+                                onClick={() => {
+                                  dispatch(
+                                    stateActions.addCartItem(
+                                      product,
+                                      count,
+                                      product.variants[selectedVariant]
+                                    )
+                                  );
+                                  setVisible(true);
+                                }}
+                              >
+                                Add To Cart
+                              </Link>
+                              <Link
+                                to="/checkout"
+                                className="btnCommon btnDark"
+                                onClick={() => {
+                                  dispatch(
+                                    stateActions.addCartItem(
+                                      element,
+                                      count,
+                                      element.variants[0]
+                                    )
+                                  );
+                                }}
+                              >
+                                Buy Now
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="prodctListInfoCol text-center">
+                            <div className="prdctListTitle">
+                              <h4>
+                                {" "}
+                                <Link to="/">{element.name}</Link>
+                              </h4>
+                            </div>
+                            <div className="rvwRtngPrgrsStars">
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <span>(981)</span>
+                            </div>
+                            <div className="prdctListInfo">
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: element.description,
+                                }}
+                              ></p>
+                            </div>
+                            <div className="prodctDtlPrice d-flex justify-content-center">
+                              <div className="price">
+                                Starts From £{element?.variants[0]?.price}
+                              </div>
+                              <div className="oferPrice">
+                                £{(element?.variants[0]?.price * 109) / 100}
+                              </div>
+                              {/* {console.log(element.variants)} */}
+                              <div className="discntPrice">(9% off)</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="similarItem">
-                    <div className="prdctListItem">
-                      <div className="prdctListMedia">
-                        <div
-                          className="prdctListImg"
-                          style={{
-                            backgroundImage: `url("img/productImg4.jpg")`,
-                          }}
-                        >
-                          <div className="prdctListOverlay"></div>
-                        </div>
-                        <div className="prdctHovrCard">
-                          <Link to="/">
-                            <span className="prdctListWishListIcon">
-                              <img src="img/wishListIconDark.svg" />
-                            </span>
-                          </Link>
-                          <Link to="/">
-                            <span className="prdctListIcon">
-                              <img src="img/prdctListIcon.svg" />
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="prdctHvrBtns">
-                          <Link to="#" className="btnCommon">
-                            Add To Cart
-                          </Link>
-                          <Link to="#" className="btnCommon btnWhite">
-                            Buy Now
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="prodctListInfoCol text-center">
-                        <div className="prdctListTitle">
-                          <h4>
-                            {" "}
-                            <Link to="/">
-                              Scratch Resistant Prefab Kitchen...
-                            </Link>
-                          </h4>
-                        </div>
-                        <div className="rvwRtngPrgrsStars">
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <i
-                            className="fa fa-star ylowStar"
-                            aria-hidden="true"
-                          ></i>
-                          <span>(981)</span>
-                        </div>
-                        <div className="prdctListInfo">
-                          <p>Eeiusmod tempor incididunt</p>
-                        </div>
-                        <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </div>
           </div>
