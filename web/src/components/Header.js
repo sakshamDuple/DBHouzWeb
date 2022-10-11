@@ -11,6 +11,7 @@ import Edit from "../assets/images/settingIcons/editIcon.svg";
 import ChangePassword from "../assets/images/settingIcons/changePaswrd.svg";
 import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
+import axios from "../API/axios";
 
 function Header() {
   const [path, setPath] = useState({
@@ -71,6 +72,7 @@ function Header() {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchData, setSearchData] = useState([]);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -82,7 +84,8 @@ function Header() {
   const [reset, resetModal] = useState(false);
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
-  const [formError, setFormError] = useState();
+  const [searchEngine, setSearchEngine] = useState("");
+  const [selectOption, setSelectOption] = useState("");
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const user = useSelector((s) => s.user);
@@ -170,6 +173,26 @@ function Header() {
         setError(`Registration Failed`);
       });
   };
+
+  const handleSelectOption = async (e) => {
+    e.preventDefault();
+    console.log("selectOption", selectOption)
+    console.log("searchEngine", searchEngine)
+
+    if (selectOption !== "") {
+      let data = {
+        categoryId: selectOption,
+        searchVal: searchEngine,
+      }
+      try {
+        let res = await axios.post(`/product/category/search`, data)
+        console.log("res", res.data.fetches)
+        setSearchData(res.data.fetches)
+      } catch (error) {
+        console.log("error", error)
+      }
+    }
+  }
 
   return (
     <header className="mainHeader wrapper">
@@ -739,11 +762,12 @@ function Header() {
                   <div className="row">
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <select className="form-select">
-                        <option value="none" selected disabled hidden>Select an Option</option>
-                          {categories.map((category) => {
+                        <select name="option" onChange={(e) => {handleSelectOption(e); setSelectOption(e.target.value)}} className="form-select">
+
+                          <option value="none" selected disabled hidden>Select an Option</option>
+                          {categories.map((option) => {
                             return (
-                              <option>{category.category.name}</option>
+                              <option value={option.category._id}>{option.category.name}</option>
                             );
                           })}
                         </select>
@@ -751,12 +775,28 @@ function Header() {
                     </div>
                     <div className="col-sm">
                       <div className="form-group">
-                        <input type="text" className="form-control" />
+                        <input type="text" value={searchEngine} className="form-control"
+                          onChange={(e) => { handleSelectOption(e); setSearchEngine(e.target.value) }}
+                        />
+                        {
+                          searchData[0]?.products?.map((product) => {
+                            console.log("product", product)
+                            return (
+                              <ul>
+                                <li>
+                                  {product.name}
+                                </li>
+                              </ul>
+                            )
+                          })
+                        }
                       </div>
                     </div>
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <button className="btnCommon btnDark">
+                        <button className="btnCommon btnDark"
+                          onClick={(e) => handleSelectOption(e)}
+                        >
                           Search <img src="/img/searchIcon.svg" />
                         </button>
                       </div>
@@ -851,7 +891,7 @@ function Header() {
             </div>
           </Row>
         </Container>
-      </article>
+      </article >
       <article className="hdrNavRow">
         <Container>
           <Row className="row align-items-center justify-content-between">

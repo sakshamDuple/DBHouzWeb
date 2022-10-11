@@ -162,9 +162,9 @@ function ProductList() {
                     }}
                     onClick={() => {
                       console.log(cat);
-                      // setSearchParams({...searchParams,
-                      //   categoryId: cat.category._id,
-                      // })
+                      setSearchParams({...searchParams,
+                        categoryId: cat.category._id,
+                      })
                       setCategory(cat);
                     }}
                   >
