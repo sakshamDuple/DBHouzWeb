@@ -878,6 +878,7 @@ function AdminEditProductVariants() {
                                   let num = Number.parseInt(e.target.value);
                                   if (Number.isInteger(num)) {
                                     let newVariant2 = { ...newVariant };
+                                    console.log(newVariant)
                                     newVariant2.dimensions.height = num;
                                     setNewVariant(newVariant2);
                                   }
