@@ -876,12 +876,7 @@ function AdminEditProductVariants() {
                                 type={"number"}
                                 onChange={(e) => {
                                   let num = Number.parseInt(e.target.value);
-                                  if (Number.isInteger(num)) {
-                                    let newVariant2 = { ...newVariant };
-                                    console.log(newVariant)
-                                    newVariant2.dimensions.height = num;
-                                    setNewVariant(newVariant2);
-                                  }
+                                  setNewVariant({ ...newVariant, dimensions: {...newVariant.dimensions, height:num} });
                                 }}
                               />
                               <div className="input-group-append">
