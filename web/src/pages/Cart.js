@@ -28,6 +28,7 @@ require("jquery-nice-select");
 function Cart() {
   const cart = useSelector((s) => s.cart);
   const dispatch = useDispatch();
+  window.scrollTo(0, 0);
 
     let cartTotalAmount = 0
     cart?.forEach((i) => {

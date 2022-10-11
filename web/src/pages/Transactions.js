@@ -259,7 +259,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -293,7 +293,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -327,7 +327,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -361,42 +361,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <hr className="mb-5" />
-                        <div className="transctnListPrdct">
-                          <div className="row g-3 d-sm-flex align-items-center">
-                            <div className="col-auto">
-                              <div className="transctnListProMedia">
-                                <a href="/product-detail">
-                                  <div className="transctnListProImg">
-                                    <h3>
-                                      DB<span>Houz</span>
-                                    </h3>
-                                  </div>
-                                </a>
-                              </div>
-                            </div>
-                            <div className="col mt-0">
-                              <div className="transctnListProInfo">
-                                <div className="transctnListTitle">
-                                  <h4>
-                                    <a href="/">Paid on DBhouz</a>
-                                  </h4>
-                                </div>
-                                <div className="transtnInfo">
-                                  <p>DB houz Credit Card</p>
-                                  <p>
-                                    <span>02 May 2022, 05:25 PM</span>
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -431,7 +396,42 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <hr className="mb-5" />
+                        <div className="transctnListPrdct">
+                          <div className="row g-3 d-sm-flex align-items-center">
+                            <div className="col-auto">
+                              <div className="transctnListProMedia">
+                                <a href="/product-detail">
+                                  <div className="transctnListProImg">
+                                    <h3>
+                                      DB<span>Houz</span>
+                                    </h3>
+                                  </div>
+                                </a>
+                              </div>
+                            </div>
+                            <div className="col mt-0">
+                              <div className="transctnListProInfo">
+                                <div className="transctnListTitle">
+                                  <h4>
+                                    <a href="/">Paid on DBhouz</a>
+                                  </h4>
+                                </div>
+                                <div className="transtnInfo">
+                                  <p>DB houz Credit Card</p>
+                                  <p>
+                                    <span>02 May 2022, 05:25 PM</span>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-auto d-flex align-items-center">
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -468,7 +468,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -502,7 +502,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -536,7 +536,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -570,7 +570,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -607,7 +607,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -641,7 +641,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -675,7 +675,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -709,7 +709,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice green">-$25</div>
+                              <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
                         </div>
@@ -744,7 +744,7 @@ function Transactions() {
                               </div>
                             </div>
                             <div className="col-auto d-flex align-items-center">
-                              <div className="transtnPrice red">-$25</div>
+                              <div className="transtnPrice red">-£25</div>
                             </div>
                           </div>
                         </div>

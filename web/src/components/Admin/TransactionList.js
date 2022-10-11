@@ -114,7 +114,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -161,7 +161,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -207,7 +207,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -253,7 +253,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -299,7 +299,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -345,7 +345,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -391,7 +391,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -437,7 +437,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -483,7 +483,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">
@@ -529,7 +529,7 @@ function AdminTransactionList() {
                                                 </div>
                                             </td>
                                              <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             <td className="actions">
                                                 <div className="tbl-actn">

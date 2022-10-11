@@ -648,7 +648,7 @@ function MerchantEditProductVariants() {
                                     {/* {params.price && ( */}
                                     <td className="text-center">
                                       {Boolean(variant.price) && (
-                                        <span>${variant.price}</span>
+                                        <span>£{variant.price}</span>
                                       )}
                                       {!Boolean(variant.price) && (
                                         <span className="badge bg-danger">
@@ -788,7 +788,7 @@ function MerchantEditProductVariants() {
                         }}
                       />
                       <div className="input-group-append">
-                        <div className="input-group-text">$</div>
+                        <div className="input-group-text">£</div>
                       </div>
                     </div>
                   </div>
