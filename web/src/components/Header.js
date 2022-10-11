@@ -173,12 +173,14 @@ function Header() {
         setError(`Registration Failed`);
       });
   };
+  useEffect(() => {
+    handleSelectOption()
+  }, [searchEngine, selectOption])
 
   const handleSelectOption = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log("selectOption", selectOption)
     console.log("searchEngine", searchEngine)
-
     if (selectOption !== "") {
       let data = {
         categoryId: selectOption,
@@ -762,7 +764,7 @@ function Header() {
                   <div className="row">
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <select name="option" onChange={(e) => {handleSelectOption(e); setSelectOption(e.target.value)}} className="form-select">
+                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select">
 
                           <option value="none" selected disabled hidden>Select an Option</option>
                           {categories.map((option) => {
@@ -776,13 +778,29 @@ function Header() {
                     <div className="col-sm">
                       <div className="form-group">
                         <input type="text" value={searchEngine} className="form-control"
-                          onChange={(e) => { handleSelectOption(e); setSearchEngine(e.target.value) }}
+                          onChange={(e) => setSearchEngine(e.target.value)}
                         />
                         {
                           searchData[0]?.products?.map((product) => {
                             console.log("product", product)
                             return (
+                              <div>
+                                <h3>Product</h3>
+                                <ul>
+                                  <li>
+                                    {product.name}
+                                  </li>
+                                </ul>
+                              </div>
+                            )
+                          })
+                        }
+                        {
+                          searchData[1]?.s?.map((product) => {
+                            console.log("product", product)
+                            return (
                               <ul>
+                                <h3>Product</h3>
                                 <li>
                                   {product.name}
                                 </li>
