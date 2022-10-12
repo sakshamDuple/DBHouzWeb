@@ -11,6 +11,7 @@ import Edit from "../assets/images/settingIcons/editIcon.svg";
 import ChangePassword from "../assets/images/settingIcons/changePaswrd.svg";
 import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
+import "./Header.css";
 import axios from "../API/axios";
 
 function Header() {
@@ -785,7 +786,6 @@ function Header() {
                             console.log("product", product)
                             return (
                               <div>
-                                <h3>Product</h3>
                                 <ul>
                                   <li>
                                     {product.name}
@@ -924,11 +924,7 @@ function Header() {
                       <Dropdown.Menu>
                         {categories.map((category) => (
                           <Dropdown.Item
-                            onClick={() => {
-                              navigate("/category", { state: category });
-                            }}
-                          >
-                            {category.category.name}
+                          >  {category.category.name}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>

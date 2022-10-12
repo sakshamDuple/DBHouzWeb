@@ -17,7 +17,7 @@ function Thanku() {
                   <div className="errorInfo pb-3">
                       <h2>Your order has been placed!</h2>
                       <p>Your order has been successfully processed!</p>
-                      <p> You can view your order history by going to the my account page and by clicking on <Link to="/contact">history.</Link></p>
+                      <p> You can view your order history by going to the my account page and by clicking on <Link to="/orderhistory">history.</Link></p>
                       <p>If your purchase has an associated download, you can go to the account downloads page to view them.</p>
                       <p>Please direct any questions you have to the <Link to="/contact">store owner.</Link></p>
                       <p> Thanks for shopping with us online!</p>

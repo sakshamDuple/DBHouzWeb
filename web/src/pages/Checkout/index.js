@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, Navigate, NavLink,useNavigate } from "react-router-dom";
+import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { Button, Modal, Dropdown, Offcanvas, Accordion, Form } from "react-bootstrap";
-import axios from "../API/axios";
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { stateActions } from "../redux/stateActions";
+import axios from "../../API/axios";
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { stateActions } from "../../redux/stateActions";
 import $ from "jquery";
 import 'rc-slider/assets/index.css';
 import { useDispatch, useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
-
+import Register from "../Register";
+import Login from '../Login';
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 const initialFormData = {
@@ -46,8 +47,9 @@ function Checkout() {
     const [formData, setFormData] = useState(initialFormData);
     const [credit, setCredit] = useState(initialCredit);
     const [show, setShow] = useState(false);
-    const [productData, setProductData] = useState([
-    ]);
+    const [modelshow, setModelshow] = useState(false);
+    const [modelshowLogin,setModelshowLogin] =useState(false);
+    const [productData, setProductData] = useState([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const selectRef1 = useRef();
@@ -79,16 +81,23 @@ function Checkout() {
         let price = i.variant?.price;
         cartTotalAmount += price * i.quantity;
     });
-    const handleSignup = ()=>{
-        navigate("/", { state: { showSignup: true } });
-    } 
+    const handleSignup = (e) => {
+        e.preventDefault();
+        return setModelshow(!modelshow);
+    }
 
-   const handleLogin = ()=>{
-    navigate("/", { state: { showLogin: true } });
-   }
-   window.scrollTo(0, 0);
+    const handleLogin = (e) => {
+        e.preventDefault();
+        console.log(modelshowLogin)
+        return setModelshowLogin(!modelshowLogin);
+    }
+
+    window.scrollTo(0, 0);
 
     let Type = window.localStorage.getItem("utype");
+    useEffect(()=>{
+    },[ window.localStorage.getItem("utype")])
+
     useEffect(() => {
         getD();
         getData();
@@ -155,9 +164,8 @@ function Checkout() {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
             return (
-                window.alert("Successful Place Order"),
-                navigate("/")
-                );
+                navigate("/thanku")
+            );
         } catch (error) {
             console.log(error);
         }
@@ -173,20 +181,22 @@ function Checkout() {
                             <div className="checkoutMainBlk">
                                 <div className="whiteBg py-3 px-3">
                                     <div className="row d-flex align-items-center">
-                                        {Type != "user" ? <div className="col">
-                                            <div className="checkOutLoginBts">
-                                                <button onClick={handleSignup} className="btnCommon">Register Account</button>
-                                                <button onClick={handleLogin} className="btnCommon">Login</button>
+                                        {Type != "user" ?
+                                            <div className="col">
+                                                <div className="checkOutLoginBts">
+                                                    <button onClick={(e) => handleSignup(e)} className="btnCommon">Register Account</button>
+                                                    {modelshow ? <Register setModelshow={setModelshow} /> : " "}
+                                                    <button onClick={(e) => handleLogin(e)} className="btnCommon">Login</button>
+                                                    {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} /> : " "}
+                                                </div>
                                             </div>
-                                        </div> : ""}
-                                        {show ?
+                                            :
                                             <>
                                                 <div className="col">
                                                     <div className="checkOutLoginBts">
                                                         <button className="btn btnCommon btnRadiusNone"
                                                             onClick={() => {
                                                                 dispatch(stateActions.logout());
-                                                                setShow(false);
                                                             }}
                                                         >
                                                             Logout
@@ -204,7 +214,7 @@ function Checkout() {
                                                     </div>
                                                 </div>
                                             </>
-                                            : ""}
+                                        }
                                     </div>
                                 </div>
                                 <div className="whiteBg phoneNumbrBlk my-4 py-3 px-3">
