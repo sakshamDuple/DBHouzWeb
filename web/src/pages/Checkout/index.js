@@ -51,6 +51,10 @@ function Checkout() {
     const [modelshowLogin,setModelshowLogin] =useState(false);
     const [productData, setProductData] = useState([]);
     const dispatch = useDispatch();
+
+    const afterLogin = ()=>{
+        getD();
+    }
     const navigate = useNavigate();
     const selectRef1 = useRef();
     useEffect(() => {
@@ -185,9 +189,10 @@ function Checkout() {
                                             <div className="col">
                                                 <div className="checkOutLoginBts">
                                                     <button onClick={(e) => handleSignup(e)} className="btnCommon">Register Account</button>
-                                                    {modelshow ? <Register setModelshow={setModelshow} /> : " "}
+                                                    {modelshow ? <Register setModelshow={setModelshow}  
+                                                    afterLogin={afterLogin}/> : " "}
                                                     <button onClick={(e) => handleLogin(e)} className="btnCommon">Login</button>
-                                                    {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} /> : " "}
+                                                    {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} afterLogin={afterLogin}/> : " "}
                                                 </div>
                                             </div>
                                             :

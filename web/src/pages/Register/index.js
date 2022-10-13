@@ -5,7 +5,7 @@ import { RestUser } from "../../rest";
 import { useDispatch } from "react-redux";
 import { stateActions } from "../../redux/stateActions";
 import { Modal, Offcanvas, Dropdown, Container, Row, Col } from "react-bootstrap";
-const Register = props => {
+const Register = ({props}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");

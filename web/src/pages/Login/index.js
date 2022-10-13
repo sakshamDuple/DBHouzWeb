@@ -27,6 +27,7 @@ const Login = props => {
                 console.log(`Got 2`);
                 dispatch(stateActions.setUser("user", user, token));
                 props.setModelshowLogin(false);
+                props.afterLogin(token)
                 loginModel(false);
             })
             .catch((e) => setError(e.message));

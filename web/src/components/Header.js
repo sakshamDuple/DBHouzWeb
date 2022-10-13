@@ -116,6 +116,26 @@ function Header() {
       );
   }
 
+  const CustomDropDown = ({category})=>{
+    console.log("category manvir",category)
+    return 'manvir'
+    return ( <Dropdown>
+    <Dropdown.Toggle variant="default" id="dropdown-basic">
+      {category.category.name}
+    </Dropdown.Toggle>
+    <Dropdown.Menu>
+      {category.subcategories.map((category1) => {
+        console.log("category1",category1)
+      return (
+        <Dropdown.Item>
+          'manvir'
+          
+        </Dropdown.Item>
+      )})}
+    </Dropdown.Menu>
+  </Dropdown>)
+  }
+
   const handlelogin = (e) => {
     e.preventDefault();
     if (loginEmail === " " || undefined) {
@@ -922,11 +942,14 @@ function Header() {
                         <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {categories.map((category) => (
-                          <Dropdown.Item
-                          >  {category.category.name}
+                        {categories.map((category) => {
+                          console.log("image.png harjot", category)
+                        return (
+                          <Dropdown.Item>
+                            <CustomDropDown category={category}/>
+                            
                           </Dropdown.Item>
-                        ))}
+                        )})}
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
