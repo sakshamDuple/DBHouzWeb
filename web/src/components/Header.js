@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button, Modal, Dropdown, Container, Row, Col, Offcanvas } from "react-bootstrap";
 import RightArrow from "../img/rightArrowIcon.svg";
-import { Rest, RestAdmin, RestUser } from "../rest";
+import { Rest, RestAdmin, RestUser, RestClient } from "../rest";
 import { useDispatch, useSelector } from "react-redux";
 import { stateActions } from "../redux/stateActions";
 import deleteCart from "../assets/images/icons/deleteShoppingCart.svg";
@@ -116,26 +116,26 @@ function Header() {
       );
   }
 
-  const CustomDropDown = ({ category }) => {
-    console.log("category manvir", category)
-    return 'manvir'
-    return (<Dropdown>
-      <Dropdown.Toggle variant="default" id="dropdown-basic">
-        {category.category.name}
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        {category.subcategories.map((category1) => {
-          console.log("category1", category1)
-          return (
-            <Dropdown.Item>
-              'manvir'
+  // const CustomDropDown = ({ category }) => {
+  //   console.log("category manvir", category)
+  //   return 'manvir'
+  //   return (<Dropdown>
+  //     <Dropdown.Toggle variant="default" id="dropdown-basic">
+  //       {category.category.name}
+  //     </Dropdown.Toggle>
+  //     <Dropdown.Menu>
+  //       {category.subcategories.map((category1) => {
+  //         console.log("category1", category1)
+  //         return (
+  //           <Dropdown.Item>
+  //             'manvir'
 
-            </Dropdown.Item>
-          )
-        })}
-      </Dropdown.Menu>
-    </Dropdown>)
-  }
+  //           </Dropdown.Item>
+  //         )
+  //       })}
+  //     </Dropdown.Menu>
+  //   </Dropdown>)
+  // }
 
   const handlelogin = (e) => {
     e.preventDefault();
@@ -216,6 +216,15 @@ function Header() {
         console.log("error", error)
       }
     }
+  }
+  function MouseOver(categoryId) {
+    console.log("categoryId", categoryId)
+    RestClient.getCategoryDropdown(categoryId)
+      .then((res)=>{
+        console.log("res js ", res)
+      }).catch((error) => {
+        console.log("error", error)
+      })
   }
 
   return (
@@ -943,51 +952,55 @@ function Header() {
                         <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
                       <Dropdown.Menu className="dp-dropdown-main">
-                        <Dropdown.Item href="#/action-1">
-                            <div className='dp-dropdown'>
-                              <Link to="/services" className='d-flex align-items-center justify-content-between'  >
-                                <span> Services </span>
-                                <i class="fa fa-caret-right ml-10" aria-hidden="true"></i>
-                              </Link>
-                              <div className="dp-dropdown-box box-shadow ">
+                        {categories.map((category) => {
+                          return (
+                            <Dropdown.Item href="#/action-1">
+                              <div className='dp-dropdown'>
+                                <div  className='d-flex align-items-center justify-content-between' onClick={MouseOver(category.category._id)} >
+                                  <span> {category?.category?.name}</span>
+                                  <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                </div>
+                                <div className="dp-dropdown-box box-shadow ">
                                   <div className="row">
                                     <div className="col-md-6">
                                       <div className="blueBg p-4 h-100">
-                                          <h3 className="m-0">Services</h3>
-                                          <hr />
-                                          <ul className=''>
-                                            <li><Link to="" >Tyrone Burt</Link></li>
-                                            <li><Link to="" >Regina Moreno</Link></li>
-                                            <li><Link to="" >Tyrone Burt</Link></li>
-                                            <li><Link to="" >Regina Moreno</Link></li>
-                                            <li><Link to="" >Tyrone Burt</Link></li>
-                                            <li><Link to="" >Regina Moreno</Link></li>
-                                          </ul>
+                                        <h3 className="m-0">{category?.category?.name}</h3>
+                                        <hr />
+                                        <ul className=''>
+                                          <li>Tyrone Burt</li>
+                                          <li><Link to="" >Regina Moreno</Link></li>
+                                          <li><Link to="" >Tyrone Burt</Link></li>
+                                          <li><Link to="" >Regina Moreno</Link></li>
+                                          <li><Link to="" >Tyrone Burt</Link></li>
+                                          <li><Link to="" >Regina Moreno</Link></li>
+                                        </ul>
                                       </div>
                                     </div>
                                     <div className="col-md-6">
                                       <div className="px-4 py-3">
-                                          <h3 className="m-0">Popular Product</h3>
-                                          <hr />
-                                          <ul className=''>
-                                            <li><Link to="" >Carla Meyers</Link></li>
-                                            <li><Link to="" >Martin Barron</Link></li>
-                                            <li><Link to="" >Pankaj Tiles</Link></li>
-                                            <li><Link to="" >Martin Barron</Link></li>
-                                            <li><Link to="" >Carla Meyers</Link></li>
-                                            <li><Link to="" >Martin Barron</Link></li>
-                                            <li><Link to="" >Pankaj Tiles</Link></li>
-                                            <li><Link to="" >Martin Barron</Link></li>
-                                          </ul>
+                                        <h3 className="m-0">Popular Product</h3>
+                                        <hr />
+                                        <ul className=''>
+                                          <li><Link to="" >Carla Meyers</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                          <li><Link to="" >Pankaj Tiles</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                          <li><Link to="" >Carla Meyers</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                          <li><Link to="" >Pankaj Tiles</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                        </ul>
                                       </div>
                                     </div>
 
                                   </div>
+                                </div>
                               </div>
-                            </div>
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                            </Dropdown.Item>
+                          );
+                        })}
+                        {/* <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> */}
                       </Dropdown.Menu>
                       {/* <Dropdown.Menu>
                         {categories.map((category) => {
@@ -1013,10 +1026,10 @@ function Header() {
                             {/* <Dropdown.Item>Item 3.1</Dropdown.Item>
                             <Dropdown.Item>Item 3.2</Dropdown.Item>
                             <Dropdown.Item>Item 3.3</Dropdown.Item> */}
-                          {/* </NestedDropdown>
+                    {/* </NestedDropdown>
                         </Dropdown.Menu>
                       </Dropdown>
-                    </Container> */} 
+                    </Container> */}
 
                   </div>
                 </div>

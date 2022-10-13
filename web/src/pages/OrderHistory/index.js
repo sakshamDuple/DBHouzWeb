@@ -30,7 +30,6 @@ function OrderHistory() {
         console.log("userId", userId)
         try {
             const res = await axios.get(`/order/getOrderForUser/${userId}`);
-            console.log("res jagvir", res)
             const { data: { order } = {} } = res || {};
             console.log("res jagvir", order)
             return setGetData(order);
@@ -136,7 +135,7 @@ function OrderHistory() {
                                         </div>
                                         <div className="orderHistryTable">
                                             <TableList />
-                                            {/* <Table bordered>
+                                            <Table bordered>
                                                 <thead>
                                                     <tr>
                                                         <th>Order Id #</th>
@@ -175,7 +174,7 @@ function OrderHistory() {
                                                         );
                                                     })}
                                                 </tbody>
-                                            </Table> */}
+                                            </Table>
                                         </div>
                                         {/* <div className="pgntnOuter d-flex flex-row-reverse pb-3">
                                             <ul className="pagination">

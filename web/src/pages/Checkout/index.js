@@ -168,6 +168,7 @@ function Checkout() {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
             return (
+                // dispatch(stateActions.removeCartItem())
                 navigate("/thanku")
             );
         } catch (error) {

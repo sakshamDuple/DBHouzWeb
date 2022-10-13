@@ -13,9 +13,7 @@ const App = () => {
     console.log("at", accessToken)
     console.log(jwtDecode(accessToken));
     let n = jwtDecode(accessToken);
-    console.log("n", n)
     const { user: { _id } = {} } = n || {};
-    console.log("_id", _id)
     setToken(_id);
   }, [])
 
@@ -125,11 +123,11 @@ const App = () => {
   )
 
   const initialData = async (userId=token,page=1,limit=10) => {
-    // console.log(page, limit)
+    console.log(page, limit)
     console.log("userId", userId)
     try {
-      setLoading(true);
-      const res = await axios.post(`/order/getOrderForUser/${userId}/${page}/${limit}/${SortByDate}`);
+      // setLoading(true);
+      const res = await axios.get(`/order/getOrderForUser/${userId}/${page}/${limit}/asc`);
       // const { data: { results: { order = [] } = {}, totalResults = 0 } = {}, } = res || {}
       console.log("res js", res)
       // setState(prev => ({ ...prev, temples, totalCount: totalResults }));
