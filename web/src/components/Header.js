@@ -116,24 +116,25 @@ function Header() {
       );
   }
 
-  const CustomDropDown = ({category})=>{
-    console.log("category manvir",category)
+  const CustomDropDown = ({ category }) => {
+    console.log("category manvir", category)
     return 'manvir'
-    return ( <Dropdown>
-    <Dropdown.Toggle variant="default" id="dropdown-basic">
-      {category.category.name}
-    </Dropdown.Toggle>
-    <Dropdown.Menu>
-      {category.subcategories.map((category1) => {
-        console.log("category1",category1)
-      return (
-        <Dropdown.Item>
-          'manvir'
-          
-        </Dropdown.Item>
-      )})}
-    </Dropdown.Menu>
-  </Dropdown>)
+    return (<Dropdown>
+      <Dropdown.Toggle variant="default" id="dropdown-basic">
+        {category.category.name}
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
+        {category.subcategories.map((category1) => {
+          console.log("category1", category1)
+          return (
+            <Dropdown.Item>
+              'manvir'
+
+            </Dropdown.Item>
+          )
+        })}
+      </Dropdown.Menu>
+    </Dropdown>)
   }
 
   const handlelogin = (e) => {
@@ -941,16 +942,67 @@ function Header() {
                       <Dropdown.Toggle variant="default" id="dropdown-basic">
                         <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
-                      <Dropdown.Menu>
+                      <Dropdown.Menu className="dp-dropdown-main">
+                        <Dropdown.Item href="#/action-1">
+                            <div className='dp-dropdown'>
+                              <Link to="/services" className='d-flex align-items-center justify-content-between'  >
+                                <span> Services </span>
+                                <i class="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                              </Link>
+                              <div className="dp-dropdown-box box-shadow ">
+                                  <div className="row">
+                                    <div className="col-md-6">
+                                      <div className="blueBg p-4 h-100">
+                                          <h3 className="m-0">Services</h3>
+                                          <hr />
+                                          <ul className=''>
+                                            <li><Link to="" >Tyrone Burt</Link></li>
+                                            <li><Link to="" >Regina Moreno</Link></li>
+                                            <li><Link to="" >Tyrone Burt</Link></li>
+                                            <li><Link to="" >Regina Moreno</Link></li>
+                                            <li><Link to="" >Tyrone Burt</Link></li>
+                                            <li><Link to="" >Regina Moreno</Link></li>
+                                          </ul>
+                                      </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                      <div className="px-4 py-3">
+                                          <h3 className="m-0">Popular Product</h3>
+                                          <hr />
+                                          <ul className=''>
+                                            <li><Link to="" >Carla Meyers</Link></li>
+                                            <li><Link to="" >Martin Barron</Link></li>
+                                            <li><Link to="" >Pankaj Tiles</Link></li>
+                                            <li><Link to="" >Martin Barron</Link></li>
+                                            <li><Link to="" >Carla Meyers</Link></li>
+                                            <li><Link to="" >Martin Barron</Link></li>
+                                            <li><Link to="" >Pankaj Tiles</Link></li>
+                                            <li><Link to="" >Martin Barron</Link></li>
+                                          </ul>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                              </div>
+                            </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                      </Dropdown.Menu>
+                      {/* <Dropdown.Menu>
                         {categories.map((category) => {
                           console.log("image.png harjot", category)
                         return (
+                            
                           <Dropdown.Item>
-                            <CustomDropDown category={category}/>
+
+                            <CustomDropDown category={category}>
+                                 cdcf sdn
+                            </CustomDropDown>
                             
                           </Dropdown.Item>
                         )})}
-                      </Dropdown.Menu>
+                      </Dropdown.Menu> */}
                     </Dropdown>
                   </div>
                 </div>
