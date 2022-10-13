@@ -23,8 +23,8 @@ function Category() {
     //  navigate(`/productlist?category=${category}`);
   };
   const linkSubProductList = (category,subcategory) => {
-    navigate(`/productlist`, { state: { subcategory } });
-    //  navigate(`/productlist?category=${category}&subcategory=${subcategory}`, { state: { category, subcategory } });
+     navigate(`/productlist`, { state: { subcategory } });
+    // navigate(`/productlist?category=${category}&subcategory=${subcategory}`, { state: { category, subcategory } });
   };
   window.scrollTo(0, 0);
 

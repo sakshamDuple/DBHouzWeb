@@ -11,6 +11,8 @@ import Edit from "../assets/images/settingIcons/editIcon.svg";
 import ChangePassword from "../assets/images/settingIcons/changePaswrd.svg";
 import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
+import "./Header.css";
+import axios from "../API/axios";
 
 function Header() {
   const [path, setPath] = useState({
@@ -71,6 +73,7 @@ function Header() {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchData, setSearchData] = useState([]);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -82,7 +85,8 @@ function Header() {
   const [reset, resetModal] = useState(false);
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
-  const [formError, setFormError] = useState();
+  const [searchEngine, setSearchEngine] = useState("");
+  const [selectOption, setSelectOption] = useState("");
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const user = useSelector((s) => s.user);
@@ -110,6 +114,26 @@ function Header() {
       .match(
         /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
       );
+  }
+
+  const CustomDropDown = ({category})=>{
+    console.log("category manvir",category)
+    return 'manvir'
+    return ( <Dropdown>
+    <Dropdown.Toggle variant="default" id="dropdown-basic">
+      {category.category.name}
+    </Dropdown.Toggle>
+    <Dropdown.Menu>
+      {category.subcategories.map((category1) => {
+        console.log("category1",category1)
+      return (
+        <Dropdown.Item>
+          'manvir'
+          
+        </Dropdown.Item>
+      )})}
+    </Dropdown.Menu>
+  </Dropdown>)
   }
 
   const handlelogin = (e) => {
@@ -170,6 +194,28 @@ function Header() {
         setError(`Registration Failed`);
       });
   };
+  useEffect(() => {
+    handleSelectOption()
+  }, [searchEngine, selectOption])
+
+  const handleSelectOption = async (e) => {
+    // e.preventDefault();
+    console.log("selectOption", selectOption)
+    console.log("searchEngine", searchEngine)
+    if (selectOption !== "") {
+      let data = {
+        categoryId: selectOption,
+        searchVal: searchEngine,
+      }
+      try {
+        let res = await axios.post(`/product/category/search`, data)
+        console.log("res", res.data.fetches)
+        setSearchData(res.data.fetches)
+      } catch (error) {
+        console.log("error", error)
+      }
+    }
+  }
 
   return (
     <header className="mainHeader wrapper">
@@ -739,23 +785,56 @@ function Header() {
                   <div className="row">
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <select className="form-select">
-                          <option>Categories List</option>
-                          <option>Categories List 1</option>
-                          <option>Categories List 2</option>
-                          <option>Categories 3</option>
-                          <option>Categories List 4</option>
+                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select">
+
+                          <option value="none" selected disabled hidden>Select an Option</option>
+                          {categories.map((option) => {
+                            return (
+                              <option value={option.category._id}>{option.category.name}</option>
+                            );
+                          })}
                         </select>
                       </div>
                     </div>
                     <div className="col-sm">
                       <div className="form-group">
-                        <input type="text" className="form-control" />
+                        <input type="text" value={searchEngine} className="form-control"
+                          onChange={(e) => setSearchEngine(e.target.value)}
+                        />
+                        {
+                          searchData[0]?.products?.map((product) => {
+                            console.log("product", product)
+                            return (
+                              <div>
+                                <ul>
+                                  <li>
+                                    {product.name}
+                                  </li>
+                                </ul>
+                              </div>
+                            )
+                          })
+                        }
+                        {
+                          searchData[1]?.s?.map((product) => {
+                            console.log("product", product)
+                            return (
+                              <ul>
+                                <h3>Product</h3>
+                                <li>
+                                  {product.name}
+                                </li>
+                              </ul>
+                            )
+                          })
+                        }
                       </div>
                     </div>
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <button className="btnCommon btnDark">
+                        <button className="btnCommon btnDark"
+                          onClick={(e) => handleSelectOption(e)}
+                        >
                           Search <img src="/img/searchIcon.svg" />
                         </button>
                       </div>
@@ -850,7 +929,7 @@ function Header() {
             </div>
           </Row>
         </Container>
-      </article>
+      </article >
       <article className="hdrNavRow">
         <Container>
           <Row className="row align-items-center justify-content-between">
@@ -863,15 +942,14 @@ function Header() {
                         <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {categories.map((category) => (
-                          <Dropdown.Item
-                            onClick={() => {
-                              navigate("/category", { state: category });
-                            }}
-                          >
-                            {category.category.name}
+                        {categories.map((category) => {
+                          console.log("image.png harjot", category)
+                        return (
+                          <Dropdown.Item>
+                            <CustomDropDown category={category}/>
+                            
                           </Dropdown.Item>
-                        ))}
+                        )})}
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
