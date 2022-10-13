@@ -6,14 +6,13 @@ import { useDispatch } from "react-redux";
 import { stateActions } from "../../redux/stateActions";
 import { Modal, Offcanvas, Dropdown, Container, Row, Col } from "react-bootstrap";
 
-const Login = props => {
+const Login = ({setModelshowLogin,afterLogin}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [error, setError] = useState();
     const [logins, loginModel] = useState(true);
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    console.log(props)
     const handlelogin = (e) => {
         e.preventDefault();
         if (loginEmail === " " || undefined) {
@@ -26,8 +25,8 @@ const Login = props => {
             .then(({ user, token }) => {
                 console.log(`Got 2`);
                 dispatch(stateActions.setUser("user", user, token));
-                props.setModelshowLogin(false);
-                props.afterLogin(token)
+                setModelshowLogin(false);
+                afterLogin(token)
                 loginModel(false);
             })
             .catch((e) => setError(e.message));
@@ -37,7 +36,7 @@ const Login = props => {
             size="lg"
             show={logins}
             onHide={() => {
-                props.setModelshowLogin(false);
+               setModelshowLogin(false);
                 loginModel(false)
             }}
             aria-labelledby="contained-modal-title-vcenter"

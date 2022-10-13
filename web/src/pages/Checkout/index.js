@@ -46,15 +46,11 @@ const initialCredit = {
 function Checkout() {
     const [formData, setFormData] = useState(initialFormData);
     const [credit, setCredit] = useState(initialCredit);
-    const [show, setShow] = useState(false);
+    const [Type, setType] = useState();
     const [modelshow, setModelshow] = useState(false);
-    const [modelshowLogin,setModelshowLogin] =useState(false);
+    const [modelshowLogin, setModelshowLogin] = useState(false);
     const [productData, setProductData] = useState([]);
     const dispatch = useDispatch();
-
-    const afterLogin = ()=>{
-        getD();
-    }
     const navigate = useNavigate();
     const selectRef1 = useRef();
     useEffect(() => {
@@ -92,20 +88,25 @@ function Checkout() {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        console.log(modelshowLogin)
         return setModelshowLogin(!modelshowLogin);
     }
 
-    window.scrollTo(0, 0);
+    const handleLogout = (e) => {
+        e.preventDefault();
+        return dispatch(stateActions.logout()), TokenUType(),getD()
+    }
 
-    let Type = window.localStorage.getItem("utype");
-    useEffect(()=>{
-    },[ window.localStorage.getItem("utype")])
+    window.scrollTo(0, 0);
+    const TokenUType = () => {
+        let Type = window.localStorage.getItem("utype");
+        setType(Type);
+    }
 
     useEffect(() => {
         getD();
         getData();
-    }, []);
+        TokenUType();
+    }, [modelshow]);
     const getD = () => {
         if (window.localStorage.JWT) {
             let accessToken = window.localStorage.getItem("JWT");
@@ -113,7 +114,6 @@ function Checkout() {
             let n = jwtDecode(accessToken);
             console.log("n", n)
             const { user: { email, _id } = {} } = n || {};
-            setShow(true);
             setFormData((prev) => {
                 const { customerDetail } = prev;
                 return {
@@ -174,7 +174,18 @@ function Checkout() {
             console.log(error);
         }
     };
-
+    useEffect(()=>{
+        TokenUType();
+        getD();
+    },[])
+    const afterLogin = () => {
+        TokenUType();
+        getD();
+    }
+    const afterSignup = () => {
+        getD();
+        TokenUType();
+    }
     return (
         <section className="wrapper">
             <Header />
@@ -188,11 +199,11 @@ function Checkout() {
                                         {Type != "user" ?
                                             <div className="col">
                                                 <div className="checkOutLoginBts">
-                                                    <button onClick={(e) => handleSignup(e)} className="btnCommon">Register Account</button>
-                                                    {modelshow ? <Register setModelshow={setModelshow}  
-                                                    afterLogin={afterLogin}/> : " "}
+                                                    <button onClick={(e) => {handleSignup(e)}} className="btnCommon">Register Account</button>
+                                                    {modelshow ? <Register setModelshow={setModelshow}
+                                                        afterSignup={afterSignup} /> : " "}
                                                     <button onClick={(e) => handleLogin(e)} className="btnCommon">Login</button>
-                                                    {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} afterLogin={afterLogin}/> : " "}
+                                                    {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} afterLogin={afterLogin} /> : " "}
                                                 </div>
                                             </div>
                                             :
@@ -200,9 +211,7 @@ function Checkout() {
                                                 <div className="col">
                                                     <div className="checkOutLoginBts">
                                                         <button className="btn btnCommon btnRadiusNone"
-                                                            onClick={() => {
-                                                                dispatch(stateActions.logout());
-                                                            }}
+                                                            onClick={(e) => handleLogout(e)}
                                                         >
                                                             Logout
                                                         </button>
