@@ -13,7 +13,7 @@ import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
 import "./Header.css";
 import axios from "../API/axios";
-
+import NestedDropdown from './NestedDropdown';
 function Header() {
   const [path, setPath] = useState({
     home: "no",
@@ -116,24 +116,25 @@ function Header() {
       );
   }
 
-  const CustomDropDown = ({category})=>{
-    console.log("category manvir",category)
+  const CustomDropDown = ({ category }) => {
+    console.log("category manvir", category)
     return 'manvir'
-    return ( <Dropdown>
-    <Dropdown.Toggle variant="default" id="dropdown-basic">
-      {category.category.name}
-    </Dropdown.Toggle>
-    <Dropdown.Menu>
-      {category.subcategories.map((category1) => {
-        console.log("category1",category1)
-      return (
-        <Dropdown.Item>
-          'manvir'
-          
-        </Dropdown.Item>
-      )})}
-    </Dropdown.Menu>
-  </Dropdown>)
+    return (<Dropdown>
+      <Dropdown.Toggle variant="default" id="dropdown-basic">
+        {category.category.name}
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
+        {category.subcategories.map((category1) => {
+          console.log("category1", category1)
+          return (
+            <Dropdown.Item>
+              'manvir'
+
+            </Dropdown.Item>
+          )
+        })}
+      </Dropdown.Menu>
+    </Dropdown>)
   }
 
   const handlelogin = (e) => {
@@ -943,15 +944,29 @@ function Header() {
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {categories.map((category) => {
-                          console.log("image.png harjot", category)
+                          console.log("category",category)
                         return (
                           <Dropdown.Item>
-                            <CustomDropDown category={category}/>
-                            
+                            <NestedDropdown category={category}/>
+                            {/* {category?.category?.name} */}
                           </Dropdown.Item>
                         )})}
                       </Dropdown.Menu>
                     </Dropdown>
+                    {/* <Container>
+                      <Dropdown autoClose="outside">
+                        <Dropdown.Toggle variant="default" id="dropdown-basic">
+                        <img src="/img/catIcon.svg" /> Categories
+                        </Dropdown.Toggle> <Dropdown.Menu>
+                          <NestedDropdown title="Item 3">
+                            {/* <Dropdown.Item>Item 3.1</Dropdown.Item>
+                            <Dropdown.Item>Item 3.2</Dropdown.Item>
+                            <Dropdown.Item>Item 3.3</Dropdown.Item> */}
+                          {/* </NestedDropdown>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Container> */} 
+
                   </div>
                 </div>
               </div>

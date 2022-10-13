@@ -5,7 +5,6 @@ import jwtDecode from "jwt-decode";
 const initialState = { temples: [], currentPage: 1, totalCount: 0 };
 
 const App = () => {
-  const userId = Id;
   const [{ temples, currentPage, totalCount }, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState();
@@ -125,12 +124,12 @@ const App = () => {
     [temples]
   )
 
-  const initialData = async (userId=token) => {
+  const initialData = async (userId=token,page=1,limit=10) => {
     // console.log(page, limit)
     console.log("userId", userId)
     try {
       setLoading(true);
-      const res = await axios.post(`/order/getOrderForUser/${userId}`);
+      const res = await axios.post(`/order/getOrderForUser/${userId}/${page}/${limit}/${SortByDate}`);
       // const { data: { results: { order = [] } = {}, totalResults = 0 } = {}, } = res || {}
       console.log("res js", res)
       // setState(prev => ({ ...prev, temples, totalCount: totalResults }));
