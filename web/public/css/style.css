@@ -20,10 +20,9 @@
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
 }
-.dp-dropdown-main:hover .dp-dropdown-box{
+/* .dp-dropdown-main .dp-dropdown-box{
     display: block;
-}
-
+} */
 
 .dp-dropdown-box ul li {
     border-bottom: 1px solid #ddd;

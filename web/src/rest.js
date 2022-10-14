@@ -346,14 +346,13 @@ export let RestClient = {
       { errorMessage: "Unable to get products!" }
     );
   },
-  async getCategoryDropdown(categoryId) {
-    console.log("getCategoryDropdown", categoryId);
+  async getCategoryDropdown(subcategoryId) {
+    console.log("getCategoryDropdown", subcategoryId);
     let data = {
-      categoryId: categoryId,
-      searchVal: "",
+      subCategoryId: subcategoryId,
     }
     return await post(
-      "/product/category/search",
+      "/product/getProductsBySubCategory",
       data,
       { errorMessage: "Unable to get products!" }
     );

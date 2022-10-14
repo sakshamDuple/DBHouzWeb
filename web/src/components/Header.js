@@ -13,7 +13,8 @@ import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
 import "./Header.css";
 import axios from "../API/axios";
-import NestedDropdown, { CustomMenu } from './NestedDropdown';
+import NestedDropdown, { CustomMenu, CustomToggle } from './NestedDropdown';
+import NestedDropdown2, { CustomMenu2, CustomToggle2 } from './NestedDropdown2';
 function Header() {
   const [path, setPath] = useState({
     home: "no",
@@ -85,6 +86,7 @@ function Header() {
   const [reset, resetModal] = useState(false);
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
+  const [getShowMenu, setShowMenu] = useState([])
   const [searchEngine, setSearchEngine] = useState("");
   const [selectOption, setSelectOption] = useState("");
   const [showSignUpModal, setShowSignUpModal] = useState(false);
@@ -217,19 +219,67 @@ function Header() {
       }
     }
   }
-  function MouseOver(categoryId) {
+  function handledropdown(categoryId) {
     console.log("categoryId", categoryId)
     RestClient.getCategoryDropdown(categoryId)
       .then((res) => {
-        console.log("res js ", res)
+        // setShowMenu(res.fetches)
+        console.log("resjasfjdjj", res)
       }).catch((error) => {
         console.log("error", error)
       })
   }
 
+  function showMenu(category) {
+    // handledropdown(category.category._id)
+    console.log("toShow", getShowMenu)
+    return (
 
-
-
+      <div className="row">
+        <div className="col-md-6">
+          <div className="blueBg p-4 h-100">
+            {console.log("jug", getShowMenu?.products?.name)}
+            <h3 className="m-0">{category?.category?.name}</h3>
+            <hr />
+            <ul className=''>
+              <li>Tyrone Burt</li>
+              <li><Link to="" >Regina Moreno</Link></li>
+              <li><Link to="" >Tyrone Burt</Link></li>
+              <li><Link to="" >Regina Moreno</Link></li>
+              <li><Link to="" >Tyrone Burt</Link></li>
+              <li><Link to="" >Regina Moreno</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="px-4 py-3">
+            <h3 className="m-0">Popular Product</h3>
+            <hr />
+            <ul className=''>
+              <li><Link to="" >Carla Meyers</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+              <li><Link to="" >Pankaj Tiles</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+              <li><Link to="" >Carla Meyers</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+              <li><Link to="" >Pankaj Tiles</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  const handleNavtigate = async (e, productId) => {
+    e.preventDefault();
+    try {
+      let res = await axios.post(`/product/getOne/${productId}`)
+      console.log("res", res.data)
+      // navigate("/productdetail", { state: { product: product } });
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
   return (
     <header className="mainHeader wrapper">
       <article className="topBar blueBg">
@@ -814,7 +864,7 @@ function Header() {
                         <input type="text" value={searchEngine} className="form-control"
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
-                        {
+                         {
                           searchData[0]?.products?.map((product) => {
                             console.log("product", product)
                             return (
@@ -825,19 +875,6 @@ function Header() {
                                   </li>
                                 </ul>
                               </div>
-                            )
-                          })
-                        }
-                        {
-                          searchData[1]?.s?.map((product) => {
-                            console.log("product", product)
-                            return (
-                              <ul>
-                                <h3>Product</h3>
-                                <li>
-                                  {product.name}
-                                </li>
-                              </ul>
                             )
                           })
                         }
@@ -954,21 +991,78 @@ function Header() {
                       <Dropdown.Toggle variant="default" id="dropdown-basic">
                         <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
-                      {console.log("categories manvir", categories)}
                       <Dropdown.Menu className="dp-dropdown-main" as={CustomMenu}>
                         {categories.map((category) => {
                           return (
                             <NestedDropdown className='dp-dropdown' title={category?.category?.name}>
                               {category.subCategories.map((subCategory) => {
-                                return (<Dropdown.Item ><li><Link to="" >{subCategory.name}</Link></li></Dropdown.Item>)
+                                return (
+                                  <NestedDropdown2 title={subCategory.name} id={subCategory._id}>
+                                    {/* <Dropdown.Item ><li>{subCategory.name}</li></Dropdown.Item> */}
+                                  </NestedDropdown2>
+                                )
                               })}
-
                             </NestedDropdown>
                           );
                         })}
                       </Dropdown.Menu>
-                      
                     </Dropdown>
+                    {/* <Dropdown>
+                      <Dropdown.Toggle variant="default" id="dropdown-basic">
+                        <img src="/img/catIcon.svg" /> Categories
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu className="dp-dropdown-main">
+                        {categories.map((category) => {
+                          return (
+                            <Dropdown.Item href="#/action-1">
+                              <div className='dp-dropdown'>
+                                <div className='d-flex align-items-center justify-content-between'  >
+                                  <span> {category?.category?.name}</span>
+                                  <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                </div>
+                                <div className="dp-dropdown-box box-shadow ">
+                                  <div className="row">
+                                    <div className="col-md-6">
+                                      <div className="blueBg p-4 h-100">
+                                        <h3 className="m-0">{category?.category?.name}</h3>
+                                        <hr />
+                                        <ul className=''>
+                                          <li>Tyrone Burt</li>
+                                          <li><Link to="" >Regina Moreno</Link></li>
+                                          <li><Link to="" >Tyrone Burt</Link></li>
+                                          <li><Link to="" >Regina Moreno</Link></li>
+                                          <li><Link to="" >Tyrone Burt</Link></li>
+                                          <li><Link to="" >Regina Moreno</Link></li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                      <div className="px-4 py-3">
+                                        <h3 className="m-0">Popular Product</h3>
+                                        <hr />
+                                        <ul className=''>
+                                          <li><Link to="" >Carla Meyers</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                          <li><Link to="" >Pankaj Tiles</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                          <li><Link to="" >Carla Meyers</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                          <li><Link to="" >Pankaj Tiles</Link></li>
+                                          <li><Link to="" >Martin Barron</Link></li>
+                                        </ul>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </div>
+                            </Dropdown.Item>
+                          );
+                        })}
+                         <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> 
+                      </Dropdown.Menu>
+                    </Dropdown> */}
                   </div>
                 </div>
               </div>
@@ -1087,3 +1181,32 @@ export default Header;
   )})}
 </Dropdown.Menu> 
 </Dropdown> */}
+
+
+
+
+
+
+
+
+// <Dropdown autoClose="outside">
+//   <Dropdown.Toggle variant="default" id="dropdown-basic">
+//     <img src="/img/catIcon.svg" /> Categories
+//   </Dropdown.Toggle>
+//   {console.log("categories manvir", categories)}
+//   <Dropdown.Menu className="dp-dropdown-main" as={CustomMenu}>
+//     {categories.map((category) => {
+//       return (
+//         <NestedDropdown className='dp-dropdown' title={category?.category?.name}>
+//           {category.subCategories.map((subCategory) => {
+//             return (
+//               <NestedDropdown2 className="dp-dropdown-box box-shadow " title={subCategory.name}>
+//                 <Dropdown.Item ><li>{subCategory.name}</li></Dropdown.Item>
+//               </NestedDropdown2>
+//             )
+//           })}
+//         </NestedDropdown>
+//       );
+//     })}
+//   </Dropdown.Menu>
+// </Dropdown>
