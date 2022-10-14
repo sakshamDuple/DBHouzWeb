@@ -860,24 +860,23 @@ function Header() {
                       </div>
                     </div>
                     <div className="col-sm">
-                      <div className="form-group">
+                      <div className="form-group ">
                         <input type="text" value={searchEngine} className="form-control"
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
-                         {
-                          searchData[0]?.products?.map((product) => {
-                            console.log("product", product)
-                            return (
-                              <div>
-                                <ul>
-                                  <li>
-                                    {product.name}
-                                  </li>
-                                </ul>
-                              </div>
-                            )
-                          })
-                        }
+                          <div className="db-searchList-main">
+                            {
+                              searchData[0]?.products?.map((product) => {
+                                console.log("product", product)
+                              
+                                return (
+                                    <div className="db-searchList">
+                                      {product.name}
+                                    </div>
+                                )
+                              })
+                            }
+                        </div>
                       </div>
                     </div>
                     <div className="col-sm-auto">
