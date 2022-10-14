@@ -903,7 +903,7 @@ function Header() {
                   <Dropdown.Toggle variant="btn" id="dropdown-basic">
                     <div className="cartBtn">
                       <img src="/img/cartIcon.svg" />{" "}
-                      {cart?.length > 0 && <span>{cart?.length}</span>}
+                      {/* {cart?.length > 0 && <span>{cart?.length}</span>} */}
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
