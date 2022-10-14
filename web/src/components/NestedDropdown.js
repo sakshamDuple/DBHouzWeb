@@ -3,8 +3,6 @@ import { Dropdown } from "react-bootstrap";
 import "../css/header.css";
 import { Link } from "react-router-dom";
 const NestedDropdown = ({ title, children }) => {
-    console.log("jagvirsinghev",title)
-    console.log("jagvir",children)
     return (
         <Dropdown.Item >
             <Dropdown variant="primary" drop="end" autoClose="outside">

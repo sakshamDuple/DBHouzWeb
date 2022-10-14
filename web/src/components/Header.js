@@ -273,9 +273,9 @@ function Header() {
   const handleNavtigate = async (e, productId) => {
     e.preventDefault();
     try {
-      let res = await axios.post(`/product/getOne/${productId}`)
-      console.log("res", res.data)
-      // navigate("/productdetail", { state: { product: product } });
+      let res = await axios.get(`/product/getOne/${productId}`)
+      console.log("res", res.data.product)
+      navigate("/productdetail", { state: { product: res.data.product } });
     } catch (error) {
       console.log("error", error)
     }
@@ -870,7 +870,7 @@ function Header() {
                                 console.log("product", product)
                               
                                 return (
-                                    <div className="db-searchList">
+                                    <div onClick={(e)=>handleNavtigate(e,product._id)} className="db-searchList">
                                       {product.name}
                                     </div>
                                 )
