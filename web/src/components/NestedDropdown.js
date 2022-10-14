@@ -6,11 +6,11 @@ const NestedDropdown = ({ title, children }) => {
     console.log("jagvirsinghev",title)
     console.log("jagvir",children)
     return (
-        <Dropdown.Item className="row">
+        <Dropdown.Item >
             <Dropdown variant="primary" drop="end" autoClose="outside">
                 <Dropdown.Toggle as={CustomToggle}>
                     <div className='d-flex align-items-center justify-content-between'>
-                        <span> {title}</span>
+                        <span> {title}{"  "}</span>
                         <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
                     </div>
                 </Dropdown.Toggle>
