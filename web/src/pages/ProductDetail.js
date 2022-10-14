@@ -82,11 +82,11 @@ function ProductDetail() {
     setTimeout(function () {
       button.removeClass('sendtocart');
       console.log(getCart)
-      cart.addClass('shake').attr('data-totalitems', getCart);
+      cart.addClass('shake').attr('data-totalitems', cartVal?.length);
       setTimeout(function () {
         cart.removeClass('shake');
-      }, 500)
-    }, 1000)
+      }, 2000)
+    }, 2000)
   })
 
   const getDimension = (obj) => {
@@ -101,11 +101,14 @@ function ProductDetail() {
     setPeopleAlsoSearcherFor(products);
   }
   console.log(peopleAlsoSearcherFor);
+  console.log(cartVal?.length)
 
-  useEffect(() => {
+  useEffect(async () => {
     filterPeopleAlsoSearcherFor();
     getColors();
-    setGetCart(cartVal?.length)
+    console.log(cartVal?.length)
+    await setGetCart(cartVal?.length)
+    console.log(getCart)
   }, [product,cartVal,getCart]);
 
   console.log(product);

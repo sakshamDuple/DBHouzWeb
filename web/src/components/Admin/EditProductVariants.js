@@ -16,6 +16,7 @@ import Style from "./AdminStyle";
 import AdSidebar from "./Sidebar";
 import AdNavBar from "./NavBar";
 import $ from "jquery";
+import upload from "../../assets/images/uploadIcon.svg";
 import { RestAdmin, RestMerchant } from "../../rest";
 import { PuffLoader } from "react-spinners";
 window.jQuery = window.$ = $;
@@ -35,6 +36,9 @@ const NewVariantObject = {
   minPurchaseQuantity: 1,
   availableQuantity: 0,
   discountPercentage: 0,
+  material_type: '',
+  material_finish: '',
+  warranty_period: 0,
   price: 0,
   images: [],
 };
@@ -62,6 +66,38 @@ function AdminEditProductVariants() {
   });
   const [newVariant, setNewVariant] = useState(NewVariantObject);
 
+  const [imagesToUpload, setImagesToUpload] = useState([]);
+  const uploadImages = (e) => {
+    let arr = [];
+    for (let file of e.target.files) {
+      arr.push({
+        imageUrl: URL.createObjectURL(file),
+        image: file,
+      });
+    }
+    setImagesToUpload(arr);
+  };
+
+  const imagesToUploadFunc = async (variant) => {
+    let newvariant = { ...variant }
+    console.log(newvariant)
+    let img;
+    console.log(imagesToUpload.length)
+    const formData = new FormData();
+    formData.append("productId", product._id.toString());
+    formData.append("name", newvariant.name);
+    for (let image of imagesToUpload) {
+      formData.append("image", image.image);
+    }
+    const thisUpdateProduct = await RestAdmin.newVariantImages(formData);
+    thisUpdateProduct.product.variants.forEach(element => {
+      if(element.name == newvariant.name){
+        img = element.images
+      }
+    });
+    setNewVariant({ ...newVariant, images: img });
+  }
+
   const handleSubmit = async (e) => {
     let newProduct = { ...product };
     newProduct.variants = [...variants];
@@ -69,64 +105,6 @@ function AdminEditProductVariants() {
 
     await RestAdmin.updateProduct(newProduct);
     navigate("/admin/productlist");
-
-    // let { name, brandId, merchantId, categoryId, subCategoryId, description, variants } = formData;
-    // let isError = false;
-    // let formErrors = {
-    //     productName: false,
-    //     productBrandName: false,
-    //     productCategory: false,
-    //     productSubCategory: false,
-    //     productDescription: false,
-    //     productVariants: false
-    // }
-    // if (!name || !name.length || name.length < 3) {
-    //     formErrors.productName = `Please enter a valid Name`
-    //     isError = true
-    // }
-    // if (!brandId || !brandId.length) {
-    //     formErrors.productBrandName = `Please select a Brand`
-    //     isError = true
-    // }
-    // if (!merchantId || !merchantId.length) {
-    //     formErrors.productMerchantId = `Please select a Merchant`
-    //     isError = true
-    // }
-    // if (!categoryId || !categoryId.length) {
-    //     formErrors.productCategory = `Please select a Category`
-    //     isError = true
-    // }
-    // if (!subCategoryId || !subCategoryId.length) {
-    //     formErrors.productSubCategory = `Please select a SubCategory`
-    //     isError = true
-    // }
-    // if (!description || !description.length || description.length < 10) {
-    //     formErrors.productDescription = `Please enter a valid Description`
-    //     isError = true
-    // }
-    // if (!variants || !variants.length || JSON.stringify(variants[0]) === JSON.stringify(initialVariant)) {
-    //     formErrors.productVariants = `Please enter a valid Variant`
-    //     isError = true
-    // }
-    // setFormErrors(formErrors)
-    // if (!isError) {
-    // let updatedProductForm = {
-    //     _id: product._id,
-    //     name,
-    //     merchantId,
-    //     status: _formData.status,
-    //     categoryId,
-    //     description,
-    //     subCategoryId,
-    //     brandId,
-    //     variants,
-    //     images: [],
-    //     seo: _formData.seo,
-    //     createdAt: _formData.createdAt
-    // }
-    // await RestMerchant.updateProduct(updatedProductForm);
-    // navigate(`/admin/productlist`)
-    // }
   };
 
   let getUnit = (unitId) => {
@@ -551,10 +529,10 @@ function AdminEditProductVariants() {
                                 {(params.dimensionHeightEnabled ||
                                   params.dimensionWidthEnabled ||
                                   params.dimensionThicknessEnabled) && (
-                                  <td className="text-center py-2">
-                                    Dimensions
-                                  </td>
-                                )}
+                                    <td className="text-center py-2">
+                                      Dimensions
+                                    </td>
+                                  )}
                                 {/* {params.price && ( */}
                                 <td className="text-center py-2">Price</td>
                                 <td className="text-center py-2">Stock Qty</td>
@@ -618,24 +596,24 @@ function AdminEditProductVariants() {
                                         {variant.dimensions.height + " "}
                                         {Boolean(
                                           params.dimensionWidthEnabled &&
-                                            Number.isInteger(
-                                              variant.dimensions.width
-                                            )
+                                          Number.isInteger(
+                                            variant.dimensions.width
+                                          )
                                         ) && (
-                                          <span>
-                                            X {variant.dimensions.width}
-                                          </span>
-                                        )}
+                                            <span>
+                                              X {variant.dimensions.width}
+                                            </span>
+                                          )}
                                         {Boolean(
                                           params.dimensionThicknessEnabled &&
-                                            Number.isInteger(
-                                              variant.dimensions.thickness
-                                            )
+                                          Number.isInteger(
+                                            variant.dimensions.thickness
+                                          )
                                         ) && (
-                                          <span>
-                                            X {variant.dimensions.thickness}
-                                          </span>
-                                        )}{" "}
+                                            <span>
+                                              X {variant.dimensions.thickness}
+                                            </span>
+                                          )}{" "}
                                         {getUnit(params.dimensionUnitId)
                                           ?.name || "Units"}
                                       </td>
@@ -860,97 +838,160 @@ function AdminEditProductVariants() {
                     }}
                   />
                 </div>
+                <div className="form-group mt-3">
+                  <label className="text-muted px-2">Warranty Period</label>
+                  <input
+                    value={newVariant.warranty_period}
+                    className="form-control"
+                    type={"number"}
+                    onChange={(e) => {
+                      let Warranty = Number.parseInt(e.target.value);
+                      if (Number.isInteger(Warranty)) {
+                        let newVariant2 = { ...newVariant };
+                        newVariant2.warranty_period = Warranty;
+                        setNewVariant(newVariant2);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="form-group mt-3">
+                  <label className="text-muted px-2">Material Finish</label>
+                  <input
+                    value={newVariant.material_finish}
+                    className="form-control"
+                    type={"text"}
+                    onChange={(e) => {
+                      setNewVariant({ ...newVariant, material_finish: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="form-group mt-3">
+                  <label className="text-muted px-2">Material Type</label>
+                  <input
+                    value={newVariant.material_type}
+                    className="form-control"
+                    type={"text"}
+                    onChange={(e) => {
+                      setNewVariant({ ...newVariant, material_type: e.target.value });
+                    }}
+                  />
+                </div>
                 {(params.dimensionHeightEnabled ||
                   params.dimensionWidthEnabled ||
                   params.dimensionThicknessEnabled) && (
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="row">
-                        <div className="col">
-                          <div className="form-group mt-3">
-                            <label className="text-muted px-2">Height</label>
-                            <div className="input-group">
-                              <input
-                                value={newVariant.dimensions.height}
-                                className="form-control"
-                                type={"number"}
-                                onChange={(e) => {
-                                  let num = Number.parseInt(e.target.value);
-                                  setNewVariant({ ...newVariant, dimensions: {...newVariant.dimensions, height:num} });
-                                }}
-                              />
-                              <div className="input-group-append">
-                                <div className="input-group-text">
-                                  {getUnit(params.dimensionUnitId)?.name ||
-                                    "Units"}
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="row">
+                          <div className="col">
+                            <div className="form-group mt-3">
+                              <label className="text-muted px-2">Height</label>
+                              <div className="input-group">
+                                <input
+                                  value={newVariant.dimensions?.height}
+                                  className="form-control"
+                                  type={"number"}
+                                  onChange={(e) => {
+                                    let num = Number.parseInt(e.target.value);
+                                    setNewVariant({ ...newVariant, dimensions: { ...newVariant.dimensions, height: num } });
+                                  }}
+                                />
+                                <div className="input-group-append">
+                                  <div className="input-group-text">
+                                    {getUnit(params.dimensionUnitId)?.name ||
+                                      "Units"}
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
+                          {(params.dimensionWidthEnabled ||
+                            params.dimensionThicknessEnabled) && (
+                              <div className="col">
+                                <div className="form-group mt-3">
+                                  <label className="text-muted px-2">Width</label>
+                                  <div className="input-group">
+                                    <input
+                                      value={newVariant.dimensions?.width}
+                                      className="form-control"
+                                      type={"number"}
+                                      onChange={(e) => {
+                                        let num = Number.parseInt(e.target.value);
+                                        if (Number.isInteger(num)) {
+                                          let newVariant2 = { ...newVariant };
+                                          newVariant2.dimensions.width = num;
+                                          setNewVariant(newVariant2);
+                                        }
+                                      }}
+                                    />
+                                    <div className="input-group-append">
+                                      <div className="input-group-text">
+                                        {getUnit(params.dimensionUnitId)?.name ||
+                                          "Units"}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          {params.dimensionThicknessEnabled && (
+                            <div className="col">
+                              <div className="form-group mt-3">
+                                <label className="text-muted px-2">
+                                  Thickness
+                                </label>
+                                <div className="input-group">
+                                  <input
+                                    value={newVariant.dimensions.thickness}
+                                    className="form-control"
+                                    type={"number"}
+                                    onChange={(e) => {
+                                      let num = Number.parseInt(e.target.value);
+                                      if (Number.isInteger(num)) {
+                                        let newVariant2 = { ...newVariant };
+                                        newVariant2.dimensions.thickness = num;
+                                        setNewVariant(newVariant2);
+                                      }
+                                    }}
+                                  />
+                                  <div className="input-group-append">
+                                    <div className="input-group-text">
+                                      {getUnit(params.dimensionUnitId)?.name ||
+                                        "Units"}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        {(params.dimensionWidthEnabled ||
-                          params.dimensionThicknessEnabled) && (
-                          <div className="col">
-                            <div className="form-group mt-3">
-                              <label className="text-muted px-2">Width</label>
-                              <div className="input-group">
-                                <input
-                                  value={newVariant.dimensions.width}
-                                  className="form-control"
-                                  type={"number"}
-                                  onChange={(e) => {
-                                    let num = Number.parseInt(e.target.value);
-                                    if (Number.isInteger(num)) {
-                                      let newVariant2 = { ...newVariant };
-                                      newVariant2.dimensions.width = num;
-                                      setNewVariant(newVariant2);
-                                    }
-                                  }}
-                                />
-                                <div className="input-group-append">
-                                  <div className="input-group-text">
-                                    {getUnit(params.dimensionUnitId)?.name ||
-                                      "Units"}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {params.dimensionThicknessEnabled && (
-                          <div className="col">
-                            <div className="form-group mt-3">
-                              <label className="text-muted px-2">
-                                Thickness
-                              </label>
-                              <div className="input-group">
-                                <input
-                                  value={newVariant.dimensions.thickness}
-                                  className="form-control"
-                                  type={"number"}
-                                  onChange={(e) => {
-                                    let num = Number.parseInt(e.target.value);
-                                    if (Number.isInteger(num)) {
-                                      let newVariant2 = { ...newVariant };
-                                      newVariant2.dimensions.thickness = num;
-                                      setNewVariant(newVariant2);
-                                    }
-                                  }}
-                                />
-                                <div className="input-group-append">
-                                  <div className="input-group-text">
-                                    {getUnit(params.dimensionUnitId)?.name ||
-                                      "Units"}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
+                  )}
+                <div className="uplogInrDiv">
+                  <input
+                    onChange={(e) => {
+                      uploadImages(e),
+                        imagesToUploadFunc(newVariant)
+                    }}
+                    type="file"
+                    multiple
+                    className="form-control fileUpload  form-control-lg"
+                  />
+                  <div className="uploadBlkInr">
+                    <div className="uplogImg">
+                      {(!imagesToUpload || imagesToUpload.length === 0) && (
+                        <img src={upload} alt="" height="50" />
+                      )}
+                      {imagesToUpload.map((i) => (
+                        <img src={i.imageUrl} style={{ margin: 10 }} alt="" height="100" />
+                      ))}
+                    </div>
+                    <div className="uploadFileCnt">
+                      <p>Drag an image here or browse</p>
+                      <p>for an image to upload</p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
