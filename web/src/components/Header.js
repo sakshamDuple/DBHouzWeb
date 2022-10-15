@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button, Modal, Dropdown, Container, Row, Col, Offcanvas } from "react-bootstrap";
 import RightArrow from "../img/rightArrowIcon.svg";
-import { Rest, RestAdmin, RestUser } from "../rest";
+import { Rest, RestAdmin, RestUser, RestClient } from "../rest";
 import { useDispatch, useSelector } from "react-redux";
 import { stateActions } from "../redux/stateActions";
 import deleteCart from "../assets/images/icons/deleteShoppingCart.svg";
@@ -13,7 +13,8 @@ import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
 import "./Header.css";
 import axios from "../API/axios";
-
+import NestedDropdown, { CustomMenu, CustomToggle, CustomToggle2 } from './NestedDropdown';
+import NestedDropdown2 from './NestedDropdown2';
 function Header() {
   const [path, setPath] = useState({
     home: "no",
@@ -85,9 +86,11 @@ function Header() {
   const [reset, resetModal] = useState(false);
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
+  const [getShowMenu, setShowMenu] = useState([])
   const [searchEngine, setSearchEngine] = useState("");
   const [selectOption, setSelectOption] = useState("");
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [productList, setProductList] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const user = useSelector((s) => s.user);
   const location = useLocation();
@@ -116,25 +119,26 @@ function Header() {
       );
   }
 
-  const CustomDropDown = ({category})=>{
-    console.log("category manvir",category)
-    return 'manvir'
-    return ( <Dropdown>
-    <Dropdown.Toggle variant="default" id="dropdown-basic">
-      {category.category.name}
-    </Dropdown.Toggle>
-    <Dropdown.Menu>
-      {category.subcategories.map((category1) => {
-        console.log("category1",category1)
-      return (
-        <Dropdown.Item>
-          'manvir'
-          
-        </Dropdown.Item>
-      )})}
-    </Dropdown.Menu>
-  </Dropdown>)
-  }
+  // const CustomDropDown = ({ category }) => {
+  //   console.log("category manvir", category)
+  //   return 'manvir'
+  //   return (<Dropdown>
+  //     <Dropdown.Toggle variant="default" id="dropdown-basic">
+  //       {category.category.name}
+  //     </Dropdown.Toggle>
+  //     <Dropdown.Menu>
+  //       {category.subcategories.map((category1) => {
+  //         console.log("category1", category1)
+  //         return (
+  //           <Dropdown.Item>
+  //             'manvir'
+
+  //           </Dropdown.Item>
+  //         )
+  //       })}
+  //     </Dropdown.Menu>
+  //   </Dropdown>)
+  // }
 
   const handlelogin = (e) => {
     e.preventDefault();
@@ -216,7 +220,79 @@ function Header() {
       }
     }
   }
+  function handledropdown(categoryId) {
+    console.log("categoryId", categoryId)
+    RestClient.getCategoryDropdown(categoryId)
+      .then((res) => {
+        // setShowMenu(res.fetches)
+        console.log("resjasfjdjj", res)
+      }).catch((error) => {
+        console.log("error", error)
+      })
+  }
 
+  function showMenu(category) {
+    // handledropdown(category.category._id)
+    console.log("toShow", getShowMenu)
+    return (
+
+      <div className="row">
+        <div className="col-md-6">
+          <div className="blueBg p-4 h-100">
+            {console.log("jug", getShowMenu?.products?.name)}
+            <h3 className="m-0">{category?.category?.name}</h3>
+            <hr />
+            <ul className=''>
+              <li>Tyrone Burt</li>
+              <li><Link to="" >Regina Moreno</Link></li>
+              <li><Link to="" >Tyrone Burt</Link></li>
+              <li><Link to="" >Regina Moreno</Link></li>
+              <li><Link to="" >Tyrone Burt</Link></li>
+              <li><Link to="" >Regina Moreno</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="px-4 py-3">
+            <h3 className="m-0">Popular Product</h3>
+            <hr />
+            <ul className=''>
+              <li><Link to="" >Carla Meyers</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+              <li><Link to="" >Pankaj Tiles</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+              <li><Link to="" >Carla Meyers</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+              <li><Link to="" >Pankaj Tiles</Link></li>
+              <li><Link to="" >Martin Barron</Link></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  const handleNavtigate = async (e, productId) => {
+    e.preventDefault();
+    try {
+      let res = await axios.get(`/product/getOne/${productId}`)
+      console.log("res", res.data.product)
+      navigate("/productdetail", { state: { product: res.data.product } });
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+  const handleProductApi = (e, id) => {
+    setProductList([])
+    e.preventDefault()
+    console.log("button")
+    RestClient.getCategoryDropdown(id)
+      .then((res) => {
+        setProductList(res.data)
+        console.log("resjasfjdjj", res.data)
+      }).catch((error) => {
+        console.log("error", error)
+      })
+  }
   return (
     <header className="mainHeader wrapper">
       <article className="topBar blueBg">
@@ -785,7 +861,7 @@ function Header() {
                   <div className="row">
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select">
+                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select dp-headerFormSelect">
 
                           <option value="none" selected disabled hidden>Select an Option</option>
                           {categories.map((option) => {
@@ -797,37 +873,23 @@ function Header() {
                       </div>
                     </div>
                     <div className="col-sm">
-                      <div className="form-group">
+                      <div className="form-group ">
                         <input type="text" value={searchEngine} className="form-control"
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
-                        {
-                          searchData[0]?.products?.map((product) => {
-                            console.log("product", product)
-                            return (
-                              <div>
-                                <ul>
-                                  <li>
-                                    {product.name}
-                                  </li>
-                                </ul>
-                              </div>
-                            )
-                          })
-                        }
-                        {
-                          searchData[1]?.s?.map((product) => {
-                            console.log("product", product)
-                            return (
-                              <ul>
-                                <h3>Product</h3>
-                                <li>
+                        <div className="db-searchList-main">
+                          {
+                            searchData[0]?.products?.map((product) => {
+                              console.log("product", product)
+
+                              return (
+                                <div onClick={(e) => handleNavtigate(e, product._id)} className="db-searchList">
                                   {product.name}
-                                </li>
-                              </ul>
-                            )
-                          })
-                        }
+                                </div>
+                              )
+                            })
+                          }
+                        </div>
                       </div>
                     </div>
                     <div className="col-sm-auto">
@@ -933,23 +995,142 @@ function Header() {
       <article className="hdrNavRow">
         <Container>
           <Row className="row align-items-center justify-content-between">
-            <div className="col-md-auto">
+            {/* <div className="col-md-auto">
               <div className="hdrLeft">
                 <div className="categoryBlk">
                   <div className="categorydropDown categoryDropdownNew">
-                    <Dropdown>
+                    <Dropdown autoClose={false}>
                       <Dropdown.Toggle variant="default" id="dropdown-basic">
                         <img src="/img/catIcon.svg" /> Categories
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {categories.map((category) => {
-                          console.log("image.png harjot", category)
-                        return (
-                          <Dropdown.Item>
-                            <CustomDropDown category={category}/>
-                            
-                          </Dropdown.Item>
-                        )})}
+                          return (
+                            <Dropdown.Item href="#/action-1">
+                              <Dropdown autoClose={false}>
+                                <Dropdown.Toggle variant="default" id="dropdown-basic">
+                                  <div className='d-flex align-items-center justify-content-between'  >
+                                    <span> {category?.category?.name}</span>
+                                    <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                  </div>
+                                </Dropdown.Toggle>
+                                <Dropdown autoClose={false}>
+                                  <div className='dp-dropdown'>
+                                    <div className="dp-dropdown-box box-shadow ">
+                                      <div className="row">
+                                        <div className="col-md-6">
+                                          <div className="blueBg p-4 h-100">
+                                            <h3 className="m-0">{category?.category?.name}</h3>
+                                            <hr />
+                                            <ul className=''>
+                                              <li>Tyrone Burt</li>
+                                              <li><Link to="" >Regina Moreno</Link></li>
+                                              <li><Link to="" >Tyrone Burt</Link></li>
+                                              <li><Link to="" >Regina Moreno</Link></li>
+                                              <li><Link to="" >Tyrone Burt</Link></li>
+                                              <li><Link to="" >Regina Moreno</Link></li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                          <div className="px-4 py-3">
+                                            <h3 className="m-0">Popular Product</h3>
+                                            <hr />
+                                            <ul className=''>
+                                              <li><Link to="" >Carla Meyers</Link></li>
+                                              <li><Link to="" >Martin Barron</Link></li>
+                                              <li><Link to="" >Pankaj Tiles</Link></li>
+                                              <li><Link to="" >Martin Barron</Link></li>
+                                              <li><Link to="" >Carla Meyers</Link></li>
+                                              <li><Link to="" >Martin Barron</Link></li>
+                                              <li><Link to="" >Pankaj Tiles</Link></li>
+                                              <li><Link to="" >Martin Barron</Link></li>
+                                            </ul>
+                                          </div>
+                                        </div>
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Dropdown>
+                              </Dropdown>
+                            </Dropdown.Item>
+                          );
+                        })}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+                </div>
+              </div>
+            </div> */}
+            <div className="col-md-auto">
+              <div className="hdrLeft">
+                <div className="categoryBlk">
+                  <div className="categorydropDown categoryDropdownNew">
+                    <Dropdown autoClose="outside" alignRight>
+                      <Dropdown.Toggle variant="default" id="dropdown-basic">
+                        <img src="/img/catIcon.svg" /> Categories
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu className="dp-dropdown-main">
+                        {categories.map((category) => {
+                          return (
+                            <Dropdown.Item className="dp-dropdown-main-a">
+                              <Dropdown variant="primary" drop="end" autoClose="outside" >
+                                <Dropdown.Toggle as={CustomToggle}>
+                                  <div className='d-flex align-items-center justify-content-between'>
+                                    <span> {category.category.name}{"  "}</span>
+                                    <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                  </div>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu align="end" as={CustomMenu} className="dp-dropdown-box box-shadow blueBg p-4" alignRight>
+                                  {/* <Dropdown.Header>{category.category.name}</Dropdown.Header> */}
+                                  {category.subCategories.map((subCat) => {
+                                    return (
+                                      <Dropdown.Item >
+                                        {category.subCategories.map((subCategory) => {
+                                          return (<Dropdown variant="primary" drop="end" className="h-100">
+                                            <Dropdown.Toggle as={CustomToggle2} >
+                                              <div onClick={(e) => handleProductApi(e, subCategory._id)} className='row h-100'>
+                                                <div className="col-md-6">
+                                                  <div className="blueBg p-4 h-100">
+                                                    <h3 className="m-0 text-white">{category.category.name}</h3>
+
+                                                    <ul >
+                                                      <li >
+                                                        <span > {subCategory.name}{"  "}</span>
+                                                        <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                  <div className="py-4">
+                                                    <h3 className="m-0">Popular Product</h3>
+                                                    {console.log('dddd', productList)}
+                                                    <Dropdown.Menu align="end" as={CustomMenu} className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0">
+                                                      {/* <Dropdown.Header>Popular Product</Dropdown.Header> */}
+                                                      {productList.map(prod => {
+                                                        return (<Dropdown.Item onClick={() => navigate("/productdetail", { state: { product: prod } })}>{prod.name}
+                                                        </Dropdown.Item>)
+                                                      })}
+                                                    </Dropdown.Menu>
+                                                  </div>
+                                                </div>
+
+                                              </div>
+                                            </Dropdown.Toggle>
+
+                                          </Dropdown>
+                                          )
+                                        })}
+                                      </Dropdown.Item>
+                                    );
+                                  })}
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </Dropdown.Item>
+                          );
+                        })}
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
@@ -993,8 +1174,11 @@ function Header() {
             </div>
           </Row>
         </Container>
-      </article>
+      </article >
     </header >
   );
 }
 export default Header;
+
+
+

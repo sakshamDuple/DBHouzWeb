@@ -46,12 +46,11 @@ const initialCredit = {
 function Checkout() {
     const [formData, setFormData] = useState(initialFormData);
     const [credit, setCredit] = useState(initialCredit);
-    const [show, setShow] = useState(false);
+    const [Type, setType] = useState();
     const [modelshow, setModelshow] = useState(false);
     const [modelshowLogin, setModelshowLogin] = useState(false);
     const [productData, setProductData] = useState([]);
     const dispatch = useDispatch();
-
     const afterLogin = () => {
         getD();
     }
@@ -92,11 +91,14 @@ function Checkout() {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        console.log(modelshowLogin)
         return setModelshowLogin(!modelshowLogin);
     }
 
-    window.scrollTo(0, 0);
+    const handleLogout = (e) => {
+        e.preventDefault();
+        return dispatch(stateActions.logout()), TokenUType(),getD()
+    }
+
 
     let Type = window.localStorage.getItem("utype");
     useEffect(() => {
@@ -105,7 +107,8 @@ function Checkout() {
     useEffect(() => {
         getD();
         getData();
-    }, []);
+        TokenUType();
+    }, [modelshow]);
     const getD = () => {
         if (window.localStorage.JWT) {
             let accessToken = window.localStorage.getItem("JWT");
@@ -113,7 +116,6 @@ function Checkout() {
             let n = jwtDecode(accessToken);
             console.log("n", n)
             const { user: { email, _id } = {} } = n || {};
-            setShow(true);
             setFormData((prev) => {
                 const { customerDetail } = prev;
                 return {
@@ -168,13 +170,25 @@ function Checkout() {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
             return (
+                // dispatch(stateActions.removeCartItem())
                 navigate("/thanku")
             );
         } catch (error) {
             console.log(error);
         }
     };
-
+    useEffect(()=>{
+        TokenUType();
+        getD();
+    },[])
+    const afterLogin = () => {
+        TokenUType();
+        getD();
+    }
+    const afterSignup = () => {
+        getD();
+        TokenUType();
+    }
     return (
         <section className="wrapper">
             <Header />
@@ -200,9 +214,7 @@ function Checkout() {
                                                 <div className="col">
                                                     <div className="checkOutLoginBts">
                                                         <button className="btn btnCommon btnRadiusNone"
-                                                            onClick={() => {
-                                                                dispatch(stateActions.logout());
-                                                            }}
+                                                            onClick={(e) => handleLogout(e)}
                                                         >
                                                             Logout
                                                         </button>

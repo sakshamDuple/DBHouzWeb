@@ -25,13 +25,11 @@ function OrderHistory() {
         console.log("at", accessToken)
         console.log(jwtDecode(accessToken));
         let n = jwtDecode(accessToken);
-        console.log("n", n)
         const { user: { _id } = {} } = n || {};
         const userId = _id;
         console.log("userId", userId)
         try {
             const res = await axios.get(`/order/getOrderForUser/${userId}`);
-            console.log("res jagvir", res)
             const { data: { order } = {} } = res || {};
             console.log("res jagvir", order)
             return setGetData(order);
@@ -136,7 +134,7 @@ function OrderHistory() {
                                             </div>
                                         </div>
                                         <div className="orderHistryTable">
-                                            {/* <TableList /> */}
+                                            <TableList />
                                             <Table bordered>
                                                 <thead>
                                                     <tr>
@@ -175,19 +173,10 @@ function OrderHistory() {
                                                             </tr>
                                                         );
                                                     })}
-                                                    {/* <tr>
-                                                        <td>#4549</td>
-                                                        <td>Mar 05,2022</td>
-                                                        <td className="cancled">Cancelled </td>
-                                                        <td className="">Cash</td>
-                                                        <td>Mar 24,2022</td>
-                                                        <td>$112.00</td>
-                                                        <td><Link to="/">View Details</Link></td>
-                                                    </tr> */}
                                                 </tbody>
                                             </Table>
                                         </div>
-                                        <div className="pgntnOuter d-flex flex-row-reverse pb-3">
+                                        {/* <div className="pgntnOuter d-flex flex-row-reverse pb-3">
                                             <ul className="pagination">
                                                 <li className="page-item">
                                                     <a className="page-link" role="button" tabIndex="0" href="#">
@@ -219,7 +208,7 @@ function OrderHistory() {
                                                     <span aria-hidden="true">›</span><span className="visually-hidden">Next</span></a>
                                                 </li>
                                             </ul>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </Tab>
                                 <Tab eventKey="summary" title="Summary">

@@ -27,3 +27,26 @@
     /*Without this, clicking will make it sticky*/
     pointer-events: none;
     }
+
+    .db-searchList-main{
+        background-color: #ffffff;
+        
+        position: relative;
+        z-index: 11;
+        box-shadow: 0 6px 25px 0 rgb(0 0 0 / 10%)
+
+    }
+    .db-searchList{
+        border-bottom: 1px dashed #ddd;
+        cursor: pointer;
+        padding: 10px 20px;
+    }
+    .db-searchList:last-child{
+        border: 0;
+    }
+    .dp-headerFormSelect option{
+        padding: 10px;
+    }
+    .dp-headerFormSelect option:hover{
+        
+    }

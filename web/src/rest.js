@@ -351,4 +351,15 @@ export let RestClient = {
       { errorMessage: "Unable to get products!" }
     );
   },
+  async getCategoryDropdown(subcategoryId) {
+    console.log("getCategoryDropdown", subcategoryId);
+    let data = {
+      subCategoryId: subcategoryId,
+    }
+    return await post(
+      "/product/getProductsBySubCategory",
+      data,
+      { errorMessage: "Unable to get products!" }
+    );
+  },
 };

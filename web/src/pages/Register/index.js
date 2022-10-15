@@ -5,7 +5,7 @@ import { RestUser } from "../../rest";
 import { useDispatch } from "react-redux";
 import { stateActions } from "../../redux/stateActions";
 import { Modal, Offcanvas, Dropdown, Container, Row, Col } from "react-bootstrap";
-const Register = ({props}) => {
+const Register = ({ setModelshow, afterSignup }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -45,25 +45,16 @@ const Register = ({props}) => {
         }
         RestUser.userSignup(email, password)
             .then((res) => {
-                console.log(`Got 1bhrtgnyntym`);
                 console.log(res);
                 RestUser.userLogin(email, password)
                     .then(({ user, token }) => {
                         RestUser.updateUser(user, token)
                             .then((res) => {
-                                console.log(`Got 3`);
                                 console.log(res);
-                                return (
-                                    dispatch(stateActions.setUser("user", user, token))
-                                );
+                                return dispatch(stateActions.setUser("user", user, token)), setModelshow(false),afterSignup(),registerShow(false)
                             })
                             .catch((e) => setError(e.message));
-                    })
-                    .catch((e) => setError(e.message));
-                // navigate(`/checkout`);
-                props.setModelshow(false);
-                registerShow(false);
-
+                    }).catch((e) => setError(e.message));
             })
             .catch((e) => {
                 console.error(e);
@@ -76,8 +67,8 @@ const Register = ({props}) => {
             size="lg"
             show={signUp}
             onHide={() => {
-                props.setModelshow(false);
-                registerShow(false)               
+                setModelshow(false);
+                registerShow(false)
             }}
             aria-labelledby="contained-modal-title-vcenter"
             centered
