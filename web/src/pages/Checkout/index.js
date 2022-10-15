@@ -51,6 +51,9 @@ function Checkout() {
     const [modelshowLogin, setModelshowLogin] = useState(false);
     const [productData, setProductData] = useState([]);
     const dispatch = useDispatch();
+    const afterLogin = () => {
+        getD();
+    }
     const navigate = useNavigate();
     const selectRef1 = useRef();
     useEffect(() => {
@@ -96,11 +99,10 @@ function Checkout() {
         return dispatch(stateActions.logout()), TokenUType(),getD()
     }
 
-    window.scrollTo(0, 0);
-    const TokenUType = () => {
-        let Type = window.localStorage.getItem("utype");
-        setType(Type);
-    }
+
+    let Type = window.localStorage.getItem("utype");
+    useEffect(() => {
+    }, [window.localStorage.getItem("utype")])
 
     useEffect(() => {
         getD();
@@ -200,9 +202,9 @@ function Checkout() {
                                         {Type != "user" ?
                                             <div className="col">
                                                 <div className="checkOutLoginBts">
-                                                    <button onClick={(e) => {handleSignup(e)}} className="btnCommon">Register Account</button>
+                                                    <button onClick={(e) => handleSignup(e)} className="btnCommon">Register Account</button>
                                                     {modelshow ? <Register setModelshow={setModelshow}
-                                                        afterSignup={afterSignup} /> : " "}
+                                                        afterLogin={afterLogin} /> : " "}
                                                     <button onClick={(e) => handleLogin(e)} className="btnCommon">Login</button>
                                                     {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} afterLogin={afterLogin} /> : " "}
                                                 </div>
