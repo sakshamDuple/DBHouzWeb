@@ -13,7 +13,7 @@ import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
 import "./Header.css";
 import axios from "../API/axios";
-import NestedDropdown, { CustomMenu, CustomToggle,CustomToggle2 } from './NestedDropdown';
+import NestedDropdown, { CustomMenu, CustomToggle, CustomToggle2 } from './NestedDropdown';
 import NestedDropdown2 from './NestedDropdown2';
 function Header() {
   const [path, setPath] = useState({
@@ -861,7 +861,7 @@ function Header() {
                   <div className="row">
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select">
+                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select dp-headerFormSelect">
 
                           <option value="none" selected disabled hidden>Select an Option</option>
                           {categories.map((option) => {
@@ -877,18 +877,18 @@ function Header() {
                         <input type="text" value={searchEngine} className="form-control"
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
-                          <div className="db-searchList-main">
-                            {
-                              searchData[0]?.products?.map((product) => {
-                                console.log("product", product)
-                              
-                                return (
-                                    <div onClick={(e)=>handleNavtigate(e,product._id)} className="db-searchList">
-                                      {product.name}
-                                    </div>
-                                )
-                              })
-                            }
+                        <div className="db-searchList-main">
+                          {
+                            searchData[0]?.products?.map((product) => {
+                              console.log("product", product)
+
+                              return (
+                                <div onClick={(e) => handleNavtigate(e, product._id)} className="db-searchList">
+                                  {product.name}
+                                </div>
+                              )
+                            })
+                          }
                         </div>
                       </div>
                     </div>
@@ -1074,7 +1074,7 @@ function Header() {
                       <Dropdown.Menu className="dp-dropdown-main">
                         {categories.map((category) => {
                           return (
-                            <Dropdown.Item >
+                            <Dropdown.Item className="dp-dropdown-main-a">
                               <Dropdown variant="primary" drop="end" autoClose="outside" >
                                 <Dropdown.Toggle as={CustomToggle}>
                                   <div className='d-flex align-items-center justify-content-between'>
@@ -1083,25 +1083,43 @@ function Header() {
                                   </div>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu align="end" as={CustomMenu} className="dp-dropdown-box box-shadow blueBg p-4" alignRight>
-                                <Dropdown.Header>{category.category.name}</Dropdown.Header>
+                                  {/* <Dropdown.Header>{category.category.name}</Dropdown.Header> */}
                                   {category.subCategories.map((subCat) => {
                                     return (
                                       <Dropdown.Item >
                                         {category.subCategories.map((subCategory) => {
-                                          return (<Dropdown variant="primary" drop="end" >
-                                            <Dropdown.Toggle as={CustomToggle2}>
-                                              <div onClick={(e)=> handleProductApi(e, subCategory._id)} className='d-flex align-items-center justify-content-between'>
-                                                <span > {subCategory.name}{"  "}</span>
-                                                <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                          return (<Dropdown variant="primary" drop="end" className="h-100">
+                                            <Dropdown.Toggle as={CustomToggle2} >
+                                              <div onClick={(e) => handleProductApi(e, subCategory._id)} className='row h-100'>
+                                                <div className="col-md-6">
+                                                  <div className="blueBg p-4 h-100">
+                                                    <h3 className="m-0 text-white">{category.category.name}</h3>
+
+                                                    <ul >
+                                                      <li >
+                                                        <span > {subCategory.name}{"  "}</span>
+                                                        <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                  <div className="py-4">
+                                                    <h3 className="m-0">Popular Product</h3>
+                                                    {console.log('dddd', productList)}
+                                                    <Dropdown.Menu align="end" as={CustomMenu} className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0">
+                                                      {/* <Dropdown.Header>Popular Product</Dropdown.Header> */}
+                                                      {productList.map(prod => {
+                                                        return (<Dropdown.Item onClick={() => navigate("/productdetail", { state: { product: prod } })}>{prod.name}
+                                                        </Dropdown.Item>)
+                                                      })}
+                                                    </Dropdown.Menu>
+                                                  </div>
+                                                </div>
+
                                               </div>
                                             </Dropdown.Toggle>
-                                            <Dropdown.Menu align="end" as={CustomMenu} className="dp-dropdown-box box-shadow p-4">
-                                            <Dropdown.Header>Popular Product</Dropdown.Header>
-                                           { productList.map(prod=>{
-                                            return ( <Dropdown.Item onClick={()=> navigate("/productdetail", { state: { product: prod } })}>{prod.name}
-                                              </Dropdown.Item>)
-                                           })}
-                                            </Dropdown.Menu>
+
                                           </Dropdown>
                                           )
                                         })}
