@@ -31,6 +31,7 @@ const postImage = (url, payload, { errorMessage, jwt }) => {
   let headers = {};
   // if (appState?.user?.jwt) headers["Authorization"] = "Bearer " + appState.user.jwt;
   // if (jwt) headers["Authorization"] = "Bearer " + jwt;
+  console.log(payload)
   return fetch(Rest + url, {
     method: "post",
     headers,
@@ -258,7 +259,11 @@ export let RestAdmin = {
       errorMessage: "Unable to upload merchant Images",
     });
   },
-
+  async newVariantImages(body) {
+    return await postImage("/product/newVariantImages", body, {
+      errorMessage: "Unable to upload variant Images for products",
+    });
+  },
   async createColor(color) {
     return await post("/misc/createColor", color, { errorMessage: "Unable to create color" });
   },

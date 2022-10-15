@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Tabs, Tab, Table, Form } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -12,6 +12,7 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "../css/productdetails.css";
+import "./AddtoCart.css"
 
 import {
   FreeMode,
@@ -26,7 +27,6 @@ window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
 function ProductDetail() {
-  const [visible, setVisible] = useState(false);
   let [count, setCount] = useState(1);
   let [selectedVariant, setSelectedVariant] = useState(0);
   const [peopleAlsoSearcherFor, setPeopleAlsoSearcherFor] = useState();
@@ -56,12 +56,38 @@ function ProductDetail() {
     setColor(color);
   };
 
+  const [getCart, setGetCart] = useState(0)
+
+  let cartVal
+  const getValueInCart = () => {cartVal = useSelector((s) => s.cart)}
+  getValueInCart()
+  console.log(cartVal)
+
   const getSingleColors = (id) => {
     if (color && color.colors) {
       const _color = color.colors.filter((item) => item._id === id);
       return _color[0]?.name;
     } else return "green";
   };
+
+    // useEffect(() => {
+    //   setGetCart(cartVal?.length)
+    // }, [cartVal,getCart])
+
+  $('.btnCommonm').on('click', function () {
+    var button = $(this);
+    var cart = $('.cartBtn');
+    console.log(button, cart);
+    button.addClass('sendtocart');
+    setTimeout(function () {
+      button.removeClass('sendtocart');
+      console.log(getCart)
+      cart.addClass('shake').attr('data-totalitems', cartVal?.length);
+      setTimeout(function () {
+        cart.removeClass('shake');
+      }, 2000)
+    }, 2000)
+  })
 
   const getDimension = (obj) => {
     if (obj)
@@ -75,11 +101,15 @@ function ProductDetail() {
     setPeopleAlsoSearcherFor(products);
   }
   console.log(peopleAlsoSearcherFor);
+  console.log(cartVal?.length)
 
-  useEffect(() => {
+  useEffect(async () => {
     filterPeopleAlsoSearcherFor();
     getColors();
-  }, [product]);
+    console.log(cartVal?.length)
+    await setGetCart(cartVal?.length)
+    console.log(getCart)
+  }, [product,cartVal,getCart]);
 
   console.log(product);
 
@@ -200,21 +230,20 @@ function ProductDetail() {
                       <span>11 reviews</span>
                     </div>
                     <div className="prodctDtlPriceLrge d-flex align-items-center">
-                      <div className="price">{`£ ${
-                        product.variants[selectedVariant]
-                          ? (
-                              (product.variants[selectedVariant].price * 82) /
-                              100
-                            ).toFixed(2)
-                          : 0
-                      }`}</div>
+                      <div className="price">{`£ ${product.variants[selectedVariant]
+                        ? (
+                          (product.variants[selectedVariant].price * 82) /
+                          100
+                        ).toFixed(2)
+                        : 0
+                        }`}</div>
                       +
                       {/* <div className="prcentOff px-3">
                         {(product.variants[selectedVariant].price / 100) * 8}£
                         VAT Included
                       </div> */}
                       <div className="gst">
-                      £
+                        £
                         {(
                           (product.variants[selectedVariant]?.price / 100) *
                           18
@@ -338,13 +367,12 @@ function ProductDetail() {
                                   count,
                                   product.variants[selectedVariant]
                                 )
-                              );
-                              setVisible(true);
+                              )
                             }}
-                            className="btnCommon"
+                            className="btnCommon btnCommonm"
                           >
                             Add To Cart
-                            <span>
+                            <span className="cartBtn-item">
                               <img src="img/cartWhite.png" />
                             </span>
                           </a>
@@ -359,7 +387,6 @@ function ProductDetail() {
                                   product.variants[selectedVariant]
                                 )
                               );
-                              setVisible(true);
                             }}
                           >
                             Buy Now
@@ -368,7 +395,6 @@ function ProductDetail() {
                             </span>
                           </Link>
                         </div>
-                        {visible ? "Added To Cart" : ""}
                       </div>
                     </div>
                     <div className="ViewBtn">
@@ -778,7 +804,6 @@ function ProductDetail() {
                                       product.variants[selectedVariant]
                                     )
                                   );
-                                  setVisible(true);
                                 }}
                               >
                                 Add To Cart

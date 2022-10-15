@@ -274,9 +274,9 @@ function Header() {
   const handleNavtigate = async (e, productId) => {
     e.preventDefault();
     try {
-      let res = await axios.post(`/product/getOne/${productId}`)
-      console.log("res", res.data)
-      navigate("/productdetail", { state: { product: product } });
+      let res = await axios.get(`/product/getOne/${productId}`)
+      console.log("res", res.data.product)
+      navigate("/productdetail", { state: { product: res.data.product } });
     } catch (error) {
       console.log("error", error)
     }
@@ -877,18 +877,18 @@ function Header() {
                         <input type="text" value={searchEngine} className="form-control"
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
-                        <div className="db-searchList-main">
-                          {
-                            searchData[0]?.products?.map((product) => {
-                              console.log("product", product)
-
-                              return (
-                                <div onClick={(e) => handleNavtigate(e, product._id)} className="db-searchList">
-                                  {product.name}
-                                </div>
-                              )
-                            })
-                          }
+                          <div className="db-searchList-main">
+                            {
+                              searchData[0]?.products?.map((product) => {
+                                console.log("product", product)
+                              
+                                return (
+                                    <div onClick={(e)=>handleNavtigate(e,product._id)} className="db-searchList">
+                                      {product.name}
+                                    </div>
+                                )
+                              })
+                            }
                         </div>
                       </div>
                     </div>
@@ -916,7 +916,7 @@ function Header() {
                   <Dropdown.Toggle variant="btn" id="dropdown-basic">
                     <div className="cartBtn">
                       <img src="/img/cartIcon.svg" />{" "}
-                      {cart?.length > 0 && <span>{cart?.length}</span>}
+                      {/* {cart?.length > 0 && <span>{cart?.length}</span>} */}
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
