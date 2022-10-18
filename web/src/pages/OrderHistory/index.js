@@ -20,23 +20,27 @@ require("jquery-nice-select");
 function OrderHistory() {
     const [getData, setGetData] = useState();
     const user = useSelector((s) => s.user);
+    const [userId,setUserId] = useState();
     useEffect(async () => {
         let accessToken = window.localStorage.getItem("JWT");
         console.log("at", accessToken)
         console.log(jwtDecode(accessToken));
         let n = jwtDecode(accessToken);
         const { user: { _id } = {} } = n || {};
-        const userId = _id;
+        setUserId(_id);
         console.log("userId", userId)
+        handleOrderHistoryApi()
+    }, [])
+    const handleOrderHistoryApi = async(userId,) => {
         try {
-            const res = await axios.get(`/order/getOrderForUser/${userId}`);
+            const res = await axios.get(`/order/getOrderForUser/${userId}/${page}/${limit}/${asc}`);
             const { data: { order } = {} } = res || {};
             console.log("res jagvir", order)
             return setGetData(order);
         } catch (error) {
-            console.log("erroe", error)
+            console.log("error", error)
         }
-    }, [])
+    }
     const selectRef1 = useRef();
     useEffect(() => {
         $(selectRef1.current).niceSelect();
@@ -134,7 +138,7 @@ function OrderHistory() {
                                             </div>
                                         </div>
                                         <div className="orderHistryTable">
-                                            <TableList />
+                                            {/* <TableList /> */}
                                             <Table bordered>
                                                 <thead>
                                                     <tr>

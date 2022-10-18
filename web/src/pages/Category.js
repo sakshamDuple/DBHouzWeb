@@ -61,8 +61,8 @@ function Category() {
         </div>
         {/* </div> */}
         <div className="container">
-          <div className="NavCatInr category-NavCatInr">
-            <ul>
+          <div className="NavCatInr category-NavCatInr categoryNavBox bg-none">
+            <ul className="row no-gutters justify-content-center">
               {categories?.map((cat, index) => {
                 const handleChange = (e) => {
                   e.current.scrollIntoView({
@@ -70,7 +70,7 @@ function Category() {
                   });
                 }
                 return (
-                  <li>
+                  <li className="col-md-2 mb-1">
                     <div
                       onClick={() => handleChange(inputRefs[index])}
                       style={{

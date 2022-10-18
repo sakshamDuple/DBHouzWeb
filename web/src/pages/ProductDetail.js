@@ -34,6 +34,8 @@ function ProductDetail() {
   const { state } = useLocation();
   const [color, setColor] = useState([]);
   const product = state.product;
+  let AllUnits
+  let units = async () => { AllUnits = await RestAdmin.getAllUnits() }
   function incrementCount() {
     count = count + 1;
     setCount(count);
@@ -59,7 +61,7 @@ function ProductDetail() {
   const [getCart, setGetCart] = useState(0)
 
   let cartVal
-  const getValueInCart = () => {cartVal = useSelector((s) => s.cart)}
+  const getValueInCart = () => { cartVal = useSelector((s) => s.cart) }
   getValueInCart()
   console.log(cartVal)
 
@@ -70,9 +72,9 @@ function ProductDetail() {
     } else return "green";
   };
 
-    // useEffect(() => {
-    //   setGetCart(cartVal?.length)
-    // }, [cartVal,getCart])
+  // useEffect(() => {
+  //   setGetCart(cartVal?.length)
+  // }, [cartVal,getCart])
 
   $('.btnCommonm').on('click', function () {
     var button = $(this);
@@ -109,7 +111,7 @@ function ProductDetail() {
     console.log(cartVal?.length)
     await setGetCart(cartVal?.length)
     console.log(getCart)
-  }, [product,cartVal,getCart]);
+  }, [product, cartVal, getCart]);
 
   console.log(product);
 
@@ -256,47 +258,40 @@ function ProductDetail() {
                       {product.variants[selectedVariant]?.availableQuantity}{" "}
                       item left in Stock
                     </div>
-                    <div className="prdctDtlSize d-flex align-items-center py-3">
+                    <div className="prdctDtlSize @d-flex align-items-center py-3">
                       <div className="btn-label">
                         <h5>Variant name:</h5>
                       </div>
-                      {/* <div className="prodctsizeBtn ">
-                        <div className="col-12 mx-3">
-                          {product.variants &&
-                            product.variants?.map((variant, index) => (
-                              <button
-                                className="btnSize"
-                                onClick={(e) => {
-                                  changeSelectedVariant(index);
-                                }}
-                              >
-                                {variant.size}
-                              </button>
-                            ))}
-                        </div>
-                      </div> */}
-
                       <div>
-                        <div className="btn-container">
-                          {product.variants &&
-                            product.variants?.map((variant, index) => (
-                              <button
-                                key={index}
-                                className={
-                                  index === selectedVariant
-                                    ? "btn-active button"
-                                    : "button"
-                                }
-                                onClick={(e) => {
-                                  changeSelectedVariant(index);
-                                }}
-                              >
-                                {variant.size} Foot /{" "}
-                                {getSingleColors(variant.colorId)}
-                                <br />
-                                <span>£{variant?.price}</span>
-                              </button>
-                            ))}
+                        <div className="btn-container@ container@ detailPage-variantBtns">
+                          <div className="row">
+                            <div className="col-md-12">
+                           
+                                {product.variants &&
+                                  product.variants?.map((variant, index) => (
+
+                                      <button
+                                        key={index}
+                                        className={
+                                          index === selectedVariant
+                                            ? "btn-active button"
+                                            : "button"
+                                        }
+                                        onClick={(e) => {
+                                          changeSelectedVariant(index);
+                                        }}
+                                      >
+                                        {variant.size} Foot /{" "}
+                                        {getSingleColors(variant.colorId)}
+                                        <br />
+                                        <span>£{variant?.price}</span>
+                                      </button>
+                                    ))}
+                                   
+                                  
+                             
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -487,13 +482,15 @@ function ProductDetail() {
                       <tr>
                         <td className="tdBg w-25">Dimension</td>
                         <td>
+                          {console.log(AllUnits)}
                           {product.variants[selectedVariant]
-                            ? product.variants[selectedVariant].dimension
+                            ? `${product.variants[selectedVariant].dimensions.height} ${AllUnits} * ${product.variants[selectedVariant].dimensions.width} inches * ${product.variants[selectedVariant].dimensions.thickness} inches`
                             : "0 inches x 0 inches x 0 inches"}
                         </td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25">Color</td>
+                        {console.log(product)}
                         <td>
                           {product.variants[selectedVariant]
                             ? product.variants[selectedVariant].color
@@ -530,7 +527,9 @@ function ProductDetail() {
                       </tr>
                       <tr>
                         <td className="tdBg w-25">Warranty Period</td>
-                        <td>10 Years</td>
+                        <td>{product.variants[selectedVariant]
+                            ? product.variants[selectedVariant].warranty_period
+                            : "1"} Years</td>
                       </tr>
                     </tbody>
                   </Table>

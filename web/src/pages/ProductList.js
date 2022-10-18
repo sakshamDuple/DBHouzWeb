@@ -123,10 +123,10 @@ function ProductList() {
       </article>
       <article className="NavCatInrBlck wrapper">
         <div className="container">
-          <div className="NavCatInr">
-            <ul>
+          <div className="NavCatInr category-NavCatInr categoryNavBox bg-none">
+            <ul className="row no-gutters justify-content-center">
               {categories.map((cat, index) => (
-                <li key={index}>
+                <li key={index} className="col-md-2 mb-1">
                   <div
                     style={{
                       color: "#FFFFFF",
