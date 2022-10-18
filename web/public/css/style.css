@@ -57,6 +57,7 @@ body .dp-dropdown-main  .dp-dropdown-main-a.dropdown-item{
     justify-content: space-between;
     padding: 0 15px;
     align-items: center;
+    cursor: pointer;
 }
 .dropdown-menuProduct ul li:last-child{
     border: 0;
@@ -96,6 +97,19 @@ body .dp-dropdown-main  .dp-dropdown-main-a.dropdown-item{
     left: 0 !important;
     /* width: 100%; */
     /* transform: translate(0px, 52px)!important; */
+}
+.categorydropDown .dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.categorydropDown .dropdown-menu::-webkit-scrollbar-track {
+  background: #999;
+}
+
+/* Handle */
+.categorydropDown .dropdown-menu::-webkit-scrollbar-thumb {
+  background: #555;
 }
 .categorydropDown .dropdown-menu.dp-dropdown-box-first {
     width: 80vw !important;

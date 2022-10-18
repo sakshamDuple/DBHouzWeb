@@ -21,288 +21,157 @@ import {
 import "rc-slider/assets/index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { stateActions } from "../redux/stateActions";
-import { Rest } from "../rest";
+import { Rest, RestAdmin, RestClient } from "../rest";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
 function Cart() {
   const cart = useSelector((s) => s.cart);
+  const [peopleAlsoSearcherFor, setPeopleAlsoSearcherFor] = useState();
   const dispatch = useDispatch();
   window.scrollTo(0, 0);
 
-    let cartTotalAmount = 0
-    cart?.forEach((i) => {
-        console.log("i", i)
-        let price = i.variant?.price
-        cartTotalAmount += (price * i.quantity)
-    })
+  let cartTotalAmount = 0
+  cart?.forEach((i) => {
+    console.log("i", i)
+    let price = i.variant?.price
+    cartTotalAmount += (price * i.quantity)
+  })
 
-    const selectRef1 = useRef();
-    useEffect(() => {
-        $(selectRef1.current).niceSelect();
-    }, []);
-    const selectRef2 = useRef();
-    useEffect(() => {
-        $(selectRef2.current).niceSelect();
-    }, []);
-    const selectRef3 = useRef();
-    useEffect(() => {
-        $(selectRef3.current).niceSelect();
-    }, []);
-    let [count, setCount] = useState(0);
-    let [cartTotalPrice, setCartTotalPrice] = useState(0);
-    function incrementCount() {
-        count = count + 1;
-        setCount(count);
-    }
-    function decrementCount() {
-        count = count - 1;
-        setCount(count);
-    }
-    const updateCartTotalPrice = (totalPricePerProduct) => {
-        let total = cartTotalPrice + totalPricePerProduct
-        setCartTotalPrice(total)
-    }
-    return (
-        <section className="wrapper">
-            <Header />
-            <article className="wrapper greyDarkBg checkOutBlk py-20">
-                <div className="container">
-                    <div className="checkOutOuterDiv p-4">
-                        <div className="row  ">
-                            <div className="col-md">
-                                <div className="checkoutMainBlk ">
-                                    <div className="whiteBg  pt-4 px-5 pb-4">
-                                        <div className="row d-flex align-items-center">
-                                            <div className="prdctDtlHdng  pt-3">
-                                                <h3>Shopping Cart <span>1 Items</span></h3>
-                                                <div className="hdngBrBtm"></div>
-                                            </div>
-                                        </div>
-                                        <div >
-                                            <div className="row pt-4 ">
-                                                <div className="col-sm-5">
-                                                    <div>Product Details</div>
-                                                </div>
-                                                <div className="col-sm-3 justify-content-between">
-                                                    Quantity
-                                                </div>
-                                                <div className="col-sm-2 d-flex justify-content-between">
-                                                    Price
-                                                </div>
-                                                <div className="col-sm-2 d-flex justify-content-end">
-                                                    Total
-                                                </div>
-                                            </div>
-                                            {cart?.map((cartItem, cartItemIndex) => (
-                                                <div className="row d-flex justify-content-between pt-5">
-                                                    <div className="col-sm-5">
-                                                        <div className="cartListPrdct">
-                                                            <div className="row g-3 d-sm-flex align-items-center">
-                                                                <div className="col-auto">
-                                                                    <div className="cartListPrdctProMedia">
-                                                                        <a href="/product-detail">
-                                                                            <div className="cartListPrdctProImg" style={{ backgroundImage: (cartItem.product.images[0] ? (`url("${Rest}/documents/get/${cartItem.product.images[0].documentId}")`) : `url("img/productImg1.jpg")`) }}></div>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col">
-                                                                    <div className="cartListPrdctProInfo">
-                                                                        <div className="prdctListTitle"><h4><a href="/productdetail">{cartItem.product.name}</a></h4></div>
-                                                                        <div className="rvwRtngPrgrsStars">
-                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                                        </div>
-                                                                        <div className="prodctListPrice">
-                                                                            <button onClick={(e)=>{
-                                                                                e.preventDefault();
-                                                                               dispatch(stateActions.removeCartItem(cartItem.product._id ))
-                                                                            }
-                                                                            }>
-                                                                                Remove
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-3">
-                                                        <div className="countRow d-flex">
-                                                            <button onClick={() => {
-                                                                if (cartItem.quantity === 1) {
-                                                                    dispatch(stateActions.removeCartItem(cartItem.product._id))
-                                                                } else {
-                                                                    dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity - 1, cartItem.variant))
-                                                                }
-                                                            }} className="countBtn">-</button>
-                                                             <div className="countTotal">{cartItem.quantity}</div>
-                                                             <button onClick={() => {
-                                                                dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity + 1, cartItem.variant))
-                                                            }} className="countBtn ">+</button>
-                                                           
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-2 prodctDtlPrice ">
-                                                        <div className="cartPrice"> ${cartItem.variant?.price}</div>
-                                                        {/* <div className="discntPrice">£100.43 Inc VAT</div> */}
-                                                    </div>
-                                                    <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
-                                                        <div className="carTotalPrice">
-                                                            <Link to="/checkout">${cartItem.quantity * cartItem.variant?.price}</Link>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            <hr />
-                                            {/* <div className="row d-flex justify-content-between pt-5">
+  const selectRef1 = useRef();
+  useEffect(() => {
+    $(selectRef1.current).niceSelect();
+  }, []);
+  const selectRef2 = useRef();
+  useEffect(() => {
+    $(selectRef2.current).niceSelect();
+  }, []);
+  const selectRef3 = useRef();
+  useEffect(() => {
+    $(selectRef3.current).niceSelect();
+  }, []);
+  let [count, setCount] = useState(0);
+  let [cartTotalPrice, setCartTotalPrice] = useState(0);
+  function incrementCount() {
+    count = count + 1;
+    setCount(count);
+  }
+  function decrementCount() {
+    count = count - 1;
+    setCount(count);
+  }
+  async function filterPeopleAlsoSearcherFor() {
+    let products = await RestAdmin.getAllProducts();
+    console.log(cart)
+    let product_Ids=[]
+    cart.forEach(element => {
+      product_Ids.push(element.product._id)
+    });
+    products = products.filter((s) => s._id !== product_Ids[0]);
+    setPeopleAlsoSearcherFor(products);
+  }
+  const updateCartTotalPrice = (totalPricePerProduct) => {
+    let total = cartTotalPrice + totalPricePerProduct
+    setCartTotalPrice(total)
+  }
+  useEffect(() => {
+    filterPeopleAlsoSearcherFor();
+  }, [])
+  return (
+    <section className="wrapper">
+      <Header />
+      <article className="wrapper greyDarkBg checkOutBlk py-20">
+        <div className="container">
+          <div className="checkOutOuterDiv p-4">
+            <div className="row  ">
+              <div className="col-md">
+                <div className="checkoutMainBlk ">
+                  <div className="whiteBg  pt-4 px-5 pb-4">
+                    <div className="row d-flex align-items-center">
+                      <div className="prdctDtlHdng  pt-3">
+                        <h3>Shopping Cart <span>1 Items</span></h3>
+                        <div className="hdngBrBtm"></div>
+                      </div>
+                    </div>
+                    <div >
+                      <div className="row pt-4 ">
+                        <div className="col-sm-5">
+                          <div>Product Details</div>
+                        </div>
+                        <div className="col-sm-3 justify-content-between">
+                          Quantity
+                        </div>
+                        <div className="col-sm-2 d-flex justify-content-between">
+                          Price
+                        </div>
+                        <div className="col-sm-2 d-flex justify-content-end">
+                          Total
+                        </div>
+                      </div>
+                      {cart?.map((cartItem, cartItemIndex) => (
+                        <div className="row d-flex justify-content-between pt-5">
+                          <div className="col-sm-5">
+                            <div className="cartListPrdct">
+                              <div className="row g-3 d-sm-flex align-items-center">
+                                <div className="col-auto">
+                                  <div className="cartListPrdctProMedia">
+                                    <a href="/product-detail">
+                                      <div className="cartListPrdctProImg" style={{ backgroundImage: (cartItem.product.images[0] ? (`url("${Rest}/documents/get/${cartItem.product.images[0].documentId}")`) : `url("img/productImg1.jpg")`) }}></div>
+                                    </a>
+                                  </div>
+                                </div>
+                                <div className="col">
+                                  <div className="cartListPrdctProInfo">
+                                    <div className="prdctListTitle"><h4><a href="/productdetail">{cartItem.product.name}</a></h4></div>
+                                    <div className="rvwRtngPrgrsStars">
+                                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                    </div>
+                                    <div className="prodctListPrice">
+                                      <button onClick={(e) => {
+                                        e.preventDefault();
+                                        dispatch(stateActions.removeCartItem(cartItem.product._id))
+                                      }
+                                      }>
+                                        Remove
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-sm-3">
+                            <div className="countRow d-flex">
+                              <button onClick={() => {
+                                if (cartItem.quantity === 1) {
+                                  dispatch(stateActions.removeCartItem(cartItem.product._id))
+                                } else {
+                                  dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity - 1, cartItem.variant))
+                                }
+                              }} className="countBtn">-</button>
+                              <div className="countTotal">{cartItem.quantity}</div>
+                              <button onClick={() => {
+                                dispatch(stateActions.addCartItem(cartItem.product, cartItem.quantity + 1, cartItem.variant))
+                              }} className="countBtn ">+</button>
 
-                                    <div className="col-sm-5">
-                                        <div className="cartListPrdct">
-                                            <div className="row g-3 d-sm-flex align-items-center">
-                                                <div className="col-auto">
-                                                    <div className="cartListPrdctProMedia">
-                                                        <a href="/product-detail">
-                                                            <div className="cartListPrdctProImg" style={{backgroundImage: `url("img/CatImg2.jpg")`}}>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="cartListPrdctProInfo">
-                                                        <div className="prdctListTitle"><h4><a href="/">G654 Pangdang Granite Pedestal...</a></h4></div>
-                                                        <div className="rvwRtngPrgrsStars">
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        </div>
-                                                        <div className="prodctListPrice">
-                                                            <Link to="/" > Remove</Link>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-3">
-                                        <div className="countRow d-flex">                                        
-                                                <button onClick={incrementCount} className="countBtn ">+</button>
-                                                <div className="countTotal">{count}</div>
-                                                <button onClick={decrementCount} className="countBtn">-</button>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-2 prodctDtlPrice ">
-                                        <div className="cartPrice"> $ 44.00</div>
-                                        <div className="discntPrice">(31% off)</div>
-                                    </div>
-                                    <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
-                                        <div className="carTotalPrice">
-                                            <Link to="/">$88.00 </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr/>
-                                <div className="row d-flex justify-content-between pt-5">
-                                    <div className="col-sm-5">
-                                        <div className="cartListPrdct">
-                                            <div className="row g-3 d-sm-flex align-items-center">
-                                                <div className="col-auto">
-                                                    <div className="cartListPrdctProMedia">
-                                                        <a href="/product-detail">
-                                                            <div className="cartListPrdctProImg" style={{backgroundImage: `url("img/CatImg2.jpg")`}}>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="cartListPrdctProInfo">
-                                                        <div className="prdctListTitle"><h4><a href="/">G654 Pangdang Granite Pedestal...</a></h4></div>
-                                                        <div className="rvwRtngPrgrsStars">
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        </div>
-                                                        <div className="prodctListPrice">
-                                                            <Link to="/" > Remove</Link>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-3">
-                                        <div className="countRow d-flex">                                        
-                                                <button onClick={incrementCount} className="countBtn ">+</button>
-                                                <div className="countTotal">{count}</div>
-                                                <button onClick={decrementCount} className="countBtn">-</button>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-2 prodctDtlPrice ">
-                                        <div className="cartPrice"> $ 44.00</div>
-                                        <div className="discntPrice">(31% off)</div>
-                                    </div>
-                                    <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
-                                        <div className="carTotalPrice">
-                                            <Link to="/">$88.00 </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr/>
-                                <div className="row d-flex justify-content-between pt-5">
-                                    <div className="col-sm-5">
-                                        <div className="cartListPrdct">
-                                            <div className="row g-3 d-sm-flex align-items-center">
-                                                <div className="col-auto">
-                                                    <div className="cartListPrdctProMedia">
-                                                        <a href="/product-detail">
-                                                            <div className="cartListPrdctProImg" style={{backgroundImage: `url("img/CatImg2.jpg")`}}>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="cartListPrdctProInfo">
-                                                        <div className="prdctListTitle"><h4><a href="/">G654 Pangdang Granite Pedestal...</a></h4></div>
-                                                        <div className="rvwRtngPrgrsStars">
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                                        </div>
-                                                        <div className="prodctListPrice">
-                                                            <Link to="/" > Remove</Link>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-3">
-                                        <div className="countRow d-flex">                                        
-                                                <button onClick={incrementCount} className="countBtn ">+</button>
-                                                <div className="countTotal">{count}</div>
-                                                <button onClick={decrementCount} className="countBtn">-</button>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-2 prodctDtlPrice ">
-                                        <div className="cartPrice"> $ 44.00</div>
-                                        <div className="discntPrice">(31% off)</div>
-                                    </div>
-                                    <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
-                                        <div className="carTotalPrice">
-                                            <Link to="/">$88.00 </Link>
-                                        </div>
-                                    </div>
-                                </div>                                
-                                <hr/> */}
+                            </div>
+                          </div>
+                          <div className="col-sm-2 prodctDtlPrice ">
+                            <div className="cartPrice"> £{cartItem.variant?.price}</div>
+                            {/* <div className="discntPrice">£100.43 Inc VAT</div> */}
+                          </div>
+                          <div className="col-sm-2 d-flex justify-content-end  prodctDtlPrice ">
+                            <div className="carTotalPrice">
+                              <Link to="/checkout">£{cartItem.quantity * cartItem.variant?.price}</Link>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <hr />
                       <div className="backShopBtn">
                         <h6>
                           <Link
@@ -362,7 +231,7 @@ function Cart() {
                           </label>
                         </div>
                         <div className="prmoCodeInfo py-3">
-                          <p>Your order is eligible for $200.00 cashback</p>
+                          <p>Your order is eligible for £200.00 cashback</p>
                           <p>Cashback will be added to your wallet </p>
                           <p>Dalance as per the offer terms and conditions</p>
                         </div>
@@ -377,7 +246,7 @@ function Cart() {
                           {/* <li><b>Promo Code Applied</b><span>$10</span></li> */}
                           <li>
                             <b>Total Cost</b>
-                            <span>${cartTotalAmount}</span>
+                            <span>£{cartTotalAmount}</span>
                           </li>
                         </ul>
                       </div>
@@ -394,8 +263,7 @@ function Cart() {
           </div>
         </div>
       </article>
-
-      <article className="wrapper py-40  simiLarPrdctBlk">
+      {/* <article className="wrapper py-40  simiLarPrdctBlk">
         <div className="container">
           <div className="mainHeading headingCenter pb-30">
             <h2>Similar Products</h2>
@@ -479,7 +347,7 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
+                          <div className="price">£69.00</div>
                         </div>
                       </div>
                     </div>
@@ -554,8 +422,8 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
-                          <div className="oferPrice">$65.00</div>
+                          <div className="price">£69.00</div>
+                          <div className="oferPrice">£65.00</div>
                           <div className="discntPrice">(31% off)</div>
                         </div>
                       </div>
@@ -631,7 +499,7 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
+                          <div className="price">£69.00</div>
                         </div>
                       </div>
                     </div>
@@ -706,7 +574,7 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
+                          <div className="price">£69.00</div>
                         </div>
                       </div>
                     </div>
@@ -781,7 +649,7 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
+                          <div className="price">£69.00</div>
                         </div>
                       </div>
                     </div>
@@ -856,7 +724,7 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
+                          <div className="price">£69.00</div>
                         </div>
                       </div>
                     </div>
@@ -931,12 +799,144 @@ function Cart() {
                           <p>Eeiusmod tempor incididunt</p>
                         </div>
                         <div className="prodctDtlPrice d-flex justify-content-center">
-                          <div className="price">$69.00</div>
+                          <div className="price">£69.00</div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </SwiperSlide>
+              </Swiper>
+            </div>
+          </div>
+        </div>
+      </article> */}
+      <article className="wrapper py-3 simiLarPrdctBlk prodctDtlSimilr ">
+        <div className="container">
+          <div className="mainHeading headingCenter pb-4">
+            <h2>People Also Searched For These Products</h2>
+          </div>
+          <div className="newsSliderOuter pb-3 ">
+            <div className="similarPrdctSlidr crslCntrls2 crslCntrls3">
+              <Swiper
+                modules={[Navigation, Pagination, Scrollbar, A11y]}
+                navigation
+                spaceBetween={2}
+                slidesPerView={4}
+                centeredSlides={false}
+                loop={true}
+              >
+                {peopleAlsoSearcherFor?.map((element, index) => {
+                  return (
+                    <SwiperSlide>
+                      <div className="similarItem">
+                        <div className="prdctListItem">
+                          <div className="prdctListMedia">
+                            <div
+                              className="prdctListImg"
+                              style={{
+                                backgroundImage: element.images[0]
+                                  ? `url("${Rest}/documents/get/${element.images[0].documentId}")`
+                                  : `url("img/productDtilImg.jpg")`,
+                              }}
+                            >
+                              <div className="prdctListOverlay"></div>
+                            </div>
+                            <div className="prdctHovrCard">
+                              <Link to="/">
+                                <span className="prdctListWishListIcon">
+                                  <img src="img/wishListIconDark.svg" />
+                                </span>
+                              </Link>
+                              <Link to="/">
+                                <span className="prdctListIcon">
+                                  <img src="img/prdctListIcon.svg" />
+                                </span>
+                              </Link>
+                            </div>
+                            <div className="prdctNwHvrBtns">
+                              <Link
+                                to="/cart"
+                                className="btnCommon"
+                                onClick={() => {
+                                  dispatch(
+                                    stateActions.addCartItem(
+                                      product,
+                                      count,
+                                      product.variants[selectedVariant]
+                                    )
+                                  );
+                                }}
+                              >
+                                Add To Cart
+                              </Link>
+                              <Link
+                                to="/checkout"
+                                className="btnCommon btnDark"
+                                onClick={() => {
+                                  dispatch(
+                                    stateActions.addCartItem(
+                                      element,
+                                      count,
+                                      element.variants[0]
+                                    )
+                                  );
+                                }}
+                              >
+                                Buy Now
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="prodctListInfoCol text-center">
+                            <div className="prdctListTitle">
+                              <h4>
+                                {" "}
+                                <Link to="/">{element.name}</Link>
+                              </h4>
+                            </div>
+                            <div className="rvwRtngPrgrsStars">
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <i
+                                className="fa fa-star ylowStar"
+                                aria-hidden="true"
+                              ></i>
+                              <span>(981)</span>
+                            </div>
+                            <div className="prdctListInfo">
+                              <p
+                                dangerouslySetInnerHTML={{ __html: element.description.slice(0, 100) + "..." }}
+                              ></p>
+                            </div>
+                            <div className="prodctDtlPrice d-flex justify-content-center">
+                              <div className="price">
+                                Starts From £{element?.variants[0]?.price}
+                              </div>
+                              <div className="oferPrice">
+                                £{(element?.variants[0]?.price * 109) / 100}
+                              </div>
+                              {/* {console.log(element.variants)} */}
+                              <div className="discntPrice">(9% off)</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </div>
           </div>

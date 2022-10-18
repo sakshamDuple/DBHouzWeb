@@ -306,7 +306,7 @@ function Header() {
         console.log("error", error)
       })
   }
-  console.log(categories[0].subCategories[0]._id)
+  console.log(categories[0]?.subCategories[0]?._id)
   // handleProductApp(categories[0].subCategories[0]._id)
   return (
     <header className="mainHeader wrapper">

@@ -28,6 +28,7 @@ const NewVariantObject = {
   style: "",
   size: "",
   colorId: "",
+  color: "",
   dimensions: {
     height: 0,
     width: 0,
@@ -56,9 +57,11 @@ function AdminEditProductVariants() {
 
   const [editParams, setEditParams] = useState(false);
   const [params, setParams] = useState({ ...product.variantParameters });
+  const [colorsList, setColorsList] = useState([])
   const [variants, setVariants] = useState([...product.variants]);
   const [newStyleText, setNewStyleText] = useState("");
   const [newSizeText, setNewSizeText] = useState("");
+  const [newColorText, setNewColorText] = useState("")
 
   const [newVariantModal, setNewVariantModal] = useState({
     visible: false,
@@ -91,7 +94,7 @@ function AdminEditProductVariants() {
     }
     const thisUpdateProduct = await RestAdmin.newVariantImages(formData);
     thisUpdateProduct.product.variants.forEach(element => {
-      if(element.name == newvariant.name){
+      if (element.name == newvariant.name) {
         img = element.images
       }
     });
@@ -123,6 +126,7 @@ function AdminEditProductVariants() {
   };
 
   useEffect(() => loadData(), []);
+  useEffect(() => { }, [colorsList])
 
   return (
     <>
@@ -279,6 +283,7 @@ function AdminEditProductVariants() {
                                           <p className="ms-1">List of Sizes</p>
                                         </div>
                                       </div>
+                                      {console.log("params.sizeList", params.sizeList)}
                                       <div className="row">
                                         {params.sizeList.map((size) => (
                                           <div className="col-sm-2">
@@ -357,6 +362,7 @@ function AdminEditProductVariants() {
                                 )}
                               </div>
                             </div>
+                            {console.log("params", params)}
                             <div className="row mt-3">
                               <div className="col-12">
                                 <FormCheck
@@ -370,6 +376,130 @@ function AdminEditProductVariants() {
                                   }}
                                   label={`Enable Colors`}
                                 />
+                                {params.colorEnabled && (
+                                  <div className="row">
+                                    <div className="col-12">
+                                      <div className="row mt-3">
+                                        <div className="col-12">
+                                          <p className="ms-1">List of Colors</p>
+                                        </div>
+                                      </div>
+                                      <div className="row">
+                                        {!params.colorsList && colorsList?.map((color) => (
+                                          <div className="col-sm-2">
+                                            <InputGroup className="mb-3">
+                                              <Form.Control
+                                                disabled
+                                                type="text"
+                                                onChange={(e) => {
+                                                  handleVariantsChange(
+                                                    e,
+                                                    index
+                                                  );
+                                                }}
+                                                value={color}
+                                                placeholder="Style"
+                                              />
+                                              <Button
+                                                variant="outline-warning"
+                                                onClick={() => {
+                                                  let index =
+                                                    colorsList.findIndex(
+                                                      (s) => s === color
+                                                    );
+                                                  if (index !== -1) {
+                                                    let newColor = colorsList;
+                                                    console.log("newColor", newColor)
+                                                    newColor.splice(
+                                                      index,
+                                                      1
+                                                    );
+                                                    setColorsList(newColor);
+                                                  }
+                                                }}
+                                              >
+                                                X
+                                              </Button>
+                                            </InputGroup>
+                                          </div>
+                                        ))}
+                                        {params.colorsList && params.colorsList?.map((color) => (
+                                          <div className="col-sm-2">
+                                            <InputGroup className="mb-3">
+                                              <Form.Control
+                                                disabled
+                                                type="text"
+                                                onChange={(e) => {
+                                                  handleVariantsChange(
+                                                    e,
+                                                    index
+                                                  );
+                                                }}
+                                                value={color}
+                                                placeholder="Style"
+                                              />
+                                              <Button
+                                                variant="outline-warning"
+                                                onClick={() => {
+                                                  let index =
+                                                    params.colorsList.findIndex(
+                                                      (s) => s === color
+                                                    );
+                                                  if (index !== -1) {
+                                                    let newColor = params.colorsList;
+                                                    newColor.splice(
+                                                      index,
+                                                      1
+                                                    );
+                                                    setParams({
+                                                      ...params,
+                                                      colorsList: newColor
+                                                    });
+                                                  }
+                                                }}
+                                              >
+                                                X
+                                              </Button>
+                                            </InputGroup>
+                                          </div>
+                                        ))}
+                                        <div className="col-sm-2">
+                                          <InputGroup className="mb-3">
+                                            <Form.Control
+                                              value={newColorText}
+                                              onChange={(e) => {
+                                                setNewColorText(e.target.value);
+                                              }}
+                                              placeholder="Style"
+                                            />
+                                            {console.log("newColorText", newColorText)}
+                                            <Button
+                                              variant="outline-success"
+                                              onClick={() => {
+                                                // console.log("Hii")
+                                                let index =
+                                                  colorsList.findIndex(
+                                                    (s) => s === newColorText
+                                                  );
+                                                console.log(colorsList.length)
+                                                if (index === -1) {
+                                                  setNewColorText("");
+                                                  colorsList.push(newColorText)
+                                                  setParams({
+                                                    ...params,
+                                                    colorsList: colorsList
+                                                  });
+                                                }
+                                              }}
+                                            >
+                                              +
+                                            </Button>
+                                          </InputGroup>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <div className="row mt-3">
@@ -818,6 +948,29 @@ function AdminEditProductVariants() {
                       <option value="">(Select Color)</option>
                       {allColors?.map((c) => (
                         <option value={c._id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                {params.colorEnabled && (
+                  <div className="form-group mt-3">
+                    <label className="text-muted px-2">Select a Color</label>
+                    <select
+                      value={newVariant.color}
+                      className="form-control"
+                      onChange={(e) => {
+                        setNewVariant({
+                          ...newVariant,
+                          color: e.target.value,
+                        });
+                      }}
+                    >
+                      <option value="">(Select Color)</option>
+                      {!params.colorsList && colorsList?.map((c) => (
+                        <option value={c}>{c}</option>
+                      ))}
+                      {colorsList && params.colorsList?.map((c) => (
+                        <option value={c}>{c}</option>
                       ))}
                     </select>
                   </div>
