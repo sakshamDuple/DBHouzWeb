@@ -12,39 +12,24 @@ import "swiper/css/thumbs";
 import axios from '../../API/axios';
 import { FreeMode, Navigation, Thumbs, Pagination, Scrollbar, A11y } from 'swiper';
 import { strictValidArray } from '../../utils/commonutils';
-import TableList from './table/TableList';
 import jwtDecode from "jwt-decode";
 import { useSelector } from "react-redux";
+import AllOrderUser from "./Tabs/AllOrderUser";
+import CompleteOrder from './Tabs/CompleteOrder';
+import CancelledOrder from './Tabs/CancelledOrder';
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function OrderHistory() {
-    const [getData, setGetData] = useState();
-    const user = useSelector((s) => s.user);
-    const [userId,setUserId] = useState();
-    useEffect(async () => {
+    // const user = useSelector((s) => s.user);
+    const [userid, setUserId] = useState("");
+    useEffect(() => {
         let accessToken = window.localStorage.getItem("JWT");
-        console.log("at", accessToken)
-        console.log(jwtDecode(accessToken));
         let n = jwtDecode(accessToken);
         const { user: { _id } = {} } = n || {};
+        let userid = _id;
         setUserId(_id);
-        console.log("userId", userId)
-        handleOrderHistoryApi()
+        console.log("userid", userid)
     }, [])
-    const handleOrderHistoryApi = async(userId,) => {
-        try {
-            const res = await axios.get(`/order/getOrderForUser/${userId}/${page}/${limit}/${asc}`);
-            const { data: { order } = {} } = res || {};
-            console.log("res jagvir", order)
-            return setGetData(order);
-        } catch (error) {
-            console.log("error", error)
-        }
-    }
-    const selectRef1 = useRef();
-    useEffect(() => {
-        $(selectRef1.current).niceSelect();
-    }, []);
     const selectRef2 = useRef();
     useEffect(() => {
         $(selectRef2.current).niceSelect();
@@ -57,8 +42,6 @@ function OrderHistory() {
     useEffect(() => {
         $(selectRef4.current).niceSelect();
     }, []);
-    const ans = Array.isArray(getData);
-    console.log("getData", ans)
     return (
         <section className="wrapper greyBg3 dashboardBlk ">
             <Header />
@@ -112,110 +95,9 @@ function OrderHistory() {
                         <div className="ordrHistyTabs px-3">
                             <Tabs defaultActiveKey="1" className="mb-3">
                                 <Tab eventKey="1" title="All Orders">
-                                    <div className="tabDataBody">
-                                        <div className="sortBlkOutr sortOrdrHistry">
-                                            <div className="row align-items-center ">
-                                                <div className="col-auto">
-                                                    <div className="row align-items-center py-3 pb-4">
-                                                        <div className="col-auto">
-                                                            <div className="ordrTitle">Orders Placed in</div>
-                                                        </div>
-                                                        <div className="col-auto">
-                                                            <div className="sortByCol">
-                                                                <div className="form-group">
-                                                                    <select ref={selectRef1} className="wide">
-                                                                        <option value="Featured">Last 30 Days</option>
-                                                                        <option value="10">10</option>
-                                                                        <option value="25">25</option>
-                                                                        <option value="50">50</option>
-                                                                        <option value="100">100</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="orderHistryTable">
-                                            {/* <TableList /> */}
-                                            <Table bordered>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Order Id #</th>
-                                                        <th>Order Date</th>
-                                                        <th>Order Status</th>
-                                                        <th>Payment</th>
-                                                        <th>Shipping</th>
-                                                        <th>Total</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {getData?.map((item, index) => {
-                                                        console.log("item", item)
-                                                        const { _id, createdAt, order_status, total_price, expectedDeliveryDate,
-                                                            transactionDetail: { transactionMethod } = {},
-                                                        } = item || {};
-                                                        let ShippingDate = new Date(expectedDeliveryDate);
-                                                        let y = ShippingDate.getFullYear();
-                                                        let mm = ShippingDate.toLocaleString('default', { month: 'short' });
-                                                        let d = ("0" + ShippingDate.getDate()).slice(-2);
-                                                        let date = new Date(createdAt);
-                                                        let year = date.getFullYear();
-                                                        let month = date.toLocaleString('default', { month: 'short' });
-                                                        let day = ("0" + date.getDate()).slice(-2);
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td>#{_id}</td>
-                                                                <td>{`${month}  ${day},${year}`}</td>
-                                                                <td className="delvrd">{order_status}</td>
-                                                                <td>{transactionMethod}</td>
-                                                                <td>{`${mm}  ${d},${y}`}</td>
-                                                                <td>${total_price}.00</td>
-                                                                <td><Link to="/">View Details</Link></td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </Table>
-                                        </div>
-                                        {/* <div className="pgntnOuter d-flex flex-row-reverse pb-3">
-                                            <ul className="pagination">
-                                                <li className="page-item">
-                                                    <a className="page-link" role="button" tabIndex="0" href="#">
-                                                        <span aria-hidden="true">‹</span>
-                                                        <span className="visually-hidden">Previous</span>
-                                                    </a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link" role="button" tabIndex="0" href="#">1</a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link" role="button" tabIndex="0" href="#">
-                                                        <span aria-hidden="true">2</span>
-                                                    </a>
-                                                </li>
-                                                <li className="page-item">
-                                                    <a className="page-link" role="button" tabIndex="0" href="#">3</a>
-                                                </li>
-                                                <li className="page-item active">
-                                                    <span className="page-link">4<span className="visually-hidden">(current)</span></span>
-                                                </li>
-
-                                                <li className="page-item"><a className="page-link" role="button" tabIndex="0" href="#">
-                                                    <span aria-hidden="true">…</span>
-                                                    <span className="visually-hidden">More</span></a>
-                                                </li>
-                                                <li className="page-item"><a className="page-link" role="button" tabIndex="0" href="#">22</a></li>
-                                                <li className="page-item"><a className="page-link" role="button" tabIndex="0" href="#">
-                                                    <span aria-hidden="true">›</span><span className="visually-hidden">Next</span></a>
-                                                </li>
-                                            </ul>
-                                        </div> */}
-                                    </div>
+                                    <AllOrderUser userid={userid} />
                                 </Tab>
-                                <Tab eventKey="summary" title="Summary">
+                                {/* <Tab eventKey="summary" title="Summary">
                                     <div className="tabDataBody">
                                         <div className="sortBlkOutr sortOrdrHistry">
                                             <div className="row align-items-center ">
@@ -337,9 +219,10 @@ function OrderHistory() {
                                             </ul>
                                         </div>
                                     </div>
-                                </Tab>
+                                </Tab> */}
                                 <Tab eventKey="completed" title="Completed">
-                                    <div className="tabDataBody">
+                                    <CompleteOrder userid={userid} />
+                                    {/* <div className="tabDataBody">
                                         <div className="sortBlkOutr sortOrdrHistry">
                                             <div className="row align-items-center ">
                                                 <div className="col-auto">
@@ -486,10 +369,11 @@ function OrderHistory() {
                                                 </li>
                                             </ul>
                                         </div>
-                                    </div>
+                                    </div>  */}
                                 </Tab>
                                 <Tab eventKey="cancelled" title="Cancelled">
-                                    <div className="tabDataBody">
+                                    <CancelledOrder userid={userid}/>
+                                    {/* <div className="tabDataBody">
                                         <div className="sortBlkOutr sortOrdrHistry">
                                             <div className="row align-items-center ">
                                                 <div className="col-auto">
@@ -618,7 +502,7 @@ function OrderHistory() {
                                                 </li>
                                             </ul>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </Tab>
                             </Tabs>
                         </div>
