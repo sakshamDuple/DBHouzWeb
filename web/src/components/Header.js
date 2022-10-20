@@ -180,6 +180,7 @@ function Header() {
       .then((res) => {
         console.log(`Got 1`);
         console.log(res);
+        if(res == undefined) return setError(`This Email Already Exists`)
         RestUser.userLogin(email, password)
           .then(({ user, token }) => {
             console.log(`Got 2`);

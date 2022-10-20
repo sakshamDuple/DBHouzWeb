@@ -966,10 +966,9 @@ function AdminEditProductVariants() {
                       }}
                     >
                       <option value="">(Select Color)</option>
-                      {!params.colorsList && colorsList?.map((c) => (
+                      {!params.colorsList ? colorsList?.map((c) => (
                         <option value={c}>{c}</option>
-                      ))}
-                      {colorsList && params.colorsList?.map((c) => (
+                      )) : params.colorsList?.map((c) => (
                         <option value={c}>{c}</option>
                       ))}
                     </select>
