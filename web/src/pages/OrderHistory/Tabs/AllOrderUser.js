@@ -8,41 +8,43 @@ import Pagination from '../../../container/pagination/pagination';
 const limit = 10;
 const AllOrderUser = () => {
 
-    const [selectOption, setSelectOption] = useState();
+    const [selectOption, setSelectOption] = useState('Asc');
     const [getData, setGetData] = useState([]);
-    const [userid, setUserId] = useState("");
+    const [userId, setUserId] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(1);
-
     useEffect(() => {
         let accessToken = window.localStorage.getItem("JWT");
         let n = jwtDecode(accessToken);
         const { user: { _id } = {} } = n || {};
         setUserId(_id);
-        console.log("userid", userid)
-         handleOrderHistoryApi(_id);
     }, [])
 
-    const handleOrderHistoryApi = async (userId = userid, SortByDate = selectOption) => {
+    const handleOrderHistoryApi = async (SortByDate=selectOption) => {
         try {
+            if (userId == "") {
+                return;
+            }
             const res = await axios.get(`/order/getOrderForUser/${userId}/${currentPage}/${limit}/${SortByDate}`);
-            console.log("after res")
-            console.log(res)
             const { data: { order, Total_Product } = {} } = res || {};
-            console.log("res jagvir", res)
             return setGetData(order), setTotalCount(Total_Product)
         } catch (error) {
             console.log("error", error)
         }
+
+
     }
+    useEffect(() => {
+        handleOrderHistoryApi()
+    }, [userId])
+
 
     useEffect(() => {
-        console.log("my console")
-        handleOrderHistoryApi(userid);
+        handleOrderHistoryApi();
     }, [currentPage, selectOption])
-
+    console.log("currentPage", currentPage)
+    console.log("selectOption", selectOption)
     const ans = Array.isArray(getData);
-    console.log("getData", ans)
     return (
         <div className="tabDataBody">
             <div className="sortBlkOutr sortOrdrHistry">

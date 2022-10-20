@@ -8,9 +8,9 @@ import Pagination from '../../../container/pagination/pagination';
 const limit = 10;
 const CancelledOrder = () => {
 
-    const [selectOption, setSelectOption] = useState();
+    const [selectOption, setSelectOption] = useState('Asc');
     const [getData, setGetData] = useState([]);
-    const [userid, setUserId] = useState("");
+    const [userId, setUserId] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(1);
 
@@ -19,24 +19,25 @@ const CancelledOrder = () => {
         let n = jwtDecode(accessToken);
         const { user: { _id } = {} } = n || {};
         setUserId(_id);
-        console.log("userid", userid)
-        handleOrderHistoryApi(_id);
     }, [])
 
-    const handleOrderHistoryApi = async (id = userid, SortByDate = selectOption) => {
-        console.log(userid)
+    const handleOrderHistoryApi = async () => {
         try {
-            const res = await axios.get(`/order/getCancelledOrder/${currentPage}/${limit}/${SortByDate}/${id}`);
-            console.log("after res")
-            console.log(res)
+            if (userId == "") {
+                return;
+            }
+            const res = await axios.get(`/order/getCancelledOrder/${currentPage}/${limit}/${selectOption}/${userId}`);
             const { data: { order, Total_Product } = {} } = res || {};
-            console.log("res jagvir", res)
             return setGetData(order)
             // setTotalCount(Total_Product)
         } catch (error) {
             console.log("error", error)
         }
     }
+    
+    useEffect(() => {
+        handleOrderHistoryApi()
+    }, [userId])
 
     useEffect(() => {
         handleOrderHistoryApi();

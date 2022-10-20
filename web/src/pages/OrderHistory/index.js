@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import $ from "jquery";
-import { Link, NavLink, } from "react-router-dom";
+import { Link, NavLink} from "react-router-dom";
 import { Button, Table, Form, Tab, Tabs } from "react-bootstrap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -17,31 +16,9 @@ import { useSelector } from "react-redux";
 import AllOrderUser from "./Tabs/AllOrderUser";
 import CompleteOrder from './Tabs/CompleteOrder';
 import CancelledOrder from './Tabs/CancelledOrder';
-window.jQuery = window.$ = $;
-require("jquery-nice-select");
+
 function OrderHistory() {
     // const user = useSelector((s) => s.user);
-    const [userid, setUserId] = useState("");
-    useEffect(() => {
-        let accessToken = window.localStorage.getItem("JWT");
-        let n = jwtDecode(accessToken);
-        const { user: { _id } = {} } = n || {};
-        let userid = _id;
-        setUserId(_id);
-        console.log("userid", userid)
-    }, [])
-    const selectRef2 = useRef();
-    useEffect(() => {
-        $(selectRef2.current).niceSelect();
-    }, []);
-    const selectRef3 = useRef();
-    useEffect(() => {
-        $(selectRef3.current).niceSelect();
-    }, []);
-    const selectRef4 = useRef();
-    useEffect(() => {
-        $(selectRef4.current).niceSelect();
-    }, []);
     return (
         <section className="wrapper greyBg3 dashboardBlk ">
             <Header />
@@ -95,7 +72,7 @@ function OrderHistory() {
                         <div className="ordrHistyTabs px-3">
                             <Tabs defaultActiveKey="1" className="mb-3">
                                 <Tab eventKey="1" title="All Orders">
-                                    <AllOrderUser userid={userid} />
+                                    <AllOrderUser  />
                                 </Tab>
                                 {/* <Tab eventKey="summary" title="Summary">
                                     <div className="tabDataBody">
@@ -221,7 +198,7 @@ function OrderHistory() {
                                     </div>
                                 </Tab> */}
                                 <Tab eventKey="completed" title="Completed">
-                                    <CompleteOrder userid={userid} />
+                                    <CompleteOrder />
                                     {/* <div className="tabDataBody">
                                         <div className="sortBlkOutr sortOrdrHistry">
                                             <div className="row align-items-center ">
@@ -372,7 +349,7 @@ function OrderHistory() {
                                     </div>  */}
                                 </Tab>
                                 <Tab eventKey="cancelled" title="Cancelled">
-                                    <CancelledOrder userid={userid}/>
+                                    <CancelledOrder />
                                     {/* <div className="tabDataBody">
                                         <div className="sortBlkOutr sortOrdrHistry">
                                             <div className="row align-items-center ">

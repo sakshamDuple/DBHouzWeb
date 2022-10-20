@@ -21,39 +21,39 @@ import product5 from "../../assets/images/productImg5.jpg";
 import Pagination from '../../container/pagination/pagination';
 import jwtDecode from "jwt-decode";
 const limit = 10;
-window.jQuery = window.$ = $;
-require("jquery-nice-select");
 function OrderList() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(10);
     const [selectOption, setSelectOption] = useState();
     const [selectOrderOption, setSelectOrderOption] = useState();
-    const [sellerid, setSellerId] = useState("");
-
-   
+    const [sellerId, setSellerId] = useState("");
 
     useEffect(() => {
         let accessToken = window.localStorage.getItem("JWT");
         let n = jwtDecode(accessToken);
         const { user: { _id } = {} } = n || {};
         setSellerId(_id);
-        getProducts(_id)
     }, [])
 
     const [getData, setGetData] = useState();
 
-    const getProducts = async (sellerId=(sellerid),SortByDate = (selectOption)) => {
+    const getProducts = async () => {
         try {
-            const res = await axios.get(`/order/getOrderForSeller/${sellerId}/${currentPage}/${limit}/${SortByDate}`);
-            console.log("res jagvir", res);
+            if (sellerId == "") {
+                return;
+            }
+            const res = await axios.get(`/order/getOrderForSeller/${sellerId}/${currentPage}/${limit}/${selectOption}`);
             const { data: { order, totalOrders } = {} } = res || {};
-            console.log("resjny jagvir", order);
             return setGetData(order), setTotalCount(totalOrders);
         } catch (error) {
             console.log("erroe", error);
         }
     }
+    
+    useEffect(() => {
+        getProducts();
+    }, [sellerId])
 
     useEffect(() => {
         getProducts();

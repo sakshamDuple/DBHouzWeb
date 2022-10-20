@@ -15,18 +15,6 @@ import callIcon from "../../assets/images/icons/callIcon.svg";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function ViewOrder() {
-    const selectRef1 = useRef();
-    useEffect(() => {
-        $(selectRef1.current).niceSelect();
-    }, []);
-    const selectRef2 = useRef();
-    useEffect(() => {
-        $(selectRef2.current).niceSelect();
-    }, []);
-    const selectRef3 = useRef();
-    useEffect(() => {
-        $(selectRef3.current).niceSelect();
-    }, []);
 
     return (
         <>
