@@ -25,9 +25,7 @@ function AdminTransactionList() {
 
     const getProducts = async () => {
         try {
-            const res = await axios.get(`/order/getAllTransaction`);
-            // /${currentPage}/${limit}/${selectOption}/${selectOrderOption}
-            console.log("res jagvir", res);
+            const res = await axios.get(`/order/getAllTransaction?OrderType=${selectOrderOption}&TransactionMethod=${selectOption}&page=${currentPage}&limit=${limit}`);
             const { data: { data, totalOrders } = {} } = res || {};
             return setGetData(data), setTotalCount(data.length);
         } catch (error) {
@@ -39,9 +37,6 @@ function AdminTransactionList() {
         getProducts();
     }, [currentPage, selectOption, selectOrderOption])
 
-    const ans = Array.isArray(getData);
-    console.log("ans", ans);
-    console.log("getData", getData);
     return (
         <>
             <Style />
@@ -73,10 +68,14 @@ function AdminTransactionList() {
                                                         onChange={(e) => { setSelectOrderOption(e.target.value) }}
                                                     >
                                                         <option selected disabled hidden value="None" > Status</option>
-                                                        <option value="All"> All Orders</option>
-                                                        <option value="Completed">Completed</option>
+                                                        <option value="Recieved"> Recieved</option>
+                                                        <option value="Payment_Accepted">Payment Accepted</option>
                                                         <option value="Cancelled">Cancelled</option>
                                                         <option value="Refund_Done"> Refund</option>
+                                                        <option value="Inprogress"> Inprogress</option>
+                                                        <option value="Delivered ">Delivered</option>
+                                                        <option value="Refund_Inprogress ">Refund Inprogress</option>
+                                                        <option value="Payment_Pending"> Payment Pending</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -87,9 +86,13 @@ function AdminTransactionList() {
                                                     <select className="wide" selected name="option"
                                                         onChange={(e) => { setSelectOption(e.target.value) }}
                                                     >
-                                                        <option selected disabled hidden value="None">Sort ByDate</option>
-                                                        <option value="Asc">Asc</option>
-                                                        <option value="Desc">Desc</option>
+                                                        <option selected disabled hidden value="None">Method</option>
+                                                        <option value="DEBIT_CARD">DEBIT CARD</option>
+                                                        <option value= "CREDIT_CARD">CREDIT CARD</option>
+                                                        <option value= "UPI">UPI</option>
+                                                        <option value= "PAYTM">PAYTM</option>
+                                                        <option value= "GPAY">GPAY </option>
+                                                        <option value="CASH_ON_DELIVERY">CASH ON DELIVERY</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -111,7 +114,6 @@ function AdminTransactionList() {
                                             </thead>
                                             <tbody>
                                             {getData?.map((item, index) => {
-                                                    console.log("item", item);
                                                     const {
                                                         amount_Of_Transaction,
                                                         transaction_Method,

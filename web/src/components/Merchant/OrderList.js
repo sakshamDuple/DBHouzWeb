@@ -43,7 +43,7 @@ function OrderList() {
             if (sellerId == "") {
                 return;
             }
-            const res = await axios.get(`/order/getOrderForSeller/${sellerId}/${currentPage}/${limit}/${selectOption}`);
+            const res = await axios.get(`/order/getOrderForSeller/${sellerId}/${currentPage}/${limit}/${selectOption}/${selectOrderOption}`);
             const { data: { order, totalOrders } = {} } = res || {};
             return setGetData(order), setTotalCount(totalOrders);
         } catch (error) {

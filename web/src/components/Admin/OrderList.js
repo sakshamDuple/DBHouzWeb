@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink,useNavigate } from "react-router-dom";
 import {
     Button,
     Table,
@@ -26,9 +26,9 @@ import editWhite from "../../assets/images/icons/edit-white-icon.png";
 import Pagination from '../../container/pagination/pagination';
 
 const limit = 10;
-window.jQuery = window.$ = $;
-require("jquery-nice-select");
+
 function AdminOrderList() {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(10);
     const [selectOption, setSelectOption] = useState();
@@ -38,19 +38,20 @@ function AdminOrderList() {
     }, [currentPage, selectOption, selectOrderOption])
     const [getData, setGetData] = useState();
 
-    const getProducts = async (SortByDate = (selectOption),OrderType=(selectOrderOption)) => {
+    const getProducts = async (SortByDate = (selectOption), OrderType = (selectOrderOption)) => {
         console.log("jagviewgf", currentPage, limit, selectOption)
         try {
             const res = await axios.get(`/order/getAllOrder/${currentPage}/${limit}/${SortByDate}/${OrderType}`);
-            console.log("res jagvir", res);
             const { data: { order, totalOrders } = {} } = res || {};
-            console.log("resjny jagvir", order);
             return setGetData(order), setTotalCount(totalOrders);
         } catch (error) {
             console.log("erroe", error);
         }
     }
-
+    const handleViewOrder = (order) => {
+        navigate(`/admin/vieworder`, { state: { order } });
+       // navigate(`/admin/vieworder?orderId=${orderid}`, { state: { order} });
+     };
     const ans = Array.isArray(getData);
     console.log("getData", ans);
     return (
@@ -134,7 +135,6 @@ function AdminOrderList() {
                                             </thead>
                                             <tbody>
                                                 {getData?.map((item, index) => {
-                                                    console.log("item", item);
                                                     const {
                                                         _id,
                                                         createdAt,
@@ -185,7 +185,7 @@ function AdminOrderList() {
                                                                     <ul>
                                                                         <li className="view-btn">
                                                                             <div className="">
-                                                                                <a href="/admin/vieworder">
+                                                                                <a onClick={()=>{handleViewOrder(item)}}>
                                                                                     <img src={view} alt="" height="18" />
                                                                                     <span>
                                                                                         <img
@@ -239,472 +239,7 @@ function AdminOrderList() {
                                                         </tr>
                                                     );
                                                 })}
-                                                 {/* <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">4595454</Link></td>
 
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="blue">
-                                                            Processing
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">48795455</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="red">
-                                                            Cancelled
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">89578951</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="green">
-                                                            Delivered
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">4595454</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="green">
-                                                            Delivered
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">87798754984</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="blue">
-                                                            Processing
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">79889554</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="green">
-                                                            Delivered
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">02458995595</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="green">
-                                                            Delivered
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr className="whitebgRow">
-                                                    <td>
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </td>
-                                                    <td className="ordeID"><Link to="/">4990055785</Link></td>
-                                                    <td>
-                                                        <div className="SubCat">May 05,2022</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="green">
-                                                            Delivered
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="paid">
-                                                            Paid
-                                                        </div>
-                                                    </td>
-                                                    <td className="status">
-                                                        <Link to="/" className="btnCommon btnDark">May 08, 2022</Link>
-                                                    </td>
-                                                    <td className="price">
-                                                        $102.00
-                                                    </td>
-
-                                                    <td className="actions">
-                                                        <div className="tbl-actn">
-                                                            <ul>
-                                                                <li className="view-btn">
-                                                                    <div className="">
-                                                                        <a href="/admin/vieworder">
-                                                                            <img src={view} alt="" height="18" />
-                                                                            <span><img src={viewWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="edit-btn">
-                                                                    <div className="">
-                                                                        <a href="javascript:void(0);">
-                                                                            <img src={editIcon} alt="" height="18" />
-                                                                            <span><img src={editWhite} alt="" height="18" /></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                                <li className="delete-btn">
-                                                                    <div className="">
-                                                                        <a href="/">
-                                                                            <img src={deleteIcon} alt="" height="18" />
-                                                                            <span>
-                                                                                <img src={deleteWhite} alt="" height="18" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr> */}
-                                                
                                             </tbody>
                                         </Table>
                                     </div>

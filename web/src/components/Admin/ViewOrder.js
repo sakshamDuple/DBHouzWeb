@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink, } from "react-router-dom";
+import { Link, NavLink,useLocation } from "react-router-dom";
 import { Button, Table, Tab, Tabs, Row, Col, Alert, Container, Form, label } from "react-bootstrap";
 import Sidebar from './Sidebar';
 import NavBar from './NavBar';
@@ -15,7 +15,16 @@ import callIcon from "../../assets/images/icons/callIcon.svg";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function ViewOrder() {
-
+    const [orderData,setOrderData] = useState([]);
+    const location = useLocation();
+    useEffect(()=>{
+        let order = location?.state?.order;
+        let products = location?.state?.order?.products;
+        console.log("products",products)
+        
+        setOrderData([order])
+    },[])
+    console.log("orderData",orderData)
     return (
         <>
             <Style />

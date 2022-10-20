@@ -27,9 +27,8 @@ const CancelledOrder = () => {
                 return;
             }
             const res = await axios.get(`/order/getCancelledOrder/${currentPage}/${limit}/${selectOption}/${userId}`);
-            const { data: { order, Total_Product } = {} } = res || {};
-            return setGetData(order)
-            // setTotalCount(Total_Product)
+            const { data: { order, totalOrders } = {} } = res || {};
+            return setGetData(order),setTotalCount(totalOrders)
         } catch (error) {
             console.log("error", error)
         }
@@ -116,7 +115,7 @@ const CancelledOrder = () => {
                 <Pagination
                     className="pagination-bar"
                     currentPage={currentPage}
-                    totalCount={10}
+                    totalCount={TotalCount}
                     pageSize={limit}
                     onPageChange={page => setCurrentPage(page)}
                 />
