@@ -180,6 +180,7 @@ function Header() {
       .then((res) => {
         console.log(`Got 1`);
         console.log(res);
+        if(res == undefined) return setError(`This Email Already Exists`)
         RestUser.userLogin(email, password)
           .then(({ user, token }) => {
             console.log(`Got 2`);
@@ -306,7 +307,7 @@ function Header() {
         console.log("error", error)
       })
   }
-  console.log(categories[0].subCategories[0]._id)
+  console.log(categories[0]?.subCategories[0]?._id)
   // handleProductApp(categories[0].subCategories[0]._id)
   return (
     <header className="mainHeader wrapper">
