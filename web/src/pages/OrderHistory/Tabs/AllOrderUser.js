@@ -25,9 +25,9 @@ const AllOrderUser = () => {
             if (userId == "") {
                 return;
             }
-            const res = await axios.get(`/order/getOrderForUser/${userId}/${currentPage}/${limit}/${SortByDate}`);
-            const { data: { order, Total_Product } = {} } = res || {};
-            return setGetData(order), setTotalCount(Total_Product)
+            const res = await axios.get(`/order/getOrderForUser/${userId}/${currentPage}/${limit}/${SortByDate}/jhj`);
+            const { data: { order, totalOrders } = {} } = res || {};
+            return setGetData(order), setTotalCount(totalOrders)
         } catch (error) {
             console.log("error", error)
         }

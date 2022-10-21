@@ -4623,7 +4623,7 @@ img {
  .transctnListProMedia {
     width: 85px;
     height: 85px;
-    border: 1px solid #C0C0C0;
+    /* border: 1px solid #C0C0C0; */
     line-height: 85px;
     text-align: center;
 }
