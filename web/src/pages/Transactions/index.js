@@ -8,9 +8,59 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-import { FreeMode, Navigation, Thumbs, Pagination, Scrollbar, A11y } from "swiper";
+import axios from '../../API/axios';
+import Pagination from '../../container/pagination/pagination';
+import jwtDecode from "jwt-decode";
+import { FreeMode, Navigation, Thumbs, Scrollbar, A11y } from "swiper";
 import UserIcon from "../../img/filterIcon.svg";
+const limit = 10;
 function Transactions() {
+  const [userId, setUserId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [TotalCount, setTotalCount] = useState(10);
+  const [filtertranscation, setFilterTranscation] = useState([]);
+  const [filterStatus, setFilterStatus] = useState([]);
+  const handleTransactions = (e) => {
+    console.log("e", e);
+    const { value, checked } = e.target;
+    if (checked == true) {
+      setFilterTranscation([...filtertranscation, value]);
+    } else {
+      setFilterTranscation(filtertranscation.filter((e) => e !== value));
+    }
+  }
+  const handleStatus = (e) => {
+    console.log("e", e);
+    const { value, checked } = e.target;
+    if (checked == true) {
+      setFilterStatus([...filterStatus, value]);
+    } else {
+      setFilterStatus(filterStatus.filter((e) => e !== value));
+    }
+  }
+  const getAllTransaction = async () => {
+    try {
+      if (userId == "") {
+        return;
+      }
+      const res = await axios.get(`/order/getTransactionUser/action?Merchant=${userId}&TransactionMethod=${filtertranscation}&page=${1}&limit=${limit}&TransactionStatus=${filterStatus}`);
+     console.log("res",res)
+      const { data: { data}={}, totalTransaction } = {} } = res || {};
+      return setGetData(data), setTotalCount(totalTransaction);
+    } catch (error) {
+      console.log("erroe", error);
+    }
+  }
+  useEffect(() => {
+    getAllTransaction()
+  }, [userId])
+
+  useEffect(() => {
+    let accessToken = window.localStorage.getItem("JWT");
+    let n = jwtDecode(accessToken);
+    const { user: { _id } = {} } = n || {};
+    setUserId(_id);
+  }, [])
   return (
     <section className="wrapper greyBg3 dashboardBlk ">
       <Header />
@@ -44,7 +94,7 @@ function Transactions() {
                 <div className="filterSideBarWgt whtBg">
                   <div className="filtrAcordion drpDownAcountRow">
                     <Accordion defaultActiveKey="0">
-                      <Accordion.Item eventKey="0">
+                      <Accordion.Item eventKey="4">
                         <Accordion.Header>
                           <span>
                             <img src={UserIcon} />
@@ -60,10 +110,13 @@ function Transactions() {
                                     <input
                                       type="checkbox"
                                       className="form-check-input"
-                                      id="1"
+                                      name="languages"
+                                      value="CREDIT_CARD  "
+                                      onClick={(e) => { handleTransactions(e) }}
+                                      id="CREDIT_CARD "
                                     />
-                                    <label className="form-check-label" htmlFor="1">
-                                      Credit/Debit cards
+                                    <label className="form-check-label" htmlFor="CREDIT_CARD">
+                                      Credit card
                                     </label>
                                   </div>
                                 </li>
@@ -72,6 +125,24 @@ function Transactions() {
                                     <input
                                       type="checkbox"
                                       className="form-check-input"
+                                      name="languages"
+                                      value="DEBIT_CARD "
+                                      onClick={(e) => { handleTransactions(e) }}
+                                      id="DEBIT_CARD"
+                                    />
+                                    <label className="form-check-label" htmlFor="DEBIT_CARD">
+                                      Debit card
+                                    </label>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div className="form-check d-flex align-items-center">
+                                    <input
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      name="languages"
+                                      value="UPI "
+                                      onClick={(e) => { handleTransactions(e) }}
                                       id="UPI"
                                     />
                                     <label className="form-check-label" htmlFor="UPI">
@@ -83,8 +154,11 @@ function Transactions() {
                                   <div className="form-check d-flex align-items-center">
                                     <input
                                       type="checkbox"
+                                      name="languages"
                                       className="form-check-input"
-                                      id="banking"
+                                      value="NET_BANKING "
+                                      onClick={(e) => { handleTransactions(e) }}
+                                      id="NET_BANKING"
                                     />
                                     <label className="form-check-label" htmlFor="banking">
                                       Net banking
@@ -95,8 +169,11 @@ function Transactions() {
                                   <div className="form-check d-flex align-items-center">
                                     <input
                                       type="checkbox"
+                                      name="languages"
                                       className="form-check-input"
-                                      id="cash"
+                                      id="CASH_ON_DELIVERY "
+                                      value="CASH_ON_DELIVERY "
+                                      onClick={(e) => { handleTransactions(e) }}
                                     />
                                     <label className="form-check-label" htmlFor="cash">
                                       Cash
@@ -108,7 +185,7 @@ function Transactions() {
                           </div>
                         </Accordion.Body>
                       </Accordion.Item>
-                      <Accordion.Item eventKey="0">
+                      <Accordion.Item eventKey="1">
                         <Accordion.Header>Status</Accordion.Header>
                         <Accordion.Body>
                           <div className="filtrList mb-2">
@@ -119,9 +196,11 @@ function Transactions() {
                                     <input
                                       type="checkbox"
                                       className="form-check-input"
-                                      id="Successful"
+                                      id="successful"
+                                      value="successful"
+                                      onClick={(e) => { handleStatus(e) }}
                                     />
-                                    <label className="form-check-label" htmlFor="Successful">
+                                    <label className="form-check-label" htmlFor="successful">
                                       Successful
                                     </label>
                                   </div>
@@ -131,9 +210,11 @@ function Transactions() {
                                     <input
                                       type="checkbox"
                                       className="form-check-input"
-                                      id="Pending"
+                                      id="pending"
+                                      value="pending"
+                                      onClick={(e) => { handleStatus(e) }}
                                     />
-                                    <label className="form-check-label" htmlFor="Pending">
+                                    <label className="form-check-label" htmlFor="pending">
                                       Pending
                                     </label>
                                   </div>
@@ -143,9 +224,11 @@ function Transactions() {
                                     <input
                                       type="checkbox"
                                       className="form-check-input"
-                                      id="Failed"
+                                      id=" unsuccessful"
+                                      value="unsuccessful"
+                                      onClick={(e) => { handleStatus(e) }}
                                     />
-                                    <label className="form-check-label" htmlFor="Failed">
+                                    <label className="form-check-label" htmlFor=" unsuccessful">
                                       Failed
                                     </label>
                                   </div>
@@ -155,7 +238,7 @@ function Transactions() {
                           </div>
                         </Accordion.Body>
                       </Accordion.Item>
-                      <Accordion.Item eventKey="0">
+                      {/* <Accordion.Item eventKey="2">
                         <Accordion.Header>Timeline</Accordion.Header>
                         <Accordion.Body>
                           <div className="filtrList mb-2">
@@ -213,7 +296,7 @@ function Transactions() {
                             </form>
                           </div>
                         </Accordion.Body>
-                      </Accordion.Item>
+                      </Accordion.Item> */}
                     </Accordion>
                   </div>
                 </div>
@@ -237,7 +320,7 @@ function Transactions() {
                                 <a href="/product-detail">
                                   <div className="transctnListProImg">
                                     <h3>
-                                      <span>Successful</span>
+                                      <span>{status}</span>
                                     </h3>
                                   </div>
                                 </a>
@@ -247,11 +330,11 @@ function Transactions() {
                               <div className="transctnListProInfo">
                                 <div className="transctnListTitle">
                                   <h4>
-                                    <a href="/">Paid on DBhouz</a>
+                                    <a href="/">{transaction_Id}</a>
                                   </h4>
                                 </div>
                                 <div className="transtnInfo">
-                                  <p>DB houz Credit Card</p>
+                                  <p>DB houz {transaction_Method}</p>
                                   <p>
                                     <span>02 May 2022, 05:25 PM</span>
                                   </p>
@@ -263,7 +346,16 @@ function Transactions() {
                             </div>
                           </div>
                         </div>
-                        <hr className="mb-5" />
+                        <div className="pgntnOuter d-flex flex-row-reverse pb-3">
+                          <Pagination
+                            className="pagination-bar"
+                            currentPage={currentPage}
+                            totalCount={TotalCount}
+                            pageSize={limit}
+                            onPageChange={page => setCurrentPage(page)}
+                          />
+                        </div>
+                        {/* <hr className="mb-5" />
                         <div className="transctnListPrdct">
                           <div className="row g-3 d-sm-flex align-items-center">
                             <div className="col-auto">
@@ -434,7 +526,7 @@ function Transactions() {
                               <div className="transtnPrice green">-£25</div>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </Tab>
                     <Tab eventKey="Refunds" title="Refunds">
@@ -766,7 +858,7 @@ function Transactions() {
           <div className="newsSliderOuter">
             <div className="similarPrdctSlidr crslCntrls crslCntrls3">
               <Swiper
-                modules={[Navigation, Pagination, Scrollbar, A11y]}
+                modules={[Navigation, Scrollbar, A11y]}
                 navigation
                 spaceBetween={2}
                 slidesPerView={6}
