@@ -247,6 +247,15 @@ export let RestAdmin = {
     });
     return result.products;
   },
+
+  async getMerchantProducts(_id) {
+    let result = await post("/user/checkData",
+    {userId:_id}, {
+      errorMessage: "Unable to get Products List!",
+    });
+    return result.products;
+  },
+  
   async updateProduct(product) {
     return await post(
       "/product/updateOne",
@@ -264,6 +273,7 @@ export let RestAdmin = {
       errorMessage: "Unable to upload variant Images for products",
     });
   },
+  
   async createColor(color) {
     return await post("/misc/createColor", color, { errorMessage: "Unable to create color" });
   },
