@@ -86,6 +86,7 @@ function Header() {
   const [reset, resetModal] = useState(false);
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
+
   const [getShowMenu, setShowMenu] = useState([])
   const [searchEngine, setSearchEngine] = useState("");
   const [selectOption, setSelectOption] = useState('');
@@ -107,6 +108,7 @@ function Header() {
       setShowSignUpModal(location?.state?.showLogin)
     }
   }, [location])
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -235,6 +237,7 @@ function Header() {
       })
   }
 
+
   function showMenu(category) {
     // handledropdown(category.category._id)
     console.log("toShow", getShowMenu)
@@ -309,6 +312,7 @@ function Header() {
   }
   console.log(categories[0]?.subCategories[0]?._id)
   // handleProductApp(categories[0].subCategories[0]._id)
+
   return (
     <header className="mainHeader wrapper">
       <article className="topBar blueBg">
@@ -1279,6 +1283,7 @@ function Header() {
                     <NavLink to="/productlist">Shop</NavLink>
                   </li>
                   <li className={`\active${path.blog}`}>
+
                     <NavLink to="/bloglist">Blog</NavLink>
                   </li>
                   {/* <li>
