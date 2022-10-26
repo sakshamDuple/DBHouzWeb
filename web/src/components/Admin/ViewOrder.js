@@ -78,9 +78,9 @@ function ViewOrder() {
                                     </div>
                                     <div className="hrStyle pb-5" ><hr /></div>
 
-                                    <div id="myDivjs">
-                                        <img src={logo} alt="" height="35" />
-                                        {/* <div className="card-body">
+
+
+                                    {/* <div className="card-body">
                                             <div className="invoice">
                                                 <div className="d-md-flex justify-content-between align-items-center mb-4">
                                                     <div>Invoice No : #000756</div>
@@ -152,14 +152,18 @@ function ViewOrder() {
                                                 </div>
                                             </div>
                                         </div> */}
-                                        {orderData.map((item, index) => {
-                                            const {
-                                                _id, order_status, createdAt, products, total_price,
-                                                customerDetail: { name, phone, email } = {},
-                                                address: {
-                                                    city, country, main_address_text, postal_code, state } = {},
-                                            } = item || {};
-                                            return (
+                                    {orderData.map((item, index) => {
+                                        const {
+                                            _id, order_status, createdAt, products, total_price,
+                                            customerDetail: { name, phone, email } = {},
+                                            address: {
+                                                city, country, main_address_text, postal_code, state } = {},
+                                        } = item || {};
+                                        return (
+                                            <div id="myDivjs">
+                                                <div>
+                                                    <img src={logo} alt="" height="35" />
+                                                </div>
                                                 <div className="row">
                                                     <div className="col-lg-8 col-md-12">
                                                         <div className="card mb-4">
@@ -345,17 +349,18 @@ function ViewOrder() {
                                                                     <div className="col-6 text-end">Purchase GST :</div>
                                                                     <div className="col-6">22HG9838964Z1</div>
                                                                 </div> */}
-                                                                <div className="text-center mt-4">
-                                                                    <button className="btnCommon " onClick={handlePdf}>Download PDF</button>
-                                                                </div>
+                                                            </div>
+                                                            <div className="text-center mt-4">
+                                                                <button className="btnCommon " onClick={handlePdf}>Download PDF</button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                            );
-                                        })}
-                                    </div>
+                                        );
+                                    })}
+
                                 </div>
                             </div>
                         </div>

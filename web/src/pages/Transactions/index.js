@@ -67,9 +67,10 @@ function Transactions() {
     setUserId(_id);
   }, [])
   const handleSelectTab = (key) => {
-    if (key === All) {
+    if (key === 1) {
       setOrderType("undefined")
-    } else {
+    }
+    if(key=== 2) {
       setOrderType("Refund_Done")
     }
   }
@@ -322,8 +323,8 @@ function Transactions() {
                 </div>
 
                 <div className="ordrHistyTabs">
-                  <Tabs defaultActiveKey="All" className="mb-3" onSelect={() => {handleSelectTab()}}>
-                    <Tab eventKey="All" title="All Transactions ">
+                  <Tabs activeKey={orderType} className="mb-3" onSelect={(e)=> setOrderType(e)}>
+                    <Tab eventKey={"undefined"} title="All Transactions " >
                       <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
                           {
@@ -520,7 +521,7 @@ function Transactions() {
                        */}
                       </div>
                     </Tab>
-                    {/* <Tab eventKey="Refunds" title="Refunds">
+                    <Tab eventKey={"Refund_Done"} title="Refunds">
                       <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
                           {
@@ -576,7 +577,7 @@ function Transactions() {
                             onPageChange={page => setCurrentPage(page)}
                           />
                         </div>
-                      </div> */}
+                      </div>
                       {/* <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
                           <div className="row g-3 d-sm-flex align-items-center">
@@ -714,7 +715,7 @@ function Transactions() {
                           </div>
                         </div>
                       </div> */}
-                    {/* </Tab> */}
+                    </Tab>
                     {/* <Tab eventKey="Cashbacks" title="Cashbacks">
                       <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
