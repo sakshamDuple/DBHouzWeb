@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import $ from "jquery";
+import axios from "../API/axios";
 import "rc-slider/assets/index.css";
 import HomeAbout from "../components/Home/HomeAbout";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,33 +19,64 @@ function ProductList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  console.log("loc:", location)
   let selectedCategory = location?.state?.category;
+  let selectedSubCategory = location.state?.subcategory;
+  console.log("selectedSubCategory", selectedSubCategory)
   let flag = 1;
   const categories = useSelector((s) => s.categories);
+  console.log("categories", categories)
   let currentCategory = [{}];
-  currentCategory = categories.filter((i) => i.category._id == selectedCategory?._id);
+  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
+  console.log("mon", mon)
+  // || i.subCategories.filter((id) => id._id) == mon
+  currentCategory = categories.filter((i) => i.category._id == mon );
+  console.log("currentCategory", currentCategory)
   const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState(currentCategory[0]);
   const [products, setProducts] = useState();
-
-  console.log(products);
+  console.log("category", category)
+  window.scrollTo(0, 0);
 
   useEffect(() => {
     if (category) {
       setLoading(true);
-      RestClient.getProductsByCategoryId(category.category._id)
-        .then((res) => {
-          setProducts(res.data);
-          setLoading(false);
-        })
-        .catch(console.error);
+      if (selectedSubCategory) {
+        console.log("selectedSubCategory")
+        return handleSubcategory(selectedSubCategory)
+      }
+      else {
+        RestClient.getProductsByCategoryId(category.category._id)
+          .then((res) => {
+            setProducts(res.data);
+            setLoading(false);
+          })
+          .catch(console.error);
+      }
     }
   }, [category]);
 
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
   };
+
+  const handleSubcategory = async (subcategory) => {
+    const { _id } = subcategory || {};
+    const data = {
+      subCategoryId: subcategory,
+    };
+    try {
+      const res = await axios.post(`/product/getProductsBySubCategory`, data)
+      console.log("res js", res.data.data)
+      return (
+        setProducts(res.data.data),
+        setLoading(false)
+      );
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
 
   const selectRef2 = useRef();
   useEffect(() => {
@@ -60,48 +92,49 @@ function ProductList() {
     <section className="wrapper">
       <Header />
       <article className="categoryInrBlk hdrBrNone wrapper">
-        <div className="greyBg2 py-4 mb-5">
-          <div className="container">
-            <div className="row d-flex align-items-center justify-content-between">
+        {/* <div className="greyBg2 py-4 mb-5"> */}
+        <div className="container">
+          {/* <div className="row d-flex align-items-center justify-content-between">
               <div className="col">
                 <div className="bredCrumbHdng">
                   <h3>Shop DBHouz</h3>
                 </div>
-              </div>
-              <div className="col-auto">
-                <div className="breadcrumbsCol py-20">
-                  <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                      <li className="breadcrumb-item">
-                        <a href="/">Home</a>
-                      </li>
-                      <li className="breadcrumb-item">
-                        <a href="/productlist">Products</a>
-                      </li>
-                      <li className="breadcrumb-item">
-                        <a href="/category">Category</a>
-                      </li>
-                    </ol>
-                  </nav>
-                </div>
-              </div>
+              </div> */}
+          <div className="col-auto">
+            <div className="breadcrumbsCol py-20">
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item">
+                    <a href="/">Home</a>
+                  </li>
+                  <li className="breadcrumb-item">
+                    <a href="/productlist">Products</a>
+                  </li>
+                  <li className="breadcrumb-item">
+                    <a href="/category">Category</a>
+                  </li>
+                </ol>
+              </nav>
             </div>
           </div>
+          {/* </div> */}
         </div>
+        {/* </div> */}
       </article>
       <article className="NavCatInrBlck wrapper">
         <div className="container">
-          <div className="NavCatInr">
-            <ul>
+          <div className="NavCatInr category-NavCatInr categoryNavBox bg-none">
+            <ul className="row no-gutters justify-content-center">
               {categories.map((cat, index) => (
-                <li key={index}>
+                <li key={index} className="col-md-2 mb-1">
                   <div
                     style={{
-                      color: "#333",
+                      color: "#FFFFFF",
                       cursor: "pointer",
-                      background: cat.category === category?.category ? "#F2672A" : "#eee",
+                      background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
                     onClick={() => {
+                      console.log(cat)
                       setCategory(cat);
                     }}
                   >
@@ -166,21 +199,21 @@ function ProductList() {
                     <div className="filtrAcordion">
                       <Accordion defaultActiveKey="0">
                         <Accordion.Item eventKey="1">
-                          <Accordion.Header>Sub Categories</Accordion.Header>
+                          {/* <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {category?.subcategories?.map((subcategory, key) => (
+                                {categories.category?.subcategories?.map((subcategory, key) => (
                                   <li index={key}>
                                     <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
                                   </li>
                                 ))}
                               </ul>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body> */}
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
-                          <Accordion.Header>Color</Accordion.Header>
+                          {/* <Accordion.Header>Color</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -263,10 +296,10 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body> */}
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
-                          <Accordion.Header>Size</Accordion.Header>
+                          {/* <Accordion.Header>Size</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -346,10 +379,10 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body> */}
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
-                          <Accordion.Header>Price</Accordion.Header>
+                          {/* <Accordion.Header>Price</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
@@ -379,7 +412,7 @@ function ProductList() {
                                 </li>
                               </ul>
                             </div>
-                          </Accordion.Body>
+                          </Accordion.Body> */}
                         </Accordion.Item>
                       </Accordion>
                     </div>
@@ -387,12 +420,12 @@ function ProductList() {
                   <div className="sideBarBnrCol">
                     <div className="sideBrAddBnr py-4">
                       <Link to="/">
-                        <img src="img/addBnr1.png" />
+                        <img src="/img/addBnr1.png" />
                       </Link>
                     </div>
                     <div className="sideBrAddBnr">
                       <Link to="/">
-                        <img src="img/addBnr2.png" />
+                        <img src="/img/addBnr2.png" />
                       </Link>
                     </div>
                   </div>
@@ -442,7 +475,6 @@ function ProductList() {
                         <p>(No Products)</p>
                       </div>
                     )}
-
                     {!loading &&
                       products?.map((product, index) => (
                         <div className="col-md-3 mb-3" key={index}>
@@ -461,12 +493,12 @@ function ProductList() {
                               <div className="prdctHovrCard">
                                 <Link to="/wishlist">
                                   <span className="prdctListWishListIcon">
-                                    <img src="img/wishListIconDark.svg" />
+                                    <img src="/img/wishListIconDark.svg" />
                                   </span>
                                 </Link>
                                 <Link to="/">
                                   <span className="prdctListIcon">
-                                    <img src="img/prdctListIcon.svg" />
+                                    <img src="/img/prdctListIcon.svg" />
                                   </span>
                                 </Link>
                               </div>
@@ -475,16 +507,11 @@ function ProductList() {
                                   style={{ cursor: "pointer" }}
                                   className="btnCommon"
                                   onClick={() => {
-                                    dispatch(
-                                      stateActions.addCartItem(product, 1, product.variants[0])
-                                    );
+                                    productDetails(product);
                                   }}
                                 >
-                                  Add To Cart
+                                  View Detail
                                 </a>
-                                <Link to="/checkout" className="btnCommon btnWhite">
-                                  Buy Now
-                                </Link>
                               </div>
                             </div>
                             <div className="prodctListInfoCol text-center">
@@ -510,7 +537,7 @@ function ProductList() {
                               </div>
                               <div className="prdctListInfo">
                                 <p
-                                  dangerouslySetInnerHTML={{ __html: product.description }}
+                                  dangerouslySetInnerHTML={{ __html: product.description.slice(0, 100) + "..." }}
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">
@@ -523,7 +550,6 @@ function ProductList() {
                         </div>
                       ))}
                   </div>
-
                   <div className="pgntnOuter text-center pt-3 pb-3">
                     <ul className="pagination">
                       <li className="page-item">

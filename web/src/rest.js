@@ -1,8 +1,9 @@
 import { store } from "./index";
 import { AddMerchant } from "./components";
 
-export const Rest = "http://localhost:12001/rest";
-// export const Rest = "http://165.22.213.2:12001/rest"
+// export const Rest = "http://139.59.36.222:12001/rest"
+export const Rest = process.env.REACT_APP_API_HOST;
+console.log(Rest)
 
 const post = async (url, payload, { errorMessage, jwt }) => {
   var appState = store.getState();
@@ -30,6 +31,7 @@ const postImage = (url, payload, { errorMessage, jwt }) => {
   let headers = {};
   // if (appState?.user?.jwt) headers["Authorization"] = "Bearer " + appState.user.jwt;
   // if (jwt) headers["Authorization"] = "Bearer " + jwt;
+  console.log(payload)
   return fetch(Rest + url, {
     method: "post",
     headers,
@@ -245,6 +247,15 @@ export let RestAdmin = {
     });
     return result.products;
   },
+
+  async getMerchantProducts(_id) {
+    let result = await post("/user/checkData",
+    {userId:_id}, {
+      errorMessage: "Unable to get Products List!",
+    });
+    return result.products;
+  },
+  
   async updateProduct(product) {
     return await post(
       "/product/updateOne",
@@ -257,7 +268,12 @@ export let RestAdmin = {
       errorMessage: "Unable to upload merchant Images",
     });
   },
-
+  async newVariantImages(body) {
+    return await postImage("/product/newVariantImages", body, {
+      errorMessage: "Unable to upload variant Images for products",
+    });
+  },
+  
   async createColor(color) {
     return await post("/misc/createColor", color, { errorMessage: "Unable to create color" });
   },
@@ -328,11 +344,31 @@ export let RestClient = {
       errorMessage: "Unable to get categpries List!",
     });
   },
+  // async getProductsByCategoryId(filters) {
+  //   const {page = 0, sort = '_id', limit = 10, categoryId, ...rest} = filters;
+  //   console.log("getProductid is ", categoryId);
+  //   return await post(
+  //     `/categories/getProductsByCategory?page=${page}&sort=&${sort}&limit=${limit}`,
+  //     { categoryId , ...rest},
+  //     { errorMessage: "Unable to get products!" }
+  //   );
+  // },
   async getProductsByCategoryId(categoryId) {
     console.log("getProductid is ", categoryId);
     return await post(
       "/categories/getProductsByCategory",
       { categoryId },
+      { errorMessage: "Unable to get products!" }
+    );
+  },
+  async getCategoryDropdown(subcategoryId) {
+    console.log("getCategoryDropdown", subcategoryId);
+    let data = {
+      subCategoryId: subcategoryId,
+    }
+    return await post(
+      "/product/getProductsBySubCategory",
+      data,
       { errorMessage: "Unable to get products!" }
     );
   },

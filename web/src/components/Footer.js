@@ -12,7 +12,7 @@ function Footer() {
                 <div className="row align-items-center justify-content-between">
                       <div className="col-sm-auto">
                         <div className="ftrPaymntImg">
-                          <img src="img/freeShipingIcon.svg"/>
+                          <img src="/img/freeShipingIcon.svg"/>
                         </div>										  			
                       </div>
                       <div className="col-sm">
@@ -29,7 +29,7 @@ function Footer() {
                 <div className="row align-items-center justify-content-between">
                       <div className="col-sm-auto">
                         <div className="ftrPaymntImg">
-                          <img src="img/supportIcon.svg"/>
+                          <img src="/img/supportIcon.svg"/>
                         </div>										  			
                       </div>
                       <div className="col-sm">
@@ -46,7 +46,7 @@ function Footer() {
                 <div className="row align-items-center justify-content-between">
                       <div className="col-sm-auto">
                         <div className="ftrPaymntImg">
-                          <img src="img/paymentIcon.svg"/>
+                          <img src="/img/paymentIcon.svg"/>
                         </div>										  			
                       </div>
                       <div className="col-sm">
@@ -63,7 +63,7 @@ function Footer() {
                 <div className="row align-items-center justify-content-between">
                       <div className="col-sm-auto">
                         <div className="ftrPaymntImg">
-                          <img src="img/fastDeliveryIcon.png"/>
+                          <img src="/img/fastDeliveryIcon.png"/>
                         </div>										  			
                       </div>
                       <div className="col-sm">
@@ -173,7 +173,7 @@ function Footer() {
                 </div>
                 <div className="appStoreDiv">
                   <Link to="/">
-                    <img src="img/playstore.png" alt="Play Store"/>
+                    <img src="/img/playstore.png" alt="Play Store"/>
                   </Link>
                 </div>
               </div>

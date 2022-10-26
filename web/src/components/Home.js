@@ -14,7 +14,7 @@ import CommercialProject from "./Home/CommercialProject";
 import Blog from "./Blog/Blog";
 import HomeAbout from "./Home/HomeAbout";
 import Footer from './Main/Footer';
-
+import { useLocation } from "react-router-dom";
 function Home() {
   return (
     <section>

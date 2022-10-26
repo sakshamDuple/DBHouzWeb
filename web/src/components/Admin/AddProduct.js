@@ -234,9 +234,20 @@ function AdminAddProduct() {
       }
       setDisabled(false);
       setFormData(_.cloneDeep(initialFormData));
-      navigate(`/admin/productlist`);
+      let products = await RestAdmin.getAllProducts();
+      let product = products.filter(s=>s.name == name)
+      let navigation_product = product[0]
+      console.log(navigation_product)
+      await mintim(navigation_product)
+      console.log("hii")
     }
   };
+
+  async function mintim(product) {
+    await setTimeout(() => {
+      navigate("/admin/EditProductVariants", { state: { product } })
+    }, 500);
+  }
 
   useEffect(() => {
     if (!formData.categoryId || formData.categoryId === "") return () => {};

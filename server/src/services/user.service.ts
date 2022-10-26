@@ -27,6 +27,7 @@ class UserServiceClass {
     newUser.createdAt = Date.now();
     delete newUser._id;
     newUser = this.sanitize(newUser);
+    console.log(newUser)
     const result: InsertOneResult<IUser> = await collections.users.insertOne(newUser);
     newUser._id = result.insertedId;
     return newUser;

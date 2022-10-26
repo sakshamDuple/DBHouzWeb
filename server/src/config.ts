@@ -30,6 +30,7 @@ class AppConfigClass {
     colors: string;
     units: string;
     user: string;
+    orders: string
   };
 }
 
@@ -60,6 +61,7 @@ let AppConfigObject: AppConfigClass = {
     colors: process.env.COLLECTION_COLORS,
     units: process.env.COLLECTION_UNITS,
     user: process.env.COLLECTION_USER,
+    orders: process.env.COLLECTION_ORDER,
   },
 };
 

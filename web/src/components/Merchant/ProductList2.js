@@ -27,6 +27,7 @@ import product1 from "../../assets/images/productImg1.jpg";
 import { Rest, RestAdmin, RestMerchant } from "../../rest";
 import useAdminAuth from "../../hooks/useAdminAuth";
 import { PuffLoader } from "react-spinners";
+import jwtDecode from "jwt-decode";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
@@ -46,11 +47,14 @@ function AdminProductList() {
   }, []);
 
   useEffect(() => {
-    loadData();
+    let accessToken = window.localStorage.getItem("JWT");
+    let n = jwtDecode(accessToken);
+    const { user: { _id } = {} } = n || {};
+    loadData(_id);
   }, []);
 
-  const loadData = async () => {
-    let products = await RestAdmin.getAllProducts();
+  const loadData = async (_id) => {
+    let products = await RestAdmin.getMerchantProducts(_id);
     let result = await RestAdmin.getAllCategoriesData();
     let categories = [];
     let subCategories = [];

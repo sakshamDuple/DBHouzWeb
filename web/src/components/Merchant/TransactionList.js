@@ -6,22 +6,7 @@ import Style from './DashboardStyle';
 import NavBar from './NavBar';
 import $ from "jquery";
 
-
-window.jQuery = window.$ = $;
-require("jquery-nice-select");
 function TransactionList() {
-    const selectRef1 = useRef();
-    useEffect(() => {
-  $(selectRef1.current).niceSelect();
-    }, []);
-    const selectRef2 = useRef();
-    useEffect(() => {
-  $(selectRef2.current).niceSelect();
-    }, []);
-    const selectRef3 = useRef();
-    useEffect(() => {
-  $(selectRef3.current).niceSelect();
-    }, []);
     
      return (
         <>
@@ -108,7 +93,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -131,7 +116,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -153,7 +138,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -175,7 +160,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -197,7 +182,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -219,7 +204,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -241,7 +226,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -263,7 +248,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                            <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -285,7 +270,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                             <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                         </tr>
                                         <tr className="whitebgRow">
@@ -307,7 +292,7 @@ function TransactionList() {
                                                 </div>
                                             </td>
                                              <td className="price">
-                                            $102.00
+                                            £102.00
                                             </td>
                                             
                                         </tr>  

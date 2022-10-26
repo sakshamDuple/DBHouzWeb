@@ -18,7 +18,8 @@
     color:white !important;
 }
 
-.header-active a {
-    color: red !important;
-    border-bottom: 5px solid red;
+
+.hdrMenu > ul > li > a.active{
+    color:coral;
+
 }
