@@ -72,7 +72,8 @@ function Checkout() {
             const { product: { _id, merchantId } = {},
                 quantity, variant: { price } = {}
             } = i
-            return ({ sellerId: _id, productId: merchantId, count: quantity, totalPriceOfThisProducts: price });
+            let totalprice = price*quantity;
+            return ({ sellerId: merchantId, productId: _id, count: quantity, totalPriceOfThisProducts: totalprice });
         })
         setProductData((prev) => {
             return ([...prev, ...car])
@@ -171,6 +172,7 @@ function Checkout() {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
             let remove = res?.data?.orderData?.products;
+
             return remove.map((id) => {
                 return (
                     dispatch(stateActions.removeCartItem(id.productId)),

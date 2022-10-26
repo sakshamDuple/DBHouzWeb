@@ -13,15 +13,16 @@ import Pagination from '../../container/pagination/pagination';
 import jwtDecode from "jwt-decode";
 import { FreeMode, Navigation, Thumbs, Scrollbar, A11y } from "swiper";
 import UserIcon from "../../img/filterIcon.svg";
+import * as moment from 'moment'
 const limit = 10;
 function Transactions() {
   const [orderType, setOrderType] = useState()
   const [userId, setUserId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [TotalCount, setTotalCount] = useState(10);
-  const [filtertranscation, setFilterTranscation] = useState([]);
+  const [filtertranscation, setFilterTranscation] = useState(["undefined"]);
   const [ApiData, setApiData] = useState([]);
-  const [filterStatus, setFilterStatus] = useState([]);
+  const [filterStatus, setFilterStatus] = useState(["undefined"]);
   const handleTransactions = (e) => {
     console.log("e", e);
     const { value, checked } = e.target;
@@ -65,6 +66,13 @@ function Transactions() {
     const { user: { _id } = {} } = n || {};
     setUserId(_id);
   }, [])
+  const handleSelectTab = (key) => {
+    if (key === All) {
+      setOrderType("undefined")
+    } else {
+      setOrderType("Refund_Done")
+    }
+  }
   return (
     <section className="wrapper greyBg3 dashboardBlk ">
       <Header />
@@ -314,8 +322,8 @@ function Transactions() {
                 </div>
 
                 <div className="ordrHistyTabs">
-                  <Tabs defaultActiveKey="All" className="mb-3">
-                    <Tab eventKey="All" title="All Transactions " onChange={() => { setOrderType("Payment_Accepted") }}>
+                  <Tabs defaultActiveKey="All" className="mb-3" onSelect={() => {handleSelectTab()}}>
+                    <Tab eventKey="All" title="All Transactions ">
                       <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
                           {
@@ -326,8 +334,8 @@ function Transactions() {
                                 transaction_Date, amount_Of_Transaction,
                               } = item || {};
                               return (
-                                <div key={index} className="row g-3 d-sm-flex align-items-center">
-                                  <div className="col-auto">
+                                <div key={index} className="row g-3 d-sm-flex align-items-center mt-3">
+                                  <div className="col-md-2 mt-0">
                                     <div className="transctnListProMedia">
                                       <a href="/product-detail">
                                         <div className="transctnListProImg">
@@ -338,7 +346,7 @@ function Transactions() {
                                       </a>
                                     </div>
                                   </div>
-                                  <div className="col mt-0">
+                                  <div className="col-md-8 mt-0">
                                     <div className="transctnListProInfo">
                                       <div className="transctnListTitle">
                                         <h4>
@@ -348,12 +356,12 @@ function Transactions() {
                                       <div className="transtnInfo">
                                         <p>{transaction_Method}</p>
                                         <p>
-                                          <span>{moment(transaction_Date).format('MMMM Do YYYY, h:mm:ss a')}</span>
+                                          <span>{moment(transaction_Date).format('MMMM Do YYYY, h:mm a')}</span>
                                         </p>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="col-auto d-flex align-items-center">
+                                  <div className="col-md-2 d-flex align-items-center">
                                     <div className="transtnPrice red">£{amount_Of_Transaction}</div>
                                   </div>
                                 </div>
@@ -512,9 +520,65 @@ function Transactions() {
                        */}
                       </div>
                     </Tab>
-                    <Tab eventKey="Refunds" title="Refunds" onSelect={() => { setOrderType("Refund_Done") }}>
+                    {/* <Tab eventKey="Refunds" title="Refunds">
                       <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
+                          {
+                            ApiData?.map((item, index) => {
+                              console.log("item", item)
+                              const {
+                                transaction_Id, transaction_Method, status,
+                                transaction_Date, amount_Of_Transaction,
+                              } = item || {};
+                              return (
+                                <div key={index} className="row g-3 d-sm-flex align-items-center">
+                                  <div className="col-auto">
+                                    <div className="transctnListProMedia">
+                                      <a href="/product-detail">
+                                        <div className="transctnListProImg">
+                                          <h3>
+                                            <span>{status}</span>
+                                          </h3>
+                                        </div>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div className="col mt-0">
+                                    <div className="transctnListProInfo">
+                                      <div className="transctnListTitle">
+                                        <h4>
+                                          <a href="/">{transaction_Id}</a>
+                                        </h4>
+                                      </div>
+                                      <div className="transtnInfo">
+                                        <p>{transaction_Method}</p>
+                                        <p>
+                                          <span>{moment(transaction_Date).format('MMMM Do YYYY, h:mm a')}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-auto d-flex align-items-center">
+                                    <div className="transtnPrice red">£{amount_Of_Transaction}</div>
+                                  </div>
+                                </div>
+                              )
+                            })
+                          }
+
+                        </div>
+                        <div className="pgntnOuter d-flex flex-row-reverse pb-3">
+                          <Pagination
+                            className="pagination-bar"
+                            currentPage={currentPage}
+                            totalCount={TotalCount}
+                            pageSize={limit}
+                            onPageChange={page => setCurrentPage(page)}
+                          />
+                        </div>
+                      </div> */}
+                      {/* <div className="transctnListPage pt-4">
+                        <div className="transctnListPrdct">
                           <div className="row g-3 d-sm-flex align-items-center">
                             <div className="col-auto">
                               <div className="transctnListProMedia">
@@ -649,8 +713,8 @@ function Transactions() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </Tab>
+                      </div> */}
+                    {/* </Tab> */}
                     {/* <Tab eventKey="Cashbacks" title="Cashbacks">
                       <div className="transctnListPage pt-4">
                         <div className="transctnListPrdct">
