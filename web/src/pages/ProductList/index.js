@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useLocation, useParams,useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -19,7 +19,7 @@ const initialFilter = {
   page: 0,
   sort: '',
   limit: 10,
-  catagoery:'',
+  catagoery: '',
   sub_catagoery: '',
 }
 
@@ -32,76 +32,91 @@ function ProductList() {
 
   // let selectedCategory = location?.state?.category;
   // let selectedSubCategory = location?.state?.subcategory;
-  let flag = 1;
   const categories = useSelector((s) => s.categories);
-  
-  const cart = useSelector((s) => s.cart);
+
+  // const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
   const [filters, setFilters] = useState(initialFilter);
   window.scrollTo(0, 0);
 
+  // useEffect(() => {
+  //   if (!strictValidArrayWithLength(categories)) return
+  //   const selectedCategory = searchParams.get('category')
+  //   const sub_cat = searchParams.get('subcategory')
+  //   const currentCategory = categories.filter((i) => {
+  //     return i.category._id == selectedCategory || sub_cat
+  //   }) || categories[0];
+  //   setCategory(currentCategory)
+  // }, [categories]);
+
   useEffect(() => {
-    if(!strictValidArrayWithLength(categories)) return
-    const selectedCategory = searchParams.get('category')
-    const sub_cat = searchParams.get('subcategory')
-    const currentCategory = categories.filter((i) => {
-      return i.category._id == selectedCategory
-    }) || categories[0];
-  
-   setCategory(currentCategory)
+    if (!strictValidArrayWithLength(categories)) return
+    setLoading(true);
+    const currentCategory = categories[0];
+    const { category: { _id } = {} } = currentCategory || {};
+    setSearchParams({
+      ...searchParams,
+      categoryId: _id,
+    })
+    setFilters((prev) => {
+      return { ...prev, catagoery: _id };
+    });
+    setCategory(currentCategory)
   }, [categories]);
 
   useEffect(() => {
-    const selectedCategory = searchParams.get('category');
-    const sub_cat = searchParams.get('subcategory');
-    if(sub_cat){
-      return handleSubcategory(sub_cat)
-    }else{
+    if (category !== undefined) {
       setLoading(true);
-      RestClient.getProductsByCategoryId({categoryId: selectedCategory, limit: 10})
-        .then((res) => {
-          setProducts(res.data);
-          setLoading(false);
-        })
-        .catch(console.error);
+      const { category: { _id } = {} } = category || {};
+      handleGetProduct(_id);
     }
-  }, [searchParams]);
+  }, [category]);
 
-
-  // useEffect(async () => {
-  //   if (selectedSubCategory) {
-  //     setLoading(true);
-  //     const data = {
-  //       subCategoryId: _id,
-  //     };
-  //     try {
-  //       const res = await axios.post(`/product/getProductsBySubCategory`, data)
-  //       console.log("res js", res.data.data)
-  //       setProducts(res.data.data)
-  //     } catch (error) {
-  //       console.log("error", error)
-  //     }
+  // useEffect(() => {
+  //   const selectedCategory = searchParams.get('category');
+  //   const sub_cat = searchParams.get('subcategory');
+  //   console.log("sub_cat",sub_cat)
+  //   console.log("selectedCategory",selectedCategory)
+  //   setLoading(true);
+  //   if (selectedCategory) {
+  //     return handleGetProduct(selectedCategory)
   //   }
-  // }, [selectedSubCategory]);
+  //   if (sub_cat) {
+  //     return handleGetProduct(selectedCategory, sub_cat)
+  //   }
+  // }, [searchParams]);
+
+  const handleGetProduct = async (categoryId, subCategoryId = (filters.sub_catagoery)) => {
+    try {
+      if (categoryId == undefined) {
+        return;
+      }
+      const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${subCategoryId}&pricefrom=&priceto=`)
+      return (
+        setProducts(res.data.data),
+        setLoading(false)
+      );
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
 
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
   };
 
-  const handleSubcategory = async (e, subcategory) => {
-    const { _id } = subcategory || {};
-    const data = {
-      subCategoryId: _id,
-    };
-    try {
-      const res = await axios.post(`/product/getProductsBySubCategory`, data)
-      console.log("res js", res.data.data)
-      setProducts(res.data.data)
-    } catch (error) {
-      console.log("error", error)
-    }
+  const handleSubCategory = (e, id) => {
+    // e.preventDefault();
+    setSearchParams({
+      ...searchParams,
+      subCategoryId: id,
+    })
+    setFilters((prev) => {
+      return { ...prev, sub_catagoery: id };
+    });
+
   }
 
   const selectRef2 = useRef();
@@ -114,7 +129,7 @@ function ProductList() {
   }, []);
   // console.log("searchParams",searchParams && searchParams)
 
-  console.log(index);
+  // console.log(index);
   return (
     <section className="wrapper">
       <Header />
@@ -150,10 +165,10 @@ function ProductList() {
       </article>
       <article className="NavCatInrBlck wrapper">
         <div className="container">
-          <div className="NavCatInr">
-            <ul>
+          <div className="NavCatInr category-NavCatInr categoryNavBox bg-none">
+            <ul className="row no-gutters justify-content-center">
               {strictValidArrayWithLength(categories) && categories.map((cat, index) => (
-                <li key={index}>
+                <li key={index} className="col-md-2 mb-1" >
                   <div
                     style={{
                       color: "#FFFFFF",
@@ -162,7 +177,8 @@ function ProductList() {
                     }}
                     onClick={() => {
                       console.log(cat);
-                      setSearchParams({...searchParams,
+                      setSearchParams({
+                        ...searchParams,
                         categoryId: cat.category._id,
                       })
                       setCategory(cat);
@@ -270,7 +286,9 @@ function ProductList() {
                                   return (
                                     <li index={key}>
                                       <a style={{ cursor: "pointer" }}
-                                        onClick={() => handleSubcategory(subcategory)}
+                                        onClick={(e) => {
+                                          handleSubCategory(e, subcategory._id)
+                                        }}
                                       >
                                         {subcategory.name}
                                       </a>

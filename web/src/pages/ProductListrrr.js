@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -11,64 +11,67 @@ import { useDispatch, useSelector } from "react-redux";
 import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
+import { strictValidArrayWithLength } from "../utils/commonutils";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
-
+const initalState = {
+  subCategories: "",
+  limit: ""
+}
 function ProductList() {
-  const index = useParams();
-  const dispatch = useDispatch();
+
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  console.log("loc:", location)
-  let selectedCategory = location?.state?.category;
-  let selectedSubCategory = location.state?.subcategory;
-  console.log("selectedSubCategory", selectedSubCategory)
-  let flag = 1;
+  // const location = useLocation();
+  let [searchParams, setSearchParams] = useSearchParams();
   const categories = useSelector((s) => s.categories);
-  console.log("categories", categories)
-  let currentCategory = [{}];
-  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
-  console.log("mon", mon)
-  // || i.subCategories.filter((id) => id._id) == mon
-  currentCategory = categories.filter((i) => i.category._id == mon );
-  console.log("currentCategory", currentCategory)
-  const cart = useSelector((s) => s.cart);
+  // let selectedCategory = location?.state?.category;
+  // let selectedSubCategory = location.state?.subcategory;
+  // console.log("categories", categories)
+  // let currentCategory = [{}];
+  // // let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
+  // console.log("mon", mon)
+  // currentCategory = categories.filter((i) => i.category._id == mon);
+  // console.log("currentCategory", currentCategory)
+  const [formData, SetFormData] = useState(initalState);
   const [loading, setLoading] = useState();
-  const [category, setCategory] = useState(currentCategory[0]);
+  const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
-  console.log("category", category)
+
   window.scrollTo(0, 0);
+  // console.log("category", category)
+  useEffect(() => {
+    if (!strictValidArrayWithLength(categories)) return
+    setLoading(true);
+    const currentCategory = categories[0];
+    const { category: { _id } = {} } = currentCategory || {};
+    setSearchParams({
+      ...searchParams,
+      categoryId: _id,
+    })
+    setCategory(currentCategory)
+    // handleGetProduct(_id);
+  }, [categories]);
 
   useEffect(() => {
-    if (category) {
+    if (category !== undefined) {
       setLoading(true);
-      if (selectedSubCategory) {
-        console.log("selectedSubCategory")
-        return handleSubcategory(selectedSubCategory)
-      }
-      else {
-        RestClient.getProductsByCategoryId(category.category._id)
-          .then((res) => {
-            setProducts(res.data);
-            setLoading(false);
-          })
-          .catch(console.error);
-      }
+      const { category: { _id } = {} } = category || {};
+      handleGetProduct(_id);
     }
-  }, [category]);
+  }, [category,searchParams]);
 
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
   };
 
-  const handleSubcategory = async (subcategory) => {
-    const { _id } = subcategory || {};
-    const data = {
-      subCategoryId: subcategory,
-    };
+  const handleGetProduct = async (categoryId ,) => {
+    
     try {
-      const res = await axios.post(`/product/getProductsBySubCategory`, data)
-      console.log("res js", res.data.data)
+      if (categoryId == undefined) {
+        return;
+      }
+      const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${subCategoryId}&pricefrom=&priceto=`)
       return (
         setProducts(res.data.data),
         setLoading(false)
@@ -76,6 +79,13 @@ function ProductList() {
     } catch (error) {
       console.log("error", error)
     }
+  }
+  const handleSubCategory = (e,id) =>{
+    e.preventDefault();
+    setFormData((prev) => {
+      return { ...prev, subCategories: id };
+    });
+    set
   }
 
   const selectRef2 = useRef();
@@ -87,7 +97,6 @@ function ProductList() {
     $(selectRef3.current).niceSelect();
   }, []);
 
-  console.log(index);
   return (
     <section className="wrapper">
       <Header />
@@ -134,7 +143,10 @@ function ProductList() {
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
                     onClick={() => {
-                      console.log(cat)
+                      setSearchParams({
+                        ...searchParams,
+                        categoryId: cat.category._id,
+                      })
                       setCategory(cat);
                     }}
                   >
@@ -197,20 +209,29 @@ function ProductList() {
                       <h4>Filter</h4>
                     </div>
                     <div className="filtrAcordion">
-                      <Accordion defaultActiveKey="0">
+                      {/* <Accordion defaultActiveKey="1"> */}
+                      <Accordion >
                         <Accordion.Item eventKey="1">
-                          {/* <Accordion.Header>Sub Categories</Accordion.Header>
+                          <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <ul>
-                                {categories.category?.subcategories?.map((subcategory, key) => (
-                                  <li index={key}>
-                                    <a style={{ cursor: "pointer" }}>{subcategory.name}</a>
-                                  </li>
-                                ))}
+                                {category.subCategories?.map((subcategory, index) => {
+                                  return (
+                                    <li key={index}>
+                                      <a style={{ cursor: "pointer" }}
+                                        onClick={(e) => {
+                                          handleSubCategory(e,subcategory._id)
+                                        }}
+                                      >
+                                        {subcategory.name}
+                                      </a>
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
                           {/* <Accordion.Header>Color</Accordion.Header>
@@ -382,9 +403,9 @@ function ProductList() {
                           </Accordion.Body> */}
                         </Accordion.Item>
                         <Accordion.Item eventKey="3">
-                          {/* <Accordion.Header>Price</Accordion.Header>
+                          {/* <Accordion.Header>Price</Accordion.Header> */}
                           <Accordion.Body>
-                            <div className="filtrList mb-2">
+                            {/* <div className="filtrList mb-2">
                               <ul>
                                 <li>
                                   <Link to="/">Under $500</Link>
@@ -411,8 +432,8 @@ function ProductList() {
                                   <Link to="/">Over $20,000</Link>
                                 </li>
                               </ul>
-                            </div>
-                          </Accordion.Body> */}
+                            </div> */}
+                          </Accordion.Body>
                         </Accordion.Item>
                       </Accordion>
                     </div>
@@ -553,7 +574,7 @@ function ProductList() {
                   </div>
 
                   <div className="pgntnOuter text-center pt-3 pb-3">
-                    <ul className="pagination">
+                    {/* <ul className="pagination">
                       <li className="page-item">
                         <a className="page-link" role="button" tabIndex="0" href="#">
                           <span aria-hidden="true">‹</span>
@@ -598,7 +619,7 @@ function ProductList() {
                           <span className="visually-hidden">Next</span>
                         </a>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
