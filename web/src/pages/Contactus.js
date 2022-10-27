@@ -4,11 +4,48 @@ import { Form, textarea, Button, Modal, Input } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import $ from "jquery";
+import * as Yup from "yup";
+import { Formik } from "formik";
 import "rc-slider/assets/index.css";
+import axios from "../API/axios";
+import { RestUser } from "../rest";
+import { parseInt } from "lodash";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function Contactus() {
+  const [error, setError] = useState(false);
   const selectRef2 = useRef();
+  const phoneRegExp = /\d{5}([- ]*)\d{5}/;
+  const contactSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(2, "name must be of 2 characters long. ")
+      .required("This field is required"),
+    email: Yup.string()
+      .email("Invalid email")
+      .required("This field is required"),
+    phone: Yup.string()
+      .matches(phoneRegExp, "Phone number is not valid")
+      .max(13, "Phone number is not valid")
+      .required("This field is required"),
+    message: Yup.string()
+      .required("This field is required")
+      .min(6, "must be of 6 characters long."),
+  });
+
+  const handleContact = async (values) => {
+    let { phone, ...datas } = values;
+    phone = parseInt(phone);
+    values = { ...datas, phone };
+    RestUser.contactUs(values)
+      .then((res) => {
+        console.log(res);
+        alert("form submitted");
+      })
+      .catch((e) => {
+        console.log("error", e.message);
+        setError(e.message);
+      });
+  };
   useEffect(() => {
     $(selectRef2.current).niceSelect();
   }, []);
@@ -21,29 +58,29 @@ function Contactus() {
       <Header />
       <article className="categoryInrBlk hdrBrNone wrapper">
         {/* <div className="greyBg2 py-4 mb-5"> */}
-          <div className="container">
-            <div className="row d-flex align-items-center justify-content-between">
-              {/* <div className="col">
+        <div className="container">
+          <div className="row d-flex align-items-center justify-content-between">
+            {/* <div className="col">
                 <div className="bredCrumbHdng">
                   <h3>Contact Us</h3>
                 </div>
               </div> */}
-              <div className="col-auto">
-                <div className="breadcrumbsCol py-20">
-                  <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                      <li className="breadcrumb-item">
-                        <a href="/">Home</a>
-                      </li>
-                      <li className="breadcrumb-item active">
-                        <a href="/">Contact Us</a>
-                      </li>
-                    </ol>
-                  </nav>
-                </div>
+            <div className="col-auto">
+              <div className="breadcrumbsCol py-20">
+                <nav aria-label="breadcrumb">
+                  <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
+                      <a href="/">Home</a>
+                    </li>
+                    <li className="breadcrumb-item active">
+                      <a href="/">Contact Us</a>
+                    </li>
+                  </ol>
+                </nav>
               </div>
             </div>
           </div>
+        </div>
         {/* </div> */}
       </article>
       <article className="wrapper contactBlk py-20">
@@ -249,94 +286,169 @@ function Contactus() {
               <div className="col-sm-7">
                 <div className="contctFrmBlk py-5 px-5">
                   <h3 className="pb-3">Contact</h3>
-                  <form className="formStyle" action="#">
-                    <div className="row">
-                      <div className="col-lg-6 col-md-6">
-                        <div className=" mb-3">
-                          <label className="form-label" htmlFor="input1">
-                            First Name <span className="contact_star">*</span>
-                          </label>
-                          <input
-                            className="form-control"
-                            name="firstname"
-                            id="input1"
-                            placeholder="Your First Name"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className=" mb-3">
-                          <label className="form-label" htmlFor="input2">
-                            Last Name{" "}
-                            <span className="contact__form--label__star">
-                              *
-                            </span>
-                          </label>
-                          <input
-                            className="form-control"
-                            name="lastname"
-                            id="input2"
-                            placeholder="Your Last Name"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className=" mb-3">
-                          <label className="form-label" htmlFor="input3">
-                            Phone Number{" "}
-                            <span className="contact__form--label__star">
-                              *
-                            </span>
-                          </label>
-                          <input
-                            className="form-control"
-                            name="number"
-                            id="input3"
-                            placeholder="Phone number"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className=" mb-3">
-                          <label className="form-label" htmlFor="input4">
-                            Email{" "}
-                            <span className="contact__form--label__star">
-                              *
-                            </span>
-                          </label>
-                          <input
-                            className="form-control"
-                            name="email"
-                            id="input4"
-                            placeholder="Email"
-                            type="email"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className=" mb-15">
-                          <label className="form-label" htmlFor="input5">
-                            Write Your Message{" "}
-                            <span className="contact__form--label__star">
-                              *
-                            </span>
-                          </label>
-                          <textarea
-                            className="form-control"
-                            name="message"
-                            id="input5"
-                            placeholder="Write Your Message"
-                          ></textarea>
-                        </div>
-                      </div>
-                    </div>
-                    <button className="btnCommon btnDark mt-3 " type="submit">
-                      Submit Now
-                    </button>
-                  </form>
+
+                  <Formik
+                    initialValues={{
+                      name: "",
+                      email: "",
+                      phone: "",
+                      message: "",
+                    }}
+                    validationSchema={contactSchema}
+                    onSubmit={(value) => {
+                      handleContact(value);
+                    }}
+                  >
+                    {(formik) => {
+                      return (
+                        <form
+                          className="formStyle"
+                          onSubmit={formik.handleSubmit}
+                          action="#"
+                        >
+                          <div className="row">
+                            <div className="col-lg-6 col-md-6">
+                              <div className=" mb-3">
+                                <label className="form-label" htmlFor="input1">
+                                  First Name{" "}
+                                  <span className="contact_star">*</span>
+                                </label>
+                                <input
+                                  onBlur={formik.handleBlur}
+                                  onChange={formik.handleChange}
+                                  className="form-control"
+                                  name="name"
+                                  value={formik.values.name}
+                                  id="input1"
+                                  placeholder="Your First Name"
+                                  type="text"
+                                />
+                                {formik.touched.name && formik.errors.name && (
+                                  <p className="text-danger text-sm-left font-italic ">
+                                    * {formik.errors.name}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <div className="col-lg-6 col-md-6">
+                              <div className=" mb-3">
+                                <label className="form-label" htmlFor="input2">
+                                  Last Name{" "}
+                                  <span className="contact__form--label__star">
+                                    *
+                                  </span>
+                                </label>
+                                <input
+                                  className="form-control"
+                                  name="name"
+                                  id="input2"
+                                  placeholder="Your Last Name"
+                                  type="text"
+                                  onBlur={formik.handleBlur}
+                                  onChange={formik.handleChange}
+                                  value={formik.values.name}
+                                />
+                                {formik.touched.name && formik.errors.name && (
+                                  <p className="text-danger text-sm-left font-italic ">
+                                    * {formik.errors.name}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <div className="col-lg-6 col-md-6">
+                              <div className=" mb-3">
+                                <label className="form-label" htmlFor="input3">
+                                  Phone Number{" "}
+                                  <span className="contact__form--label__star">
+                                    *
+                                  </span>
+                                </label>
+                                <input
+                                  className="form-control"
+                                  name="phone"
+                                  id="input3"
+                                  placeholder="Phone number"
+                                  type="text"
+                                  value={formik.values.phone}
+                                  onBlur={formik.handleBlur}
+                                  onChange={formik.handleChange}
+                                />
+                                {formik.touched.phone &&
+                                  formik.errors.phone && (
+                                    <p className="text-danger text-sm-left font-italic ">
+                                      * {formik.errors.phone}
+                                    </p>
+                                  )}
+                              </div>
+                            </div>
+                            <div className="col-lg-6 col-md-6">
+                              <div className=" mb-3">
+                                <label className="form-label" htmlFor="input4">
+                                  Email{" "}
+                                  <span className="contact__form--label__star">
+                                    *
+                                  </span>
+                                </label>
+                                <input
+                                  className="form-control"
+                                  name="email"
+                                  id="input4"
+                                  placeholder="Email"
+                                  type="email"
+                                  value={formik.values.email}
+                                  onBlur={formik.handleBlur}
+                                  onChange={formik.handleChange}
+                                />
+                                {formik.touched.email &&
+                                  formik.errors.email && (
+                                    <p className="text-danger text-sm-left font-italic ">
+                                      * {formik.errors.email}
+                                    </p>
+                                  )}
+                              </div>
+                            </div>
+                            <div className="col-12">
+                              <div className=" mb-15">
+                                <label className="form-label" htmlFor="input5">
+                                  Write Your Message{" "}
+                                  <span className="contact__form--label__star">
+                                    *
+                                  </span>
+                                </label>
+                                <textarea
+                                  className="form-control"
+                                  name="message"
+                                  id="input5"
+                                  placeholder="Write Your Message"
+                                  value={formik.values.message}
+                                  onBlur={formik.handleBlur}
+                                  onChange={formik.handleChange}
+                                ></textarea>
+                              </div>
+                              {formik.touched.message &&
+                                formik.errors.message && (
+                                  <p className="text-danger text-sm-left font-italic ">
+                                    * {formik.errors.message}
+                                  </p>
+                                )}
+                            </div>
+                          </div>
+                          {error && (
+                            <p className="text-danger text-sm-left font-italic ">
+                              * {error}
+                            </p>
+                          )}
+                          <button
+                            className="btnCommon btnDark mt-3 "
+                            type="submit"
+                          >
+                            Submit Now
+                          </button>
+                        </form>
+                      );
+                    }}
+                  </Formik>
+
                   <div className="cntIconBg"></div>
                 </div>
               </div>

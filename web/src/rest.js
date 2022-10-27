@@ -1,17 +1,21 @@
 import { store } from "./index";
 import { AddMerchant } from "./components";
 
-// export const Rest = "http://139.59.36.222:12001/rest"
+// export const Rest = "https://c422-223-178-213-128.in.ngrok.io/rest"
 export const Rest = process.env.REACT_APP_API_HOST;
-console.log(Rest)
+console.log(Rest);
 
 const post = async (url, payload, { errorMessage, jwt }) => {
   var appState = store.getState();
   let headers = { "Content-Type": "application/json" };
+  // headers.append('Access-Control-Allow-Origin', 'https://c422-223-178-213-128.in.ngrok.io');
+  // headers.append('Access-Control-Allow-Credentials', 'true');
   console.log(appState.user);
-  if (appState?.user?.jwt) headers["Authorization"] = "Bearer " + appState.user.jwt;
+  if (appState?.user?.jwt)
+    headers["Authorization"] = "Bearer " + appState.user.jwt;
   if (jwt) headers["Authorization"] = "Bearer " + jwt;
   console.log("post", payload, JSON.stringify(payload));
+  console.log("url", Rest + url);
   return await fetch(Rest + url, {
     method: "post",
     headers,
@@ -23,6 +27,7 @@ const post = async (url, payload, { errorMessage, jwt }) => {
       return res;
     })
     .then((res) => res.json())
+
     .catch((err) => console.log(err));
 };
 
@@ -31,7 +36,7 @@ const postImage = (url, payload, { errorMessage, jwt }) => {
   let headers = {};
   // if (appState?.user?.jwt) headers["Authorization"] = "Bearer " + appState.user.jwt;
   // if (jwt) headers["Authorization"] = "Bearer " + jwt;
-  console.log(payload)
+  console.log(payload);
   return fetch(Rest + url, {
     method: "post",
     headers,
@@ -49,7 +54,8 @@ const postImage = (url, payload, { errorMessage, jwt }) => {
 const get = (url, { errorMessage, jwt }) => {
   var appState = store.getState();
   let headers = { "Content-Type": "application/json" };
-  if (appState?.user?.jwt) headers["Authorization"] = "Bearer " + appState.user.jwt;
+  if (appState?.user?.jwt)
+    headers["Authorization"] = "Bearer " + appState.user.jwt;
   if (jwt) headers["Authorization"] = "Bearer " + jwt;
   return fetch(Rest + url, {
     method: "get",
@@ -67,7 +73,8 @@ const get = (url, { errorMessage, jwt }) => {
 const $delete = (url, { errorMessage, jwt }) => {
   var appState = store.getState();
   let headers = { "Content-Type": "application/json" };
-  if (appState?.user?.jwt) headers["Authorization"] = "Bearer " + appState.user.jwt;
+  if (appState?.user?.jwt)
+    headers["Authorization"] = "Bearer " + appState.user.jwt;
   if (jwt) headers["Authorization"] = "Bearer " + jwt;
   return fetch(Rest + url, {
     method: "delete",
@@ -100,7 +107,15 @@ export let RestUser = {
   },
 
   async updateUser(user) {
-    return await post("/user/updateOne", { user }, "Unable to update Merchant Details!");
+    return await post(
+      "/user/updateOne",
+      { user },
+      "Unable to update Merchant Details!"
+    );
+  },
+  async contactUs(data) {
+    return await post(`/auth/contactUs`, data, "Something Wrong",
+    );
   },
 };
 
@@ -144,7 +159,9 @@ export let RestAdmin = {
     );
   },
   async deleteMerchant(merchantId) {
-    return await $delete("/merchants/deleteOne/" + merchantId, { errorMessage: "" });
+    return await $delete("/merchants/deleteOne/" + merchantId, {
+      errorMessage: "",
+    });
   },
   async newMerchantImages(formData) {
     return await postImage("/merchants/newMerchantImages", formData, {
@@ -211,7 +228,9 @@ export let RestAdmin = {
   },
   async getAllSubCategoryFormated() {
     let result = (
-      await get("/categories/getAllData", { errorMessage: "Unable to get subcategory list." })
+      await get("/categories/getAllData", {
+        errorMessage: "Unable to get subcategory list.",
+      })
     ).data;
     if (!result) return [];
     let formatedSubCategory = [];
@@ -235,10 +254,14 @@ export let RestAdmin = {
     );
   },
   async deleteCategory(id) {
-    return await $delete("/categories/deleteCategory/" + id, { errorMessage: "" });
+    return await $delete("/categories/deleteCategory/" + id, {
+      errorMessage: "",
+    });
   },
   async deleteSubCategory(id) {
-    return await $delete("/categories/deleteSubCategory/" + id, { errorMessage: "" });
+    return await $delete("/categories/deleteSubCategory/" + id, {
+      errorMessage: "",
+    });
   },
 
   async getAllProducts() {
@@ -249,13 +272,16 @@ export let RestAdmin = {
   },
 
   async getMerchantProducts(_id) {
-    let result = await post("/user/checkData",
-    {userId:_id}, {
-      errorMessage: "Unable to get Products List!",
-    });
+    let result = await post(
+      "/user/checkData",
+      { userId: _id },
+      {
+        errorMessage: "Unable to get Products List!",
+      }
+    );
     return result.products;
   },
-  
+
   async updateProduct(product) {
     return await post(
       "/product/updateOne",
@@ -273,18 +299,26 @@ export let RestAdmin = {
       errorMessage: "Unable to upload variant Images for products",
     });
   },
-  
+
   async createColor(color) {
-    return await post("/misc/createColor", color, { errorMessage: "Unable to create color" });
+    return await post("/misc/createColor", color, {
+      errorMessage: "Unable to create color",
+    });
   },
   async createUnit(unit) {
-    return await post("/misc/createUnit", unit, { errorMessage: "Unable to create unit" });
+    return await post("/misc/createUnit", unit, {
+      errorMessage: "Unable to create unit",
+    });
   },
   async getAllColors() {
-    return await get("/misc/getAllColors", { errorMessage: "Unable to get colors list." });
+    return await get("/misc/getAllColors", {
+      errorMessage: "Unable to get colors list.",
+    });
   },
   async getAllUnits() {
-    return await get("/misc/getAllUnits", { errorMessage: "Unable to get units list." });
+    return await get("/misc/getAllUnits", {
+      errorMessage: "Unable to get units list.",
+    });
   },
   async updateColor(color) {
     return await post(
@@ -317,8 +351,11 @@ export let RestMerchant = {
     );
   },
   async getAllBrands() {
-    return (await get("/brands/getAll", { errorMessage: "Unable to get Brands List!" }))
-      .brands;
+    return (
+      await get("/brands/getAll", {
+        errorMessage: "Unable to get Brands List!",
+      })
+    ).brands;
   },
   async getAllProducts() {
     let result = await get("/product/getAll", {
@@ -327,7 +364,11 @@ export let RestMerchant = {
     return result.products;
   },
   async updateProduct(product) {
-    return await post("/product/updateOne", { product }, "Unable to update Product Details!");
+    return await post(
+      "/product/updateOne",
+      { product },
+      "Unable to update Product Details!"
+    );
   },
   async updateMerchant(merchant, jwt) {
     return await post(
@@ -365,11 +406,9 @@ export let RestClient = {
     console.log("getCategoryDropdown", subcategoryId);
     let data = {
       subCategoryId: subcategoryId,
-    }
-    return await post(
-      "/product/getProductsBySubCategory",
-      data,
-      { errorMessage: "Unable to get products!" }
-    );
+    };
+    return await post("/product/getProductsBySubCategory", data, {
+      errorMessage: "Unable to get products!",
+    });
   },
 };
