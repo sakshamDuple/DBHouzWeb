@@ -1,21 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Form, textarea, Button, Modal, Input } from "react-bootstrap";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import $ from "jquery";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import "rc-slider/assets/index.css";
-import axios from "../API/axios";
 import { RestUser } from "../rest";
 import { parseInt } from "lodash";
+import axios from "axios";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 function Contactus() {
   const [error, setError] = useState(false);
+  const [value, setValue] = useState("");
+  const [phoneErr, setPhoneErr] = useState("");
+  const [currentLocation, setCurrentLocation] = useState({});
   const selectRef2 = useRef();
-  const phoneRegExp = /\d{5}([- ]*)\d{5}/;
   const contactSchema = Yup.object().shape({
     name: Yup.string()
       .min(2, "name must be of 2 characters long. ")
@@ -23,29 +27,45 @@ function Contactus() {
     email: Yup.string()
       .email("Invalid email")
       .required("This field is required"),
-    phone: Yup.string()
-      .matches(phoneRegExp, "Phone number is not valid")
-      .max(13, "Phone number is not valid")
-      .required("This field is required"),
     message: Yup.string()
       .required("This field is required")
-      .min(6, "must be of 6 characters long."),
+      .min(6, "message must be of 6 characters long."),
   });
 
+  const validation = () => {
+    if (value == "" || value == undefined) {
+      setPhoneErr("This field is required");
+    }
+  };
   const handleContact = async (values) => {
-    let { phone, ...datas } = values;
-    phone = parseInt(phone);
-    values = { ...datas, phone };
+    if (value == "" || value == undefined || !isValidPhoneNumber(value)) {
+      return;
+    }
+    values.phone = parseInt(value);
+    console.log(values);
     RestUser.contactUs(values)
       .then((res) => {
-        console.log(res);
-        alert("form submitted");
+        if (!res) {
+          alert("Check Your internet");
+        } else {
+          alert("form submitted");
+        }
       })
       .catch((e) => {
         console.log("error", e.message);
         setError(e.message);
       });
   };
+  console.log(currentLocation);
+  const getCurentLocation = async () => {
+    try {
+      const { data } = await axios.get(`https://ipapi.co/json`);
+      setCurrentLocation(data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getCurentLocation();
+  }, []);
   useEffect(() => {
     $(selectRef2.current).niceSelect();
   }, []);
@@ -291,7 +311,6 @@ function Contactus() {
                     initialValues={{
                       name: "",
                       email: "",
-                      phone: "",
                       message: "",
                     }}
                     validationSchema={contactSchema}
@@ -363,7 +382,7 @@ function Contactus() {
                                     *
                                   </span>
                                 </label>
-                                <input
+                                {/* <input
                                   className="form-control"
                                   name="phone"
                                   id="input3"
@@ -372,13 +391,31 @@ function Contactus() {
                                   value={formik.values.phone}
                                   onBlur={formik.handleBlur}
                                   onChange={formik.handleChange}
+                                /> */}
+                                <PhoneInput
+                                  className="form-control"
+                                  id="input3"
+                                  defaultCountry={currentLocation.country_code}
+                                  withCountryCallingCode
+                                  placeholder="Enter phone number"
+                                  rules={{ required: true }}
+                                  value={value}
+                                  onChange={setValue}
                                 />
-                                {formik.touched.phone &&
-                                  formik.errors.phone && (
+
+                                {value ? (
+                                  isValidPhoneNumber(value) ? undefined : (
                                     <p className="text-danger text-sm-left font-italic ">
-                                      * {formik.errors.phone}
+                                      * {`Invalid phone number`}
                                     </p>
-                                  )}
+                                  )
+                                ) : phoneErr ? (
+                                  <p className="text-danger text-sm-left font-italic ">
+                                    * {phoneErr}
+                                  </p>
+                                ) : (
+                                  ""
+                                )}
                               </div>
                             </div>
                             <div className="col-lg-6 col-md-6">
@@ -439,6 +476,7 @@ function Contactus() {
                             </p>
                           )}
                           <button
+                            onClick={validation}
                             className="btnCommon btnDark mt-3 "
                             type="submit"
                           >
