@@ -11,9 +11,8 @@ import { Rest, RestClient } from "../../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../../redux/stateActions";
 import axios from "../../API/axios";
+import Pagination from '../../container/pagination/pagination';
 import { strictValidArrayWithLength } from "../../utils/commonutils";
-window.jQuery = window.$ = $;
-require("jquery-nice-select");
 
 const initialFilter = {
   page: 0,
@@ -24,76 +23,92 @@ const initialFilter = {
 }
 
 function ProductList() {
-  const index = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
-
-  // let selectedCategory = location?.state?.category;
-  // let selectedSubCategory = location?.state?.subcategory;
   const categories = useSelector((s) => s.categories);
-
-  // const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
   const [filters, setFilters] = useState(initialFilter);
+  const [selectOption, setSelectOption] = useState('Asc');
+  const [limitOption, setLimitOption] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [TotalCount, setTotalCount] = useState(10);
   window.scrollTo(0, 0);
 
-  // useEffect(() => {
-  //   if (!strictValidArrayWithLength(categories)) return
-  //   const selectedCategory = searchParams.get('category')
-  //   const sub_cat = searchParams.get('subcategory')
-  //   const currentCategory = categories.filter((i) => {
-  //     return i.category._id == selectedCategory || sub_cat
-  //   }) || categories[0];
-  //   setCategory(currentCategory)
-  // }, [categories]);
+  console.log("searchParams manvir", searchParams)
+
+  const onClickCategeory = (cat) => {
+    setSearchParams({
+      categoryId: cat.category._id,
+    })
+    setCategory(cat);
+  }
 
   useEffect(() => {
     if (!strictValidArrayWithLength(categories)) return
-    setLoading(true);
-    const currentCategory = categories[0];
-    const { category: { _id } = {} } = currentCategory || {};
-    setSearchParams({
-      ...searchParams,
-      categoryId: _id,
-    })
-    setFilters((prev) => {
-      return { ...prev, catagoery: _id };
-    });
-    setCategory(currentCategory)
+    const selectedCategory = searchParams.get('categoryId')
+    const sub_cat = searchParams.get('subCategoryId')
+    console.log("sub_cat", sub_cat, selectedCategory)
+    let currentCategory;
+    if (selectedCategory) {
+      currentCategory = categories.find((i) => {
+        return i.category._id == selectedCategory
+      });
+      return currentCategory && setCategory(currentCategory);
+    } else {
+      currentCategory = categories[0];
+      currentCategory && onClickCategeory(currentCategory);
+    }
   }, [categories]);
 
-  useEffect(() => {
-    if (category !== undefined) {
-      setLoading(true);
-      const { category: { _id } = {} } = category || {};
-      handleGetProduct(_id);
-    }
-  }, [category]);
-
   // useEffect(() => {
+  //   if (!strictValidArrayWithLength(categories)) return
+  //   setLoading(true);
   //   const selectedCategory = searchParams.get('category');
   //   const sub_cat = searchParams.get('subcategory');
-  //   console.log("sub_cat",sub_cat)
-  //   console.log("selectedCategory",selectedCategory)
-  //   setLoading(true);
-  //   if (selectedCategory) {
-  //     return handleGetProduct(selectedCategory)
-  //   }
-  //   if (sub_cat) {
-  //     return handleGetProduct(selectedCategory, sub_cat)
-  //   }
-  // }, [searchParams]);
+  //   console.log("sub_cat", sub_cat, selectedCategory)
+  //   const currentCategory = categories[0];
+  //   console.log("currentCategory", currentCategory)
+  //   const { category: { _id } = {} } = currentCategory || {};
+  //   setSearchParams({
+  //     ...searchParams,
+  //     categoryId: _id,
+  //   })
+  //   setFilters((prev) => {
+  //     return { ...prev, catagoery: _id };
+  //   });
+  //   setCategory(currentCategory)
+  // }, [categories]);
 
-  const handleGetProduct = async (categoryId, subCategoryId = (filters.sub_catagoery)) => {
+  // useEffect(() => {
+  //   if (category !== undefined) {
+  //     setLoading(true);
+  //     const { category: { _id } = {} } = category || {};
+  //     handleGetProduct(_id);
+  //  * }
+  // }, [category]);
+
+  useEffect(() => {
+    const selectedCategory = searchParams.get('categoryId');
+    const sub_cat = searchParams.get('subCategoryId');
+    setLoading(true);
+    if (sub_cat) {
+      return handleGetProduct(selectedCategory, sub_cat);
+    } else {
+      return handleGetProduct(selectedCategory)
+    }
+  }, [searchParams]);
+
+
+  const handleGetProduct = async (categoryId, subCategoryId = filters.sub_catagoery) => {
     try {
       if (categoryId == undefined) {
         return;
       }
-      const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${subCategoryId}&pricefrom=&priceto=`)
+      const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${subCategoryId}&pricefrom=&priceto=&colorId=`)
       return (
         setProducts(res.data.data),
         setLoading(false)
@@ -110,26 +125,14 @@ function ProductList() {
   const handleSubCategory = (e, id) => {
     // e.preventDefault();
     setSearchParams({
-      ...searchParams,
+      categoryId: searchParams.get('categoryId'),
       subCategoryId: id,
     })
     setFilters((prev) => {
       return { ...prev, sub_catagoery: id };
     });
-
   }
 
-  const selectRef2 = useRef();
-  useEffect(() => {
-    $(selectRef2.current).niceSelect();
-  }, []);
-  const selectRef3 = useRef();
-  useEffect(() => {
-    $(selectRef3.current).niceSelect();
-  }, []);
-  // console.log("searchParams",searchParams && searchParams)
-
-  // console.log(index);
   return (
     <section className="wrapper">
       <Header />
@@ -175,14 +178,7 @@ function ProductList() {
                       cursor: "pointer",
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
-                    onClick={() => {
-                      console.log(cat);
-                      setSearchParams({
-                        ...searchParams,
-                        categoryId: cat.category._id,
-                      })
-                      setCategory(cat);
-                    }}
+                    onClick={() => onClickCategeory(cat)}
                   >
                     {cat.category.name}
                   </div>
@@ -203,12 +199,11 @@ function ProductList() {
                     <div className="col-auto">
                       <div className="sortByCol">
                         <div className="form-group">
-                          <select ref={selectRef3} className="wide">
-                            <option value="Featured">20</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
+                          <select selected name="option" className="wide"
+                            onChange={(e) => { setLimitOption(e.target.value) }} >
+                            <option value="none" selected disabled hidden>Limit</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
                           </select>
                         </div>
                       </div>
@@ -221,12 +216,11 @@ function ProductList() {
                     <div className="col-auto">
                       <div className="sortByCol">
                         <div className="form-group">
-                          <select ref={selectRef2} className="wide">
-                            <option value="Featured">Featured</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
+                          <select selected name="option" className="wide"
+                            onChange={(e) => { setSelectOption(e.target.value) }} >
+                            <option value="none" selected disabled hidden>Featured</option>
+                            <option value="Asc">Asc</option>
+                            <option value="Desc">Desc</option>
                           </select>
                         </div>
                       </div>
@@ -608,7 +602,14 @@ function ProductList() {
                   </div>
 
                   <div className="pgntnOuter text-center pt-3 pb-3">
-                    <ul className="pagination">
+                    <Pagination
+                      className="pagination-bar"
+                      currentPage={currentPage}
+                      totalCount={TotalCount}
+                      pageSize={limitOption}
+                      onPageChange={page => setCurrentPage(page)}
+                    />
+                    {/* <ul className="pagination">
                       <li className="page-item">
                         <a className="page-link" role="button" tabIndex="0" href="#">
                           <span aria-hidden="true">‹</span>
@@ -653,7 +654,7 @@ function ProductList() {
                           <span className="visually-hidden">Next</span>
                         </a>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
