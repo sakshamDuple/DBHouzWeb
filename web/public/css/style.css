@@ -6275,4 +6275,8 @@ box-shadow: 0px 8px 17px 3px rgb(0 0 0 / 9%);
     .mx-xl-auto {
       margin-left: auto !important;
     }
+    .checkBox-align {
+      margin-top: 0 !important;
+      margin-right: 5px;
+    }
   }

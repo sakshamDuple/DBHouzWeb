@@ -1,25 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import $ from "jquery";
 import "rc-slider/assets/index.css";
-import HomeAbout from "../../components/Home/HomeAbout";
+import HomeAbout from "../components/Home/HomeAbout";
 import { useDispatch, useSelector } from "react-redux";
-import { Rest, RestClient } from "../../rest";
+import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
-import { stateActions } from "../../redux/stateActions";
-import axios from "../../API/axios";
-import Pagination from '../../container/pagination/pagination';
-import { strictValidArrayWithLength } from "../../utils/commonutils";
-
+import { stateActions } from "../redux/stateActions";
+import axios from "../API/axios";
+import Pagination from '../container/pagination/pagination';
+import { strictValidArrayWithLength } from "../utils/commonutils";
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
+import { filter } from "lodash";
 const initialFilter = {
-  page: 0,
-  sort: '',
-  limit: 10,
   catagoery: '',
-  sub_catagoery: '',
+  sub_catagoery: [],
+  color: []
 }
 
 function ProductList() {
@@ -36,22 +36,43 @@ function ProductList() {
   const [limitOption, setLimitOption] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [TotalCount, setTotalCount] = useState(10);
-  window.scrollTo(0, 0);
+  const [priceValue, setPriceValue] = useState([0, 1000]);
+  const [color, setColors] = useState([]);
+  // window.scrollTo(0, 0);
 
-  console.log("searchParams manvir", searchParams)
+  useEffect(async () => {
+    try {
+      const res = await axios.get(`/product/getAllColors`)
+      console.log("res", typeof (res.data.colors))
+      return setColors(res.data.colors)
+    } catch (error) {
+      console.log("error", error)
+    }
+  }, [])
 
   const onClickCategeory = (cat) => {
     setSearchParams({
       categoryId: cat.category._id,
     })
     setCategory(cat);
+    setFilters((prev) => {
+      return { ...prev, catagoery: cat.category._id }
+    });
+  }
+
+  const onClickRestFilter = (e) => {
+    e.preventDefault();
+    return setPriceValue([0,1000]),
+    handleSubCategory(false),
+    setFilters((prev) => {
+      return { ...prev, sub_catagoery: []}
+    });
   }
 
   useEffect(() => {
     if (!strictValidArrayWithLength(categories)) return
     const selectedCategory = searchParams.get('categoryId')
-    const sub_cat = searchParams.get('subCategoryId')
-    console.log("sub_cat", sub_cat, selectedCategory)
+    // const sub_cat = searchParams.get('subCategoryId')
     let currentCategory;
     if (selectedCategory) {
       currentCategory = categories.find((i) => {
@@ -83,36 +104,50 @@ function ProductList() {
   //   setCategory(currentCategory)
   // }, [categories]);
 
-  // useEffect(() => {
-  //   if (category !== undefined) {
-  //     setLoading(true);
-  //     const { category: { _id } = {} } = category || {};
-  //     handleGetProduct(_id);
-  //  * }
-  // }, [category]);
+  useEffect(() => {
+    if (filters.catagoery) {
+      handleGetProduct();
+    }
+  }, [filters, currentPage, priceValue, limitOption]);
 
   useEffect(() => {
     const selectedCategory = searchParams.get('categoryId');
     const sub_cat = searchParams.get('subCategoryId');
     setLoading(true);
     if (sub_cat) {
-      return handleGetProduct(selectedCategory, sub_cat);
+      return setFilters((prev) => {
+        return { ...prev, catagoery: selectedCategory, sub_catagoery: sub_cat }
+      });
     } else {
-      return handleGetProduct(selectedCategory)
+      return setFilters((prev) => {
+        return { ...prev, catagoery: selectedCategory }
+      });
     }
   }, [searchParams]);
 
 
-  const handleGetProduct = async (categoryId, subCategoryId = filters.sub_catagoery) => {
+  const handleGetProduct = async () => {
     try {
-      if (categoryId == undefined) {
-        return;
+      if (filters.catagoery !== undefined) {
+        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
+        return (
+          setProducts(res.data.data),
+          setTotalCount(res.data.Total),
+          setLoading(false)
+        );
       }
-      const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${subCategoryId}&pricefrom=&priceto=&colorId=`)
-      return (
-        setProducts(res.data.data),
-        setLoading(false)
-      );
+
+      // let res
+      // if (categoryId !== undefined) {
+      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
+      //   return (
+      //     setProducts(res.data.data),
+      //     setLoading(false)
+      //   );
+      // }else{
+      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
+
+      // }
     } catch (error) {
       console.log("error", error)
     }
@@ -122,16 +157,42 @@ function ProductList() {
     navigate("/productdetail", { state: { product } });
   };
 
-  const handleSubCategory = (e, id) => {
-    // e.preventDefault();
-    setSearchParams({
-      categoryId: searchParams.get('categoryId'),
-      subCategoryId: id,
-    })
-    setFilters((prev) => {
-      return { ...prev, sub_catagoery: id };
-    });
+  const handleSubCategory = (checked, id) => {
+    console.log("checked",checked);
+    if (checked == true) {
+      setFilters((prev) => {
+        const { sub_catagoery } = prev;
+        return {
+          ...prev,
+          sub_catagoery: [...sub_catagoery, id]
+        };
+      });
+      console.log("print jagvir", JSON.stringify(filters.sub_catagoery))
+      //  setSearchParams({
+      //   categoryId: searchParams.get('categoryId'),
+      //   subCategoryId: id,
+      // })
+    } else {
+      setFilters((prev) => {
+        const { sub_catagoery } = prev;
+        return { ...prev, sub_catagoery: (sub_catagoery.filter((e) => e !== id)) };
+      });
+      // setFilterTranscation(filtertranscation.filter((e) => e !== value));
+    }
+    // setSearchParams({
+    //   categoryId: searchParams.get('categoryId'),
+    //   subCategoryId: id,
+    // })
+    // setFilters((prev) => {
+    //   console.log(prev)
+    //   return { ...prev, sub_catagoery: id };
+    // });
   }
+
+  const rangeSelector = (event, newValue) => {
+    setPriceValue(newValue);
+  };
+
 
   return (
     <section className="wrapper">
@@ -239,10 +300,22 @@ function ProductList() {
                     <div className="filtrAcordion">
                       <Accordion defaultActiveKey="0">
                         <Accordion.Item eventKey="3">
-                          {/* <Accordion.Header>Price</Accordion.Header>
-                          <Accordion.Body> */}
-                          {/* <div className="filtrList mb-2">
-                              <ul>
+                          <Accordion.Header>Price</Accordion.Header>
+                          <Accordion.Body>
+                            <div className="filtrList mb-2">
+                              <Typography id="range-slider" gutterBottom>
+                                Select Price Range:
+                              </Typography>
+                              <Slider
+                                value={priceValue}
+                                onChange={rangeSelector}
+                                valueLabelDisplay="auto"
+                                step={100}
+                                marks
+                                max={1000}
+                                min={0}
+                              />
+                              {/* <ul>
                                 <li>
                                   Under $500
                                 </li>
@@ -267,9 +340,9 @@ function ProductList() {
                                 <li>
                                   Over $20,000
                                 </li>
-                              </ul>
-                            </div> */}
-                          {/* </Accordion.Body> */}
+                              </ul> */}
+                            </div>
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                           <Accordion.Header>Sub Categories</Accordion.Header>
@@ -279,13 +352,22 @@ function ProductList() {
                                 {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
                                   return (
                                     <li index={key}>
-                                      <a style={{ cursor: "pointer" }}
-                                        onClick={(e) => {
-                                          handleSubCategory(e, subcategory._id)
-                                        }}
-                                      >
-                                        {subcategory.name}
-                                      </a>
+                                      <div className="form-check d-flex align-items-center">
+                                        <input
+                                          type="checkbox"
+                                          className="form-check-input checkBox-align"
+                                          id="acceptCheck"
+                                          onChange={(e) => {
+                                            handleSubCategory(e.target.checked, subcategory._id)
+                                          }}
+                                        />
+                                        <label
+                                          className="form-check-label"
+                                          htmlFor="acceptCheck"
+                                        >
+                                          {subcategory.name}
+                                        </label>
+                                      </div>
                                     </li>
                                   );
                                 })}
@@ -377,7 +459,7 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>*/}
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                           {/* <Accordion.Header>Size</Accordion.Header>
@@ -465,6 +547,7 @@ function ProductList() {
 
                       </Accordion>
                     </div>
+                    <button onClick={(e)=>{onClickRestFilter(e)}}>ResetFilter </button>
                   </div>
                   <div className="sideBarBnrCol">
                     <div className="sideBrAddBnr py-4">
