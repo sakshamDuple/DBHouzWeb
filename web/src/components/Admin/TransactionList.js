@@ -19,15 +19,15 @@ const limit = 10;
 function AdminTransactionList() {
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(10);
-    const [selectOption, setSelectOption] = useState();
-    const [selectOrderOption, setSelectOrderOption] = useState();
+    const [selectOption, setSelectOption] = useState('DEBIT_CARD');
+    const [selectOrderOption, setSelectOrderOption] = useState('successful');
     const [getData, setGetData] = useState();
 
     const getProducts = async () => {
         try {
-            const res = await axios.get(`/order/getAllTransaction?OrderType=${selectOrderOption}&TransactionMethod=${selectOption}&page=${currentPage}&limit=${limit}`);
-            const { data: { data, totalOrders } = {} } = res || {};
-            return setGetData(data), setTotalCount(data.length);
+            const res = await axios.get(`/order/getAllTransaction/action?TransactionMethod=${selectOption}&page=${currentPage}&limit=${limit}&TransactionStatus=${selectOrderOption}`);
+            const { data: { data, totalTransaction } = {} } = res || {};
+            return setGetData(data), setTotalCount(totalTransaction);
         } catch (error) {
             console.log("erroe", error);
         }
@@ -68,14 +68,11 @@ function AdminTransactionList() {
                                                         onChange={(e) => { setSelectOrderOption(e.target.value) }}
                                                     >
                                                         <option selected disabled hidden value="None" > Status</option>
-                                                        <option value="Recieved"> Recieved</option>
-                                                        <option value="Payment_Accepted">Payment Accepted</option>
-                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="successful">Completed</option>
+                                                        <option value="unsuccessful">Cancelled</option>
                                                         <option value="Refund_Done"> Refund</option>
-                                                        <option value="Inprogress"> Inprogress</option>
-                                                        <option value="Delivered ">Delivered</option>
                                                         <option value="Refund_Inprogress ">Refund Inprogress</option>
-                                                        <option value="Payment_Pending"> Payment Pending</option>
+                                                        <option value="pending"> Pending</option>
                                                     </select>
                                                 </div>
                                             </div>

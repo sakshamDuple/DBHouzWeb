@@ -31,8 +31,8 @@ function AdminOrderList() {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(10);
-    const [selectOption, setSelectOption] = useState();
-    const [selectOrderOption, setSelectOrderOption] = useState();
+    const [selectOption, setSelectOption] = useState("Asc");
+    const [selectOrderOption, setSelectOrderOption] = useState(":OrderType");
     useEffect(() => {
         getProducts();
     }, [currentPage, selectOption, selectOrderOption])
@@ -50,7 +50,7 @@ function AdminOrderList() {
     }
     const handleViewOrder = (order) => {
         navigate(`/admin/vieworder`, { state: { order } });
-       // navigate(`/admin/vieworder?orderId=${orderid}`, { state: { order} });
+    //    navigate(`/admin/vieworder?orderId=${orderid}`, { state: { order} });
      };
     const ans = Array.isArray(getData);
     console.log("getData", ans);
@@ -89,7 +89,7 @@ function AdminOrderList() {
                                                         onChange={(e) => { setSelectOrderOption(e.target.value) }}
                                                     >
                                                         <option selected disabled hidden value="None" >Orders</option>
-                                                        <option value="All"> All Orders</option>
+                                                        <option value=":OrderType"> All Orders</option>
                                                         <option value="Completed">Completed</option>
                                                         <option value="Cancelled">Cancelled</option>
                                                         <option value="Refund_Done"> Refund</option>

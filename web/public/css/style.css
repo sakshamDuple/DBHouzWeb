@@ -4623,7 +4623,7 @@ img {
  .transctnListProMedia {
     width: 85px;
     height: 85px;
-    border: 1px solid #C0C0C0;
+    /* border: 1px solid #C0C0C0; */
     line-height: 85px;
     text-align: center;
 }
@@ -6274,5 +6274,9 @@ box-shadow: 0px 8px 17px 3px rgb(0 0 0 / 9%);
     .ml-xl-auto,
     .mx-xl-auto {
       margin-left: auto !important;
+    }
+    .checkBox-align {
+      margin-top: 0 !important;
+      margin-right: 5px;
     }
   }

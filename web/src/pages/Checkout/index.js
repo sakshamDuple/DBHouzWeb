@@ -68,8 +68,12 @@ function Checkout() {
     let cartTotalAmount = 0;
     const getData = () => {
         const car = cart.map((i) => {
-            const { product: { _id, merchantId } = {} } = i
-            return ({ sellerId: _id, productId: merchantId });
+            console.log("i", i)
+            const { product: { _id, merchantId } = {},
+                quantity, variant: { price } = {}
+            } = i
+            let totalprice = price*quantity;
+            return ({ sellerId: merchantId, productId: _id, count: quantity, totalPriceOfThisProducts: totalprice });
         })
         setProductData((prev) => {
             return ([...prev, ...car])
@@ -93,7 +97,7 @@ function Checkout() {
 
     const handleLogout = (e) => {
         e.preventDefault();
-        return dispatch(stateActions.logout()), TokenUType(),getD()
+        return dispatch(stateActions.logout()), TokenUType(), getD()
     }
 
     window.scrollTo(0, 0);
@@ -167,18 +171,22 @@ function Checkout() {
         try {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
-            return (
-                // dispatch(stateActions.removeCartItem())
-                navigate("/thanku")
-            );
+            let remove = res?.data?.orderData?.products;
+
+            return remove.map((id) => {
+                return (
+                    dispatch(stateActions.removeCartItem(id.productId)),
+                    navigate("/thanku")
+                );
+            }) ;
         } catch (error) {
             console.log(error);
         }
     };
-    useEffect(()=>{
+    useEffect(() => {
         TokenUType();
         getD();
-    },[])
+    }, [])
     const afterLogin = () => {
         TokenUType();
         getD();
@@ -200,7 +208,7 @@ function Checkout() {
                                         {Type != "user" ?
                                             <div className="col">
                                                 <div className="checkOutLoginBts">
-                                                    <button onClick={(e) => {handleSignup(e)}} className="btnCommon">Register Account</button>
+                                                    <button onClick={(e) => { handleSignup(e) }} className="btnCommon">Register Account</button>
                                                     {modelshow ? <Register setModelshow={setModelshow}
                                                         afterSignup={afterSignup} /> : " "}
                                                     <button onClick={(e) => handleLogin(e)} className="btnCommon">Login</button>
@@ -630,7 +638,7 @@ function Checkout() {
                                     <div className="chckoutPymtSideBrBlk">
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
-                                                <li>Total MRP<span>£{cartTotalAmount + cartTotalAmount * 18 / 100}</span></li>
+                                                <li>Total MRP<span>£{cartTotalAmount * 18 / 100}</span></li>
                                                 <li>VAT<span className="discntPrice" >+£{cartTotalAmount * 18 / 100}</span></li>
                                                 <li>Discount on MRP<span className="discntPrice" >-£{cartTotalAmount * 36 / 100}</span></li>
                                                 <li>Convenience Fee<span className="oferPrice">£0 <span className="discntPrice">Free</span></span></li>

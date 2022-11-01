@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Button, Table, Tab, Tabs, Row, Col, Alert, Container, Form, label } from "react-bootstrap";
-import Sidebar from './Sidebar';
+import Sidebar from './SideBar';
 import NavBar from './NavBar';
 import $, { data } from "jquery";
-import Style from './AdminStyle';
+import Style from '../Admin/AdminStyle';
 import product1 from "../../assets/images/productImg1.jpg";
 import product2 from "../../assets/images/productImg2.jpg";
 import product3 from "../../assets/images/productImg3.jpg";
