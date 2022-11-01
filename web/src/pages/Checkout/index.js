@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
 import Register from "../Register";
 import Login from '../Login';
+import Select from "react-select";
+import {Country, State, City} from "country-state-city";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 const initialFormData = {
@@ -79,6 +81,14 @@ function Checkout() {
             return ([...prev, ...car])
         })
     }
+
+    const countries = Country.getAllCountries();
+    const updatedCountries = countries.map((country) => ({
+        label: country.name,
+        value: country.id,
+        ...country
+    }));
+
     cart.forEach((i) => {
         console.log("item", i)
         console.log("price:", i.variant?.price)
@@ -133,7 +143,7 @@ function Checkout() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const {
             address: {
                 city, country, state, postal_code, main_address_text,
@@ -269,6 +279,7 @@ function Checkout() {
                                                     <div className="col-6">
                                                         <label htmlFor="firstNameFld" className="form-label">First Name*</label>
                                                         <input type="text" className="form-control"
+                                                            placeholder="firstname"
                                                             onChange={(e) => {
                                                                 setFormData((prev) => {
                                                                     const { customerDetail } = prev;
@@ -286,6 +297,7 @@ function Checkout() {
                                                     <div className="col-6">
                                                         <label htmlFor="lastaNameFld" className="form-label">Last Name*</label>
                                                         <input type="text" className="form-control"
+                                                            placeholder="lastname"
                                                             onChange={(e) => {
                                                                 setFormData((prev) => {
                                                                     const { customerDetail } = prev;
@@ -335,25 +347,12 @@ function Checkout() {
                                                         />
                                                     </div>
                                                     <div className="col-6">
-                                                        <label htmlFor="cityFld" className="form-label">City*</label>
-                                                        <input type="text" className="form-control"
-                                                            onChange={(e) => {
-                                                                setFormData((prev) => {
-                                                                    const { address } = prev;
-                                                                    return {
-                                                                        ...prev,
-                                                                        address: {
-                                                                            ...prev.address,
-                                                                            city: e.target.value,
-                                                                        },
-                                                                    };
-                                                                });
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="col-6">
                                                         <label htmlFor="countrField" className="form-label">Country*</label>
-                                                        <input type="text" className="form-control"
+                                                        <Select
+                                                            id="country"
+                                                            name="country"
+                                                            label="country"
+                                                            options={updatedCountries}
                                                             value={formData.address.country}
                                                             onChange={(e) => {
                                                                 setFormData((prev) => {
@@ -368,10 +367,8 @@ function Checkout() {
                                                                 });
                                                             }}
                                                         />
-                                                    </div>
-                                                    <div className="col-6 numberFieldArrow">
-                                                        <label htmlFor="passwordFld" className="form-label ">Postal Code*</label>
-                                                        <input type="number" className="form-control"
+                                                        {/* <input type="text" className="form-control"
+                                                            value={formData.address.country}
                                                             onChange={(e) => {
                                                                 setFormData((prev) => {
                                                                     const { address } = prev;
@@ -379,12 +376,12 @@ function Checkout() {
                                                                         ...prev,
                                                                         address: {
                                                                             ...prev.address,
-                                                                            postal_code: parseInt(e.target.value),
+                                                                            country: e.target.value,
                                                                         },
                                                                     };
                                                                 });
                                                             }}
-                                                        />
+                                                        /> */}
                                                     </div>
                                                     <div className="col-6">
                                                         <label htmlFor="countrField" className="form-label">State*</label>
@@ -404,6 +401,41 @@ function Checkout() {
                                                             }}
                                                         />
                                                     </div>
+                                                    <div className="col-6">
+                                                        <label htmlFor="cityFld" className="form-label">City*</label>
+                                                        <input type="text" className="form-control"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            city: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="col-6 numberFieldArrow">
+                                                        <label className="form-label ">Postal Code*</label>
+                                                        <input type="number" className="form-control"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            postal_code: parseInt(e.target.value),
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+
                                                 </div>
                                             </Form>
                                         </div>

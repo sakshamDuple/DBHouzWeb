@@ -12,7 +12,7 @@ import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
 import axios from "../API/axios";
 import Pagination from '../container/pagination/pagination';
-import { strictValidArrayWithLength } from "../utils/commonutils";
+import { strictValidArray, strictValidArrayWithLength } from "../utils/commonutils";
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import Stack from '@mui/material/Stack';
@@ -49,7 +49,6 @@ function ProductList() {
   const [priceValue, setPriceValue] = useState([0, 100000]);
   const [color, setColors] = useState([]);
   const [maxPrice, setMaxPrice] = useState(1000);
-  const [Ischecked, setChecked] = useState(false);
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
   const onClickCategeory = (cat) => {
@@ -66,12 +65,10 @@ function ProductList() {
     e.preventDefault();
     const { sub_catagoery } = filters || {};
     for (let x of sub_catagoery) {
-      handleSubCategory(false, x);
+      handleSubCategory(x);
     }
-    // console.log("mycode", id)
     setChecked(false)
     return setPriceValue([0, 1000]),
-      // handleSubCategory(false,id);
       setFilters((prev) => {
         return { ...prev, sub_catagoery: [], color: [] }
       });
@@ -80,7 +77,6 @@ function ProductList() {
   useEffect(() => {
     if (!strictValidArrayWithLength(categories)) return
     const selectedCategory = searchParams.get('categoryId')
-    // const sub_cat = searchParams.get('subCategoryId')
     let currentCategory;
     if (selectedCategory) {
       currentCategory = categories.find((i) => {
@@ -92,25 +88,6 @@ function ProductList() {
       currentCategory && onClickCategeory(currentCategory);
     }
   }, [categories]);
-
-  // useEffect(() => {
-  //   if (!strictValidArrayWithLength(categories)) return
-  //   setLoading(true);
-  //   const selectedCategory = searchParams.get('category');
-  //   const sub_cat = searchParams.get('subcategory');
-  //   console.log("sub_cat", sub_cat, selectedCategory)
-  //   const currentCategory = categories[0];
-  //   console.log("currentCategory", currentCategory)
-  //   const { category: { _id } = {} } = currentCategory || {};
-  //   setSearchParams({
-  //     ...searchParams,
-  //     categoryId: _id,
-  //   })
-  //   setFilters((prev) => {
-  //     return { ...prev, catagoery: _id };
-  //   });
-  //   setCategory(currentCategory)
-  // }, [categories]);
 
   useEffect(() => {
     if (filters.catagoery) {
@@ -124,7 +101,7 @@ function ProductList() {
     setLoading(true);
     if (sub_cat) {
       return setFilters((prev) => {
-        return { ...prev, catagoery: selectedCategory, sub_catagoery: sub_cat }
+        return { ...prev, catagoery: selectedCategory, sub_catagoery: [sub_cat] }
       });
     } else {
       return setFilters((prev) => {
@@ -138,28 +115,18 @@ function ProductList() {
     try {
       if (filters.catagoery !== undefined) {
         const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
-        return (
-          setProducts(res.data.data),
-          setTotalCount(res.data.Total),
-          setColors(res.data.get_Colors_MaxPrice.colors),
-          setMaxPrice(res.data.get_Colors_MaxPrice.maxPrice[0]),
-          setLoading(false)
-        );
+          const {data:{data,Total,get_Colors_MaxPrice:{colors = [],maxPrice=[]}={}}={}} = res || {};  
+       
+          setProducts(data);
+          setTotalCount(Total);
+          setColors(strictValidArray(colors)? colors : []);
+          setMaxPrice(strictValidArrayWithLength(maxPrice)? maxPrice[0] : 1000);
+          setLoading(false);
+       
       }
-
-      // let res
-      // if (categoryId !== undefined) {
-      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
-      //   return (
-      //     setProducts(res.data.data),
-      //     setLoading(false)
-      //   );
-      // }else{
-      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
-
-      // }
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
+      setLoading(false);
     }
   }
 
@@ -167,56 +134,26 @@ function ProductList() {
     navigate("/productdetail", { state: { product } });
   };
 
-  const handleSubCategory = (checked, id) => {
-
-    if (checked == true) {
-      setFilters((prev) => {
-        const { sub_catagoery } = prev;
-        return {
-          ...prev,
-          sub_catagoery: [...sub_catagoery, id],
-        };
-      });
-      //  setSearchParams({
-      //   categoryId: searchParams.get('categoryId'),
-      //   subCategoryId: id,
-      // })
-    } else {
-      console.log("sub", checked, id)
-      setFilters((prev) => {
-        const { sub_catagoery } = prev;
-        return {
-          ...prev,
-          sub_catagoery: (sub_catagoery.filter((e) => e !== id)),
-        };
-      });
-      // setFilterTranscation(filtertranscation.filter((e) => e !== value));
-    }
-    // setSearchParams({
-    //   categoryId: searchParams.get('categoryId'),
-    //   subCategoryId: id,
-    // })
-    // setFilters((prev) => {
-    //   console.log(prev)
-    //   return { ...prev, sub_catagoery: id };
-    // });
+  const handleSubCategory = (id) => {
+    setFilters((prev) => {
+      const { sub_catagoery } = prev;
+      const selected = sub_catagoery.some(_id => _id === id) ? sub_catagoery.filter(_id => _id !== id) : [...sub_catagoery, id];
+      return {
+        ...prev,
+        sub_catagoery: selected,
+      };
+    });
   }
-  const handleColors = (e) => {
-    const { value, checked } = e.target;
-    if (checked == true) {
-      setFilters((prev) => {
-        const { color } = prev;
-        return {
-          ...prev,
-          color: [...color, value]
-        };
-      });
-    } else {
-      setFilters((prev) => {
-        const { color } = prev;
-        return { ...prev, color: (color.filter((e) => e !== value)) };
-      });
-    }
+
+  const handleColors = (id) => {
+    setFilters((prev) => {
+      const { color } = prev;
+      const selected = color.some(_id => _id === id) ? color.filter(_id => _id !== id) : [...color, id];
+      return {
+        ...prev,
+        color: selected,
+      };
+    });
   }
   const rangeSelector = (event, newValue) => {
     setPriceValue(newValue);
@@ -385,15 +322,12 @@ function ProductList() {
                                         <input
                                           type="checkbox"
                                           className="form-check-input checkBox-align"
-                                          id="acceptCheck"
-                                          // checked
-                                          onChange={(e) => {
-                                            handleSubCategory(e.target.checked, subcategory._id)
-                                          }}
+                                          checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
+                                          onChange={() =>  handleSubCategory(subcategory._id)}
                                         />
                                         <label
                                           className="form-check-label"
-                                          htmlFor="acceptCheck"
+                                          onClick={() =>  handleSubCategory(subcategory._id)}
                                         >
                                           {subcategory.name}
                                         </label>
@@ -418,16 +352,13 @@ function ProductList() {
                                           <input
                                             type="checkbox"
                                             className="form-check-input"
-                                            id="acceptCheck"
                                             value={item._id}
-                                            onChange={(e) => {
-                                              handleColors(e)
-
-                                            }}
+                                            checked={strictValidArray(filters && filters.color) && filters.color.some(e => e === item._id)}
+                                            onChange={() => {handleColors(item._id)}}
                                           />
                                           <label
                                             className="form-check-label"
-                                            htmlFor="acceptCheck"
+                                            onChange={() => {handleColors(item._id)}}
                                           >
                                             {item.name}
                                           </label>
@@ -805,7 +736,7 @@ function ProductList() {
           </div>
         </div>
       </article>
-      <HomeAbout />
+      {/* <HomeAbout /> */}
       <Footer />
     </section>
   );
