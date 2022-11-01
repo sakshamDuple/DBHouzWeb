@@ -76,6 +76,8 @@ function ProductDetail() {
   //   setGetCart(cartVal?.length)
   // }, [cartVal,getCart])
 
+  useEffect(() => { window.scrollTo(0, 0) }, [])
+
   $('.btnCommonm').on('click', function () {
     var button = $(this);
     var cart = $('.cartBtn');

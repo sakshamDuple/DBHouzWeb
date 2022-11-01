@@ -1,6 +1,9 @@
 @charset "utf-8";
 
 /***Correction Start***/
+.MuiStack-root{
+  align-items: center;
+}
 .dp-dropdown-main{
     position: relative;
     border: 0 !important;

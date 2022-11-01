@@ -15,12 +15,22 @@ import Pagination from '../container/pagination/pagination';
 import { strictValidArrayWithLength } from "../utils/commonutils";
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import Stack from '@mui/material/Stack';
+import Rating from '@mui/material/Rating';
+
+import { makeStyles } from '@mui/styles';
 import { filter } from "lodash";
 const initialFilter = {
   catagoery: '',
   sub_catagoery: [],
   color: []
 }
+
+const useStyles = makeStyles({
+  root: {
+    alignSelf: "center"
+  },
+});
 
 function ProductList() {
   const dispatch = useDispatch();
@@ -32,23 +42,15 @@ function ProductList() {
   const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
   const [filters, setFilters] = useState(initialFilter);
-  const [selectOption, setSelectOption] = useState('Asc');
+  const [selectOption, setSelectOption] = useState();
   const [limitOption, setLimitOption] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [TotalCount, setTotalCount] = useState(10);
-  const [priceValue, setPriceValue] = useState([0, 1000]);
+  const [priceValue, setPriceValue] = useState([0, 100000]);
   const [color, setColors] = useState([]);
-  // window.scrollTo(0, 0);
-
-  useEffect(async () => {
-    try {
-      const res = await axios.get(`/product/getAllColors`)
-      console.log("res", typeof (res.data.colors))
-      return setColors(res.data.colors)
-    } catch (error) {
-      console.log("error", error)
-    }
-  }, [])
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [Ischecked, setChecked] = useState(false);
+  useEffect(() => { window.scrollTo(0, 0) }, [])
 
   const onClickCategeory = (cat) => {
     setSearchParams({
@@ -62,11 +64,17 @@ function ProductList() {
 
   const onClickRestFilter = (e) => {
     e.preventDefault();
-    return setPriceValue([0,1000]),
-    handleSubCategory(false),
-    setFilters((prev) => {
-      return { ...prev, sub_catagoery: []}
-    });
+    const { sub_catagoery } = filters || {};
+    for (let x of sub_catagoery) {
+      handleSubCategory(false, x);
+    }
+    // console.log("mycode", id)
+    setChecked(false)
+    return setPriceValue([0, 1000]),
+      // handleSubCategory(false,id);
+      setFilters((prev) => {
+        return { ...prev, sub_catagoery: [], color: [] }
+      });
   }
 
   useEffect(() => {
@@ -129,10 +137,12 @@ function ProductList() {
   const handleGetProduct = async () => {
     try {
       if (filters.catagoery !== undefined) {
-        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
+        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
         return (
           setProducts(res.data.data),
           setTotalCount(res.data.Total),
+          setColors(res.data.get_Colors_MaxPrice.colors),
+          setMaxPrice(res.data.get_Colors_MaxPrice.maxPrice[0]),
           setLoading(false)
         );
       }
@@ -158,24 +168,27 @@ function ProductList() {
   };
 
   const handleSubCategory = (checked, id) => {
-    console.log("checked",checked);
+
     if (checked == true) {
       setFilters((prev) => {
         const { sub_catagoery } = prev;
         return {
           ...prev,
-          sub_catagoery: [...sub_catagoery, id]
+          sub_catagoery: [...sub_catagoery, id],
         };
       });
-      console.log("print jagvir", JSON.stringify(filters.sub_catagoery))
       //  setSearchParams({
       //   categoryId: searchParams.get('categoryId'),
       //   subCategoryId: id,
       // })
     } else {
+      console.log("sub", checked, id)
       setFilters((prev) => {
         const { sub_catagoery } = prev;
-        return { ...prev, sub_catagoery: (sub_catagoery.filter((e) => e !== id)) };
+        return {
+          ...prev,
+          sub_catagoery: (sub_catagoery.filter((e) => e !== id)),
+        };
       });
       // setFilterTranscation(filtertranscation.filter((e) => e !== value));
     }
@@ -188,12 +201,28 @@ function ProductList() {
     //   return { ...prev, sub_catagoery: id };
     // });
   }
-
+  const handleColors = (e) => {
+    const { value, checked } = e.target;
+    if (checked == true) {
+      setFilters((prev) => {
+        const { color } = prev;
+        return {
+          ...prev,
+          color: [...color, value]
+        };
+      });
+    } else {
+      setFilters((prev) => {
+        const { color } = prev;
+        return { ...prev, color: (color.filter((e) => e !== value)) };
+      });
+    }
+  }
   const rangeSelector = (event, newValue) => {
     setPriceValue(newValue);
   };
 
-
+  const classes = useStyles();
   return (
     <section className="wrapper">
       <Header />
@@ -298,7 +327,7 @@ function ProductList() {
                       <h4>Filter</h4>
                     </div>
                     <div className="filtrAcordion">
-                      <Accordion defaultActiveKey="0">
+                      <Accordion>
                         <Accordion.Item eventKey="3">
                           <Accordion.Header>Price</Accordion.Header>
                           <Accordion.Body>
@@ -310,9 +339,9 @@ function ProductList() {
                                 value={priceValue}
                                 onChange={rangeSelector}
                                 valueLabelDisplay="auto"
-                                step={100}
+                                step={50}
                                 marks
-                                max={1000}
+                                max={maxPrice}
                                 min={0}
                               />
                               {/* <ul>
@@ -357,6 +386,7 @@ function ProductList() {
                                           type="checkbox"
                                           className="form-check-input checkBox-align"
                                           id="acceptCheck"
+                                          // checked
                                           onChange={(e) => {
                                             handleSubCategory(e.target.checked, subcategory._id)
                                           }}
@@ -376,27 +406,53 @@ function ProductList() {
                           </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
-                          {/* <Accordion.Header>Color</Accordion.Header>
+                          <Accordion.Header>Color</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
                                 <ul>
-                                  <li>
-                                    <div className="form-check d-flex align-items-center">
-                                      <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        id="acceptCheck"
-                                      />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor="acceptCheck"
-                                      >
-                                        White
-                                      </label>
-                                    </div>
-                                  </li>
-                                  <li>
+                                  {color.map((item, index) => {
+                                    return (
+                                      <li key={index}>
+                                        <div className="form-check d-flex align-items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="acceptCheck"
+                                            value={item._id}
+                                            onChange={(e) => {
+                                              handleColors(e)
+
+                                            }}
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="acceptCheck"
+                                          >
+                                            {item.name}
+                                          </label>
+                                        </div>
+
+                                      </li>
+                                    );
+                                  })
+                                  }
+                                  {/* <li key={index}>
+                                        <div className="form-check d-flex align-items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="acceptCheck"
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="acceptCheck"
+                                          >
+                                            {item._id}
+                                          </label>
+                                        </div>
+                                      </li> */}
+                                  {/* <li>
                                     <div className="form-check d-flex align-items-center">
                                       <input
                                         type="checkbox"
@@ -455,11 +511,11 @@ function ProductList() {
                                         Multicolor
                                       </label>
                                     </div>
-                                  </li>
+                                  </li> */}
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body>*/}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                           {/* <Accordion.Header>Size</Accordion.Header>
@@ -547,7 +603,7 @@ function ProductList() {
 
                       </Accordion>
                     </div>
-                    <button onClick={(e)=>{onClickRestFilter(e)}}>ResetFilter </button>
+                    <button onClick={(e) => { onClickRestFilter(e) }}>ResetFilter </button>
                   </div>
                   <div className="sideBarBnrCol">
                     <div className="sideBrAddBnr py-4">
@@ -660,12 +716,16 @@ function ProductList() {
                                   </a>
                                 </h4>
                               </div>
-                              <div className="rvwRtngPrgrsStars">
+                              <div>
+                                <Stack spacing={1}>
+                                {/* <Rating className={classes.root} name="read-only" value={3.5} readOnly /> */}
+                                <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
+                                </Stack>
+                                {/* <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                                <i className="fa fa-star ylowStar" aria-hidden="true"></i> */}
                                 <span>({Math.ceil(Math.random() * 100)})</span>
                               </div>
                               <div className="prdctListInfo">
@@ -674,9 +734,9 @@ function ProductList() {
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">
-                                {/* <div className="price">£{product.variants[1].price}</div> */}
-                                {/* <div className="oferPrice">$65.00</div> 
-                                                            <div className="discntPrice">(£100.43 Inc VAT)</div>*/}
+                                <div className="price">£{product.variants[0].price}</div>
+                                <div className="oferPrice">${product.variants[0].price + 20}</div>
+                                {/* <div className="discntPrice">(£100.43 Inc VAT)</div> */}
                               </div>
                             </div>
                           </div>
@@ -750,4 +810,5 @@ function ProductList() {
     </section>
   );
 }
+
 export default ProductList;
