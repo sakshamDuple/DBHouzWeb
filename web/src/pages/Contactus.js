@@ -396,7 +396,7 @@ function Contactus() {
                                   className="form-control"
                                   id="input3"
                                   defaultCountry={currentLocation.country_code}
-                                  withCountryCallingCode
+                                  international
                                   placeholder="Enter phone number"
                                   rules={{ required: true }}
                                   value={value}

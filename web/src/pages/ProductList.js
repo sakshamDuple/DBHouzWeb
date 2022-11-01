@@ -38,7 +38,12 @@ function ProductList() {
   const [products, setProducts] = useState();
   console.log("category", category)
   window.scrollTo(0, 0);
-
+  const changeCatagory=(cat)=>{
+   setCategory(cat) 
+  }
+  useEffect(()=>{
+    setCategory(selectedCategory)
+  },[])
   useEffect(() => {
     if (category) {
       setLoading(true);
@@ -56,6 +61,7 @@ function ProductList() {
       }
     }
   }, [category]);
+  console.log(category);
 
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
@@ -77,7 +83,7 @@ function ProductList() {
       console.log("error", error)
     }
   }
-
+  console.log(selectedCategory);
   const selectRef2 = useRef();
   useEffect(() => {
     $(selectRef2.current).niceSelect();
@@ -87,7 +93,7 @@ function ProductList() {
     $(selectRef3.current).niceSelect();
   }, []);
 
-  console.log(index);
+
   return (
     <section className="wrapper">
       <Header />
@@ -132,11 +138,13 @@ function ProductList() {
                       color: "#FFFFFF",
                       cursor: "pointer",
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
+                      
                     }}
-                    onClick={() => {
-                      console.log(cat)
-                      setCategory(cat);
-                    }}
+                    onClick={()=>changeCatagory(cat)}
+                    // onClick={() => {
+                    //   console.log(cat);
+                    //   setCategory(cat);
+                    // }}
                   >
                     {cat.category.name}
                   </div>

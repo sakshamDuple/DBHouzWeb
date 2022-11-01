@@ -340,6 +340,23 @@ export let RestAdmin = {
   async deleteUnit(id) {
     return await $delete("/misc/deleteUnit/" + id, { errorMessage: "" });
   },
+  async getAllUsers() {
+    return (
+      await get("/user/admin/getAll", {
+        errorMessage: "Unable to get users list.",
+      })
+    )?.users;
+  },
+  async getAllContacts() {
+    return (
+      await get("/auth/contactAll", {
+        errorMessage: "Unable to get Contact list.",
+      })
+    );
+  },
+  async deleteContact(id) {
+    return await $delete("/auth/contactUsDel/"+ id, { errorMessage: "" });
+  },
 };
 
 export let RestMerchant = {
