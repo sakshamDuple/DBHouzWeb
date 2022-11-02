@@ -117,7 +117,7 @@ function ProductList() {
         const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
           const {data:{data,Total,get_Colors_MaxPrice:{colors = [],maxPrice=[]}={}}={}} = res || {};  
        
-          setProducts(data);
+          setProducts(strictValidArray(data)? data : []);
           setTotalCount(Total);
           setColors(strictValidArray(colors)? colors : []);
           setMaxPrice(strictValidArrayWithLength(maxPrice)? maxPrice[0] : 1000);
@@ -657,7 +657,7 @@ function ProductList() {
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i> */}
-                                <span>({Math.ceil(Math.random() * 100)})</span>
+                                <span>({product.review?.length})</span>
                               </div>
                               <div className="prdctListInfo">
                                 <p

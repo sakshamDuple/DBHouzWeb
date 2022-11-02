@@ -895,8 +895,6 @@ function Header() {
                         <div className="db-searchList-main">
                           {
                             searchData[0]?.products?.map((product) => {
-                              console.log("product", product)
-
                               return (
                                 <div onClick={(e) => handleNavtigate(e, product._id)} className="db-searchList">
                                   {product.name}
