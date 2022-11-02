@@ -333,11 +333,11 @@ function Header() {
                       <Dropdown.Toggle className="notificatnCol w-100 p-0 border-0" id="dropdown-basic">
                         <div className="userContnt ">
                           <div className="">
-                            <p className="m-0">Welcome</p>
+                            <span className="m-0">Welcome</span>{" "}
                             {Boolean(user?.user?.firstName) && (
-                              <h5>{user?.user?.firstName}</h5>
+                              <p>{user?.user?.firstName}</p>
                             )}
-                            {!Boolean(user?.user?.firstName) && <h5>User</h5>}
+                            {!Boolean(user?.user?.firstName) && <span className="m-0">User</span>}
                           </div>
                         </div>
                       </Dropdown.Toggle>

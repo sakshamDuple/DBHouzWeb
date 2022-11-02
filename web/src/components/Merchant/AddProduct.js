@@ -58,7 +58,7 @@ function AddProduct() {
     }
     setImagesToUpload(arr);
   };
-
+console.log("jagvir",imagesToUpload)
   const initialVariant = {
     priority: 7,
     size: "",
