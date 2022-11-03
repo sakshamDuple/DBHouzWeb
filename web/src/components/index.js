@@ -1,6 +1,7 @@
 export { default as Home } from "./Home";
 export { default as Category } from "../pages/Category";
 export { default as ProductList } from "../pages/ProductList";
+export {default as OrderDetail } from '../pages/OrderDetail'
 export { default as ProductDetail} from "../pages/ProductDetail";
 export { default as Checkout} from "../pages/Checkout";
 export { default as Cart} from "../pages/Cart";

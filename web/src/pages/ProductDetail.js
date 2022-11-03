@@ -12,7 +12,7 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "../css/productdetails.css";
-import "./AddtoCart.css"
+import "./AddtoCart.css";
 
 import {
   FreeMode,
@@ -33,9 +33,29 @@ function ProductDetail() {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [color, setColor] = useState([]);
+ 
+  
+ 
+  const [currentRatingValue, setcurrentRatingValue] = useState(0);
+  const [hoverRatingValue, sethoverRatingValue] = useState(undefined);
+  const stars = Array(5).fill(0);
+  const handleRatingClick = (value) => {
+    setcurrentRatingValue(value);
+  };
+  const handleRatingMouseOver = (newhoverRatingValue) => {
+    sethoverRatingValue(newhoverRatingValue);
+  };
+
+  const handleMouseLeave = () => {
+    sethoverRatingValue(undefined);
+  };
+
   const product = state.product;
-  let AllUnits
-  let units = async () => { AllUnits = await RestAdmin.getAllUnits() }
+  let AllUnits;
+  let units = async () => {
+    AllUnits = await RestAdmin.getAllUnits();
+  };
+
   function incrementCount() {
     count = count + 1;
     setCount(count);
@@ -58,12 +78,14 @@ function ProductDetail() {
     setColor(color);
   };
 
-  const [getCart, setGetCart] = useState(0)
+  const [getCart, setGetCart] = useState(0);
 
-  let cartVal
-  const getValueInCart = () => { cartVal = useSelector((s) => s.cart) }
-  getValueInCart()
-  console.log(cartVal)
+  let cartVal;
+  const getValueInCart = () => {
+    cartVal = useSelector((s) => s.cart);
+  };
+  getValueInCart();
+  console.log(cartVal);
 
   const getSingleColors = (id) => {
     if (color && color.colors) {
@@ -76,20 +98,20 @@ function ProductDetail() {
   //   setGetCart(cartVal?.length)
   // }, [cartVal,getCart])
 
-  $('.btnCommonm').on('click', function () {
+  $(".btnCommonm").on("click", function () {
     var button = $(this);
-    var cart = $('.cartBtn');
+    var cart = $(".cartBtn");
     console.log(button, cart);
-    button.addClass('sendtocart');
+    button.addClass("sendtocart");
     setTimeout(function () {
-      button.removeClass('sendtocart');
-      console.log(getCart)
-      cart.addClass('shake').attr('data-totalitems', cartVal?.length);
+      button.removeClass("sendtocart");
+      console.log(getCart);
+      cart.addClass("shake").attr("data-totalitems", cartVal?.length);
       setTimeout(function () {
-        cart.removeClass('shake');
-      }, 2000)
-    }, 2000)
-  })
+        cart.removeClass("shake");
+      }, 2000);
+    }, 2000);
+  });
 
   const getDimension = (obj) => {
     if (obj)
@@ -103,14 +125,14 @@ function ProductDetail() {
     setPeopleAlsoSearcherFor(products);
   }
   console.log(peopleAlsoSearcherFor);
-  console.log(cartVal?.length)
+  console.log(cartVal?.length);
 
   useEffect(async () => {
     filterPeopleAlsoSearcherFor();
     getColors();
-    console.log(cartVal?.length)
-    await setGetCart(cartVal?.length)
-    console.log(getCart)
+    console.log(cartVal?.length);
+    await setGetCart(cartVal?.length);
+    console.log(getCart);
   }, [product, cartVal, getCart]);
 
   console.log(product);
@@ -232,13 +254,14 @@ function ProductDetail() {
                       <span>11 reviews</span>
                     </div>
                     <div className="prodctDtlPriceLrge d-flex align-items-center">
-                      <div className="price">{`£ ${product.variants[selectedVariant]
-                        ? (
-                          (product.variants[selectedVariant].price * 82) /
-                          100
-                        ).toFixed(2)
-                        : 0
-                        }`}</div>
+                      <div className="price">{`£ ${
+                        product.variants[selectedVariant]
+                          ? (
+                              (product.variants[selectedVariant].price * 82) /
+                              100
+                            ).toFixed(2)
+                          : 0
+                      }`}</div>
                       +
                       {/* <div className="prcentOff px-3">
                         {(product.variants[selectedVariant].price / 100) * 8}£
@@ -266,30 +289,25 @@ function ProductDetail() {
                         <div className="btn-container@ container@ detailPage-variantBtns">
                           <div className="row">
                             <div className="col-md-12">
-                           
-                                {product.variants &&
-                                  product.variants?.map((variant, index) => (
-
-                                      <button
-                                        key={index}
-                                        className={
-                                          index === selectedVariant
-                                            ? "btn-active button"
-                                            : "button"
-                                        }
-                                        onClick={(e) => {
-                                          changeSelectedVariant(index);
-                                        }}
-                                      >
-                                        {variant.size} Foot /{" "}
-                                        {getSingleColors(variant.colorId)}
-                                        <br />
-                                        <span>£{variant?.price}</span>
-                                      </button>
-                                    ))}
-                                   
-                                  
-                             
+                              {product.variants &&
+                                product.variants?.map((variant, index) => (
+                                  <button
+                                    key={index}
+                                    className={
+                                      index === selectedVariant
+                                        ? "btn-active button"
+                                        : "button"
+                                    }
+                                    onClick={(e) => {
+                                      changeSelectedVariant(index);
+                                    }}
+                                  >
+                                    {variant.size} Foot /{" "}
+                                    {getSingleColors(variant.colorId)}
+                                    <br />
+                                    <span>£{variant?.price}</span>
+                                  </button>
+                                ))}
                             </div>
                           </div>
                         </div>
@@ -362,7 +380,7 @@ function ProductDetail() {
                                   count,
                                   product.variants[selectedVariant]
                                 )
-                              )
+                              );
                             }}
                             className="btnCommon btnCommonm"
                           >
@@ -484,44 +502,90 @@ function ProductDetail() {
                         <td>
                           {console.log(AllUnits)}
                           {product.variants[selectedVariant]
-                            ? `${product.variants[selectedVariant].dimensions.height>0?`${product.variants[selectedVariant].dimensions.height} inches *`:""} ${product.variants[selectedVariant].dimensions.width>0?`${product.variants[selectedVariant].dimensions.width} inches`:""} ${product.variants[selectedVariant].dimensions.thickness>0?`* ${product.variants[selectedVariant].dimensions.thickness} inches`:""}` //${AllUnits}
+                            ? `${
+                                product.variants[selectedVariant].dimensions
+                                  .height > 0
+                                  ? `${product.variants[selectedVariant].dimensions.height} inches *`
+                                  : ""
+                              } ${
+                                product.variants[selectedVariant].dimensions
+                                  .width > 0
+                                  ? `${product.variants[selectedVariant].dimensions.width} inches`
+                                  : ""
+                              } ${
+                                product.variants[selectedVariant].dimensions
+                                  .thickness > 0
+                                  ? `* ${product.variants[selectedVariant].dimensions.thickness} inches`
+                                  : ""
+                              }` //${AllUnits}
                             : "0 inches x 0 inches x 0 inches"}
                         </td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25">Color</td>
-                        {console.log("product",product.variants[selectedVariant])}
+                        {console.log(
+                          "product",
+                          product.variants[selectedVariant]
+                        )}
                         <td>
                           {product.variants[selectedVariant]
                             ? product.variants[selectedVariant].color
                             : "Invalid"}
                         </td>
                       </tr>
-                      {product.variants[selectedVariant].dimensions.height>0 && <tr>
-                        <td className="tdBg w-25">Height</td>
-                        <td>{product.variants[selectedVariant].dimensions.height}</td>
-                      </tr>}
-                      {product.variants[selectedVariant].dimensions.height>0 && <tr>
-                        <td className="tdBg w-25">Width</td>
-                        <td>{product.variants[selectedVariant].dimensions.width}</td>
-                      </tr>}
-                      {product.variants[selectedVariant].dimensions.thickness>0 && <tr>
-                        <td className="tdBg w-25">Thickness</td>
-                        <td>{product.variants[selectedVariant].dimensions.thickness}</td>
-                      </tr>}
+                      {product.variants[selectedVariant].dimensions.height >
+                        0 && (
+                        <tr>
+                          <td className="tdBg w-25">Height</td>
+                          <td>
+                            {
+                              product.variants[selectedVariant].dimensions
+                                .height
+                            }
+                          </td>
+                        </tr>
+                      )}
+                      {product.variants[selectedVariant].dimensions.height >
+                        0 && (
+                        <tr>
+                          <td className="tdBg w-25">Width</td>
+                          <td>
+                            {product.variants[selectedVariant].dimensions.width}
+                          </td>
+                        </tr>
+                      )}
+                      {product.variants[selectedVariant].dimensions.thickness >
+                        0 && (
+                        <tr>
+                          <td className="tdBg w-25">Thickness</td>
+                          <td>
+                            {
+                              product.variants[selectedVariant].dimensions
+                                .thickness
+                            }
+                          </td>
+                        </tr>
+                      )}
                       <tr>
                         <td className="tdBg w-25">Material</td>
-                        <td>{product.variants[selectedVariant].material_type}</td>
+                        <td>
+                          {product.variants[selectedVariant].material_type}
+                        </td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25 ">Finish</td>
-                        <td>{product.variants[selectedVariant].material_finish}</td>
+                        <td>
+                          {product.variants[selectedVariant].material_finish}
+                        </td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25">Warranty Period</td>
-                        <td>{product.variants[selectedVariant]
+                        <td>
+                          {product.variants[selectedVariant]
                             ? product.variants[selectedVariant].warranty_period
-                            : "1"} Years</td>
+                            : "1"}{" "}
+                          Years
+                        </td>
                       </tr>
                     </tbody>
                   </Table>
@@ -694,26 +758,22 @@ function ProductDetail() {
                     <h4>Rate this Product</h4>
                     <p>Tell others what you think</p>
                     <div className="rvwRtngGreyStars">
-                      <i
-                        className="fa fa-star-o greyStar"
-                        aria-hidden="true"
-                      ></i>
-                      <i
-                        className="fa fa-star-o greyStar"
-                        aria-hidden="true"
-                      ></i>
-                      <i
-                        className="fa fa-star-o greyStar"
-                        aria-hidden="true"
-                      ></i>
-                      <i
-                        className="fa fa-star-o greyStar"
-                        aria-hidden="true"
-                      ></i>
-                      <i
-                        className="fa fa-star-o greyStar"
-                        aria-hidden="true"
-                      ></i>
+                      {stars?.map((_, index) => {
+                        return (
+                          <i
+                            key={index}
+                            onClick={() => handleRatingClick(index + 1)}
+                            onMouseOver={() => handleRatingMouseOver(index + 1)}
+                            onMouseLeave={handleMouseLeave}
+                            className={
+                              (hoverRatingValue || currentRatingValue) > index
+                                ? "fa fa-star ylowStar"
+                                : "fa fa-star greyStar"
+                            }
+                            aria-hidden="true"
+                          ></i>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

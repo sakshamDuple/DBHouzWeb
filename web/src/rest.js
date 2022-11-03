@@ -117,6 +117,10 @@ export let RestUser = {
     return await post(`/auth/contactUs`, data, "Something Wrong",
     );
   },
+  async postReview(data) {
+    return await post(`/product/doReview`, data, "Something Wrong",
+    );
+  },
 };
 
 export let RestAdmin = {

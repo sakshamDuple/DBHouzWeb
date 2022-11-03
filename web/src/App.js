@@ -24,6 +24,7 @@ import {
   QuickQuote,
   ChangePassword,
   BlogDetail,
+  OrderDetail
 } from "./components";
 
 // Merchant Dashboard pages
@@ -95,7 +96,8 @@ import { Rest, RestAdmin, RestClient } from "./rest";
 import AdminEditProductVariants from "./components/Admin/EditProductVariants";
 import MerchantEditProductVariants from "./components/Merchant/EditProductVariants";
 
-console.log();
+
+
 
 export function App() {
   const [loading, setLoading] = useState(true);
@@ -200,6 +202,7 @@ export function App() {
         <Route path="productlist" element={<ProductList />} />
         <Route path="productlist/:id" element={<ProductList />} />
         <Route path="productdetail" element={<ProductDetail />} />
+        <Route path="orderdetail/:id" element={<OrderDetail/>} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="cart" element={<Cart />} />
         <Route path="about" element={<Aboutus />} />
