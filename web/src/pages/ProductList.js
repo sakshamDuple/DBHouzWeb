@@ -316,6 +316,7 @@ function ProductList() {
                           <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
+                            <form className="formStyle">
                               <ul>
                                 {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
                                   return (
@@ -323,7 +324,7 @@ function ProductList() {
                                       <div className="form-check d-flex align-items-center">
                                         <input
                                           type="checkbox"
-                                          className="form-check-input checkBox-align"
+                                          className="form-check-input"
                                           checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
                                           onChange={() => handleSubCategory(subcategory._id)}
                                         />
@@ -338,6 +339,7 @@ function ProductList() {
                                   );
                                 })}
                               </ul>
+                              </form>
                             </div>
                           </Accordion.Body>
                         </Accordion.Item>
