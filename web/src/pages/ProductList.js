@@ -48,7 +48,7 @@ function ProductList() {
   const [TotalCount, setTotalCount] = useState(10);
   const [priceValue, setPriceValue] = useState([0, 100000]);
   const [color, setColors] = useState([]);
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState();
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
   const onClickCategeory = (cat) => {
@@ -63,15 +63,17 @@ function ProductList() {
 
   const onClickRestFilter = (e) => {
     e.preventDefault();
-    const { sub_catagoery } = filters || {};
+    const { sub_catagoery, color } = filters || {};
     for (let x of sub_catagoery) {
       handleSubCategory(x);
     }
-    setChecked(false)
-    return setPriceValue([0, 1000]),
-      setFilters((prev) => {
-        return { ...prev, sub_catagoery: [], color: [] }
-      });
+    for (let x of color) {
+      handleColors(x);
+    }
+    return setPriceValue([0, 1000])
+      // setFilters((prev) => {
+      //   return { ...prev, sub_catagoery: [], color: [] }
+      // });
   }
 
   useEffect(() => {
@@ -93,7 +95,7 @@ function ProductList() {
     if (filters.catagoery) {
       handleGetProduct();
     }
-  }, [filters, currentPage, priceValue, limitOption]);
+  }, [filters, currentPage, priceValue, limitOption,selectOption]);
 
   useEffect(() => {
     const selectedCategory = searchParams.get('categoryId');
@@ -115,14 +117,14 @@ function ProductList() {
     try {
       if (filters.catagoery !== undefined) {
         const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
-          const {data:{data,Total,get_Colors_MaxPrice:{colors = [],maxPrice=[]}={}}={}} = res || {};  
-       
-          setProducts(strictValidArray(data)? data : []);
-          setTotalCount(Total);
-          setColors(strictValidArray(colors)? colors : []);
-          setMaxPrice(strictValidArrayWithLength(maxPrice)? maxPrice[0] : 1000);
-          setLoading(false);
-       
+        const { data: { data, Total, get_Colors_MaxPrice: { colors = [], maxPrice = [] } = {} } = {} } = res || {};
+        setProducts(strictValidArray(data) ? data : []);
+        setTotalCount(Total);
+        if(strictValidArrayWithLength(colors)){  setColors(strictValidArray(colors) ? colors : []) }
+        // setColors(strictValidArray(colors) ? colors : [])
+        // setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000);
+        if(strictValidArrayWithLength(maxPrice)){setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000)}
+        setLoading(false);
       }
     } catch (error) {
       console.log("error", error);
@@ -323,11 +325,11 @@ function ProductList() {
                                           type="checkbox"
                                           className="form-check-input checkBox-align"
                                           checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
-                                          onChange={() =>  handleSubCategory(subcategory._id)}
+                                          onChange={() => handleSubCategory(subcategory._id)}
                                         />
                                         <label
                                           className="form-check-label"
-                                          onClick={() =>  handleSubCategory(subcategory._id)}
+                                          onClick={() => handleSubCategory(subcategory._id)}
                                         >
                                           {subcategory.name}
                                         </label>
@@ -354,11 +356,11 @@ function ProductList() {
                                             className="form-check-input"
                                             value={item._id}
                                             checked={strictValidArray(filters && filters.color) && filters.color.some(e => e === item._id)}
-                                            onChange={() => {handleColors(item._id)}}
+                                            onChange={() => { handleColors(item._id) }}
                                           />
                                           <label
                                             className="form-check-label"
-                                            onChange={() => {handleColors(item._id)}}
+                                            onChange={() => { handleColors(item._id) }}
                                           >
                                             {item.name}
                                           </label>
@@ -649,8 +651,8 @@ function ProductList() {
                               </div>
                               <div>
                                 <Stack spacing={1}>
-                                {/* <Rating className={classes.root} name="read-only" value={3.5} readOnly /> */}
-                                <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
+                                  {/* <Rating className={classes.root} name="read-only" value={3.5} readOnly /> */}
+                                  <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
                                 </Stack>
                                 {/* <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>

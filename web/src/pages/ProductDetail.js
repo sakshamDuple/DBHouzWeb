@@ -12,8 +12,10 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "../css/productdetails.css";
-import "./AddtoCart.css"
-
+import "./AddtoCart.css";
+import Stack from '@mui/material/Stack';
+import Rating from '@mui/material/Rating';
+import { makeStyles } from '@mui/styles';
 import {
   FreeMode,
   Navigation,
@@ -25,6 +27,13 @@ import {
 import $ from "jquery";
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
+
+const useStyles = makeStyles({
+  root: {
+    // alignSelf: "center"
+    padding_left: "5px"
+  },
+});
 
 function ProductDetail() {
   let [count, setCount] = useState(1);
@@ -116,12 +125,12 @@ function ProductDetail() {
   }, [product, cartVal, getCart]);
 
   console.log(product);
-
+  const classes = useStyles();
   return (
     <section className="wrapper">
       <Header />
-      <article className="categoryInrBlk hdrBrNone wrapper">
-        <div className="greyBg2 py-4 mb-5">
+      <article className="categoryInrBlk hdrBrNone wrapper ">
+        <div className="greyBg2 py-4 ">
           <div className="container">
             <div className="row d-flex align-items-center justify-content-between">
               <div className="col"></div>
@@ -149,9 +158,9 @@ function ProductDetail() {
           </div>
         </div>
       </article>
-      <article className="wrapper categoryRowBlk py-2">
+      <article className="wrapper categoryRowBlk ">
         <div className="container">
-          <div className="prdctDetalOute3001rDiv">
+          <div className="prdctDetalOute3001rDiv  p-5 bg-white">
             <div className="sortBlkOutr">
               <div className="row">
                 <div className="col-md-5">
@@ -225,13 +234,17 @@ function ProductDetail() {
                     <div className="prdctDtlHdng">
                       <h3>{product.name}</h3>
                     </div>
-                    <div className="rvwRtngPrgrsStars">
+                   
+                    <div className="rvwRtngPrgrsStars detailPage-reviewStar">
+                    {/* <Stack spacing={1}> */}
+                      <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
+                    {/* </Stack>                   */}
+                      {/* <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                       <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                       <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                       <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                      <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                      <span>11 reviews</span>
+                      <i className="fa fa-star ylowStar" aria-hidden="true"></i> */}
+                      <span>{product.review?.length} reviews</span>
                     </div>
                     <div className="prodctDtlPriceLrge d-flex align-items-center">
                       <div className="price">{`£ ${product.variants[selectedVariant]
@@ -268,67 +281,74 @@ function ProductDetail() {
                         <div className="btn-container@ container@ detailPage-variantBtns">
                           <div className="row">
                             <div className="col-md-12">
-                           
-                                {product.variants &&
-                                  product.variants?.map((variant, index) => (
 
-                                      <button
-                                        key={index}
-                                        className={
-                                          index === selectedVariant
-                                            ? "btn-active button"
-                                            : "button"
-                                        }
-                                        onClick={(e) => {
-                                          changeSelectedVariant(index);
-                                        }}
-                                      >
-                                        {variant.size} Foot /{" "}
-                                        {getSingleColors(variant.colorId)}
-                                        <br />
-                                        <span>£{variant?.price}</span>
-                                      </button>
-                                    ))}
-                                   
-                                  
-                             
+                              {product.variants &&
+                                product.variants?.map((variant, index) => (
+
+                                  <button
+                                    key={index}
+                                    className={`detailPage-variantBtns-nameBtn
+                                          ${index === selectedVariant
+                                        ? "btn-active button"
+                                        : "button"
+                                      }`
+                                    }
+                                    onClick={(e) => {
+                                      changeSelectedVariant(index);
+                                    }}
+                                  >
+                                    {variant.size} Foot /{" "}
+                                    {getSingleColors(variant.colorId)}
+                                    <br />
+                                    <span>£{variant?.price}</span>
+                                  </button>
+                                ))}
+
+
+
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="row align-items-center pt-2 label-padding">
-                      <div className="col-auto">
+                    <div className="row align-items-center label-padding pt-0">
+                      <div className="col-xl-3 col-lg-4">
                         <div className="sizeLableHdng">
                           <h5>Color :</h5>
                         </div>
                       </div>
-                      {getSingleColors(
-                        product.variants[selectedVariant]
-                          ? product.variants[selectedVariant]?.colorId
-                          : "green"
-                      )}
+                      <div className="col-xl-9 col-lg-8">
+                        {getSingleColors(
+                          product.variants[selectedVariant]
+                            ? product.variants[selectedVariant]?.colorId
+                            : "green"
+                        )}
+                      </div>
                     </div>
 
-                    <div className="row align-items-center pt-2 label-padding">
-                      <div className="col-auto">
+                    <div className="row align-items-center p-0 label-padding">
+                      <div className="col-xl-3 col-lg-4">
                         <div>
                           <h5>Dimension :</h5>
                         </div>
                       </div>
-                      {getDimension(product.variants[selectedVariant])}
+                      <div className="col-xl-9 col-lg-8">
+                        {getDimension(product.variants[selectedVariant])}
+                      </div>
                     </div>
 
                     <div className="row align-items-center pt-2 label-padding">
-                      <div className="col-auto">
+                      <div className="col-xl-3 col-lg-4">
                         <div>
                           <h5>Style :</h5>
                         </div>
                       </div>
-                      {product.variants[selectedVariant]
-                        ? product.variants[selectedVariant].style
-                        : "T-shirt"}
+                      <div className="col-xl-9 col-lg-8">
+                        {product.variants[selectedVariant]
+                          ? product.variants[selectedVariant].style
+                          : "T-shirt"}
+                      </div>
                     </div>
 
                     <div className="row align-items-center pt-2">
@@ -353,8 +373,8 @@ function ProductDetail() {
                       </div>
                     </div>
                     <div className="row py-4">
-                      <div className="col">
-                        <div className="prdctDtlBuyBtns">
+                      <div className="col-xl-7">
+                        <div className="prdctDtlBuyBtns d-flex align-items-center">
                           <a
                             style={{ cursor: "pointer" }}
                             onClick={() => {
@@ -366,16 +386,16 @@ function ProductDetail() {
                                 )
                               )
                             }}
-                            className="btnCommon btnCommonm"
+                            className="btnCommon btnCommonm w-100"
                           >
                             Add To Cart
-                            <span className="cartBtn-item">
+                            {/* <span className="cartBtn-item">
                               <img src="img/cartWhite.png" />
-                            </span>
+                            </span> */}
                           </a>
                           <Link
                             to="/checkout"
-                            className="btnCommon btnDark"
+                            className="btnCommon btnDark w-100 mr-0"
                             onClick={() => {
                               dispatch(
                                 stateActions.addCartItem(
@@ -387,22 +407,29 @@ function ProductDetail() {
                             }}
                           >
                             Buy Now
-                            <span>
+                            {/* <span>
                               <img src="img/buyLableIcon.svg" />
-                            </span>
+                            </span> */}
                           </Link>
                         </div>
                       </div>
+
                     </div>
-                    <div className="ViewBtn">
-                      <button>
-                        Take a 3d view
-                        <span>
-                          <img src="img/3dIcon.svg" />
-                        </span>
-                      </button>
+                    <div className="row">
+                      <div className="col-xl-7">
+                        <div className="ViewBtn">
+                          <button className="w-100">
+                            Take a 3d view
+                            {/* <span>
+                                <img src="img/3dIcon.svg" />
+                              </span> */}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="prdctDtlInfo">
+
+                    <div className="my-3" style={{ borderTop: "1px solid #ddd" }} ></div>
+                    <div className="prdctDtlInfo border-0 mt-0 mb-0 pt-0">
                       <h5>
                         <span>Save Extra</span> with 2 offers
                       </h5>
@@ -411,12 +438,13 @@ function ProductDetail() {
                         Lorem Ipsum available, but the majority have suffered
                         alteration in some form, by injected humour,{" "}
                       </p>
-                      <p>
+                      <p className="pb-0 pt-0">
                         <span>Cashback (4)</span> variations of passages of
                         Lorem Ipsum available, but the majority have suffered
                         alteration in some form, by injected humour,{" "}
                       </p>
                     </div>
+                    <div className="my-3" style={{ borderTop: "1px solid #ddd" }} ></div>
                     <div className="prdctDtlShare ">
                       <ul className="d-flex align-items-center">
                         <li>Share:</li>
@@ -442,7 +470,7 @@ function ProductDetail() {
               </div>
             </div>
           </div>
-          <div className="prdctDtlinfoTabs mt-5">
+          <div className="prdctDtlinfoTabs p-5 bg-white">
             <Tabs
               defaultActiveKey="home"
               id="uncontrolled-tab-example"
@@ -530,8 +558,8 @@ function ProductDetail() {
                       <tr>
                         <td className="tdBg w-25">Warranty Period</td>
                         <td>{product.variants[selectedVariant]
-                            ? product.variants[selectedVariant].warranty_period
-                            : "1"} Years</td>
+                          ? product.variants[selectedVariant].warranty_period
+                          : "1"} Years</td>
                       </tr>
                     </tbody>
                   </Table>

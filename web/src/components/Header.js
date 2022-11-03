@@ -335,33 +335,50 @@ function Header() {
                           <div className="">
                             <span className="m-0">Welcome</span>{" "}
                             {Boolean(user?.user?.firstName) && (
-                              <p>{user?.user?.firstName}</p>
+                              <span className="m-0">{user?.user?.firstName}</span>
                             )}
                             {!Boolean(user?.user?.firstName) && <span className="m-0">User</span>}
                           </div>
                         </div>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item href="/user/myprofile">
-                          <span>
-                            <img src={SetingUser} alt="" height="13" />
-                          </span>{" "}
-                          View Profile
+                        <Dropdown.Item >
+                          <Link to="/myaccount" className="viewProfile">
+                            <span>
+                              <img src={SetingUser} alt="" height="13" />
+                            </span>{" "}
+                            View Profile
+                          </Link>
                         </Dropdown.Item>
-                        <Dropdown.Item href="/user/editprofile">
-                          <span>
-                            <img src={Edit} alt="" height="13" />
-                          </span>{" "}
-                          Edit Profile
+                        <Dropdown.Item >
+                          <Link to="/orderhistory" className="viewProfile">
+                            <span>
+                              {/* <img src={Edit} alt="" height="13" /> */}
+                              <i className="fa fa-shopping-cart"></i>
+                            </span>{" "}
+                            Order History
+                          </Link>
                         </Dropdown.Item>
-                        <Dropdown.Item href="/user/password">
-                          <span>
-                            <img src={ChangePassword} alt="" height="13" />
-                          </span>{" "}
-                          Change Password
+                        <Dropdown.Item >
+                          <Link to="/transactions" className="viewProfile">
+                            <span>
+                              {/* <img src={ChangePassword} alt="" height="13" /> */}
+                              <i className="fa fa-money"></i>
+                            </span>{" "}
+                            Transactions
+                          </Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item >
+                          <Link to="/accountsetting" className="viewProfile">
+                            <span>
+                              {/* <img src={ChangePassword} alt="" height="13" /> */}
+                              <i className="fa fa-key"></i>
+                            </span>{" "}
+                            Account Setting
+                          </Link>
                         </Dropdown.Item>
                         <Dropdown.Item>
-                          <div
+                          <div className="viewProfile"
                             onClick={() => {
                               dispatch(stateActions.logout());
                               navigate("/");
@@ -969,15 +986,15 @@ function Header() {
                             </div>
                           </div>
                           {/* <div className="col-auto"> */}
-                            <div className="shopping-cart-delete">
-                              {/* <Link to="/"> */}
-                              <img src={deleteCart} alt="" onClick={(e) => {
-                                e.preventDefault();
-                                dispatch(stateActions.removeCartItem(cartItem.product._id))
-                              }
-                              } />
-                              {/* </Link> */}
-                            </div>
+                          <div className="shopping-cart-delete">
+                            {/* <Link to="/"> */}
+                            <img src={deleteCart} alt="" onClick={(e) => {
+                              e.preventDefault();
+                              dispatch(stateActions.removeCartItem(cartItem.product._id))
+                            }
+                            } />
+                            {/* </Link> */}
+                          </div>
                           {/* </div> */}
                         </div>
                       </Dropdown.Item>
@@ -1228,7 +1245,7 @@ function Header() {
                               <h3 className="m-0 text-white">{categoryM?.category?.name}</h3>
                               <ul>
                                 {categoryM?.subCategories?.map((SubCategory) => {
-                                  return (<div onClick={(e) => SubCategory?handleProductApi(e, SubCategory?._id):handleProductApi(e,categories[0].subCategories[0]._id)} className='row h-100'>
+                                  return (<div onClick={(e) => SubCategory ? handleProductApi(e, SubCategory?._id) : handleProductApi(e, categories[0].subCategories[0]._id)} className='row h-100'>
                                     <li>
                                       <span > {SubCategory?.name} </span>
                                       <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
