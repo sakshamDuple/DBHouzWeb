@@ -61,7 +61,6 @@ function Checkout() {
     const navigate = useNavigate();
     const selectRef1 = useRef();
     const countries = Country.getAllCountries();
-    console.log("jagvir country", countries)
     const updatedCountries = countries.map((country) => ({
         label: country.name,
         value: country.id,

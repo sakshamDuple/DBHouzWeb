@@ -7,7 +7,22 @@ import UserIcon from "../img/userIcon.svg";
 import PaymentIcon from "../img/pymntIcon.svg";
 import StuffIcon from "../img/stuffIcon.svg";
 import LogoutIcon from "../img/logoutIcon.svg";
-function AccountSetting() {
+import jwtDecode from "jwt-decode";
+import axios from "../API/axios";
+function Wishlist() {
+  const [product,setProduct] = useState([]);
+  useEffect(async() => {
+    let accessToken = window.localStorage.getItem("JWT");
+    let n = jwtDecode(accessToken);
+    const { user: { _id } = {} } = n || {};
+    try {
+      const res = await axios.put(`/user/getCartAndWishlist/${_id}`)
+      const{data:{result:{wishList}={}}={}} = res || {}
+      setProduct(wishList);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, [])
   return (
     <section className="wrapper greyBg3 dashboardBlk ">
       <Header />
@@ -170,7 +185,7 @@ function AccountSetting() {
             <div className="col-md-9 pb-4">
               <div className="dashboard--main">
                 <div className="dashboard--top pt-2 pb-4">
-                  <h4>My Wishlist (6)</h4>
+                  <h4>My Wishlist ()</h4>
                   <hr />
                 </div>
                 <div className="wishListPage">
@@ -424,4 +439,4 @@ function AccountSetting() {
     </section>
   );
 }
-export default AccountSetting;
+export default Wishlist;

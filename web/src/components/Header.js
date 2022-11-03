@@ -207,8 +207,6 @@ function Header() {
 
   const handleSelectOption = async (e) => {
     // e.preventDefault();
-    console.log("selectOption", selectOption)
-    console.log("searchEngine", searchEngine)
     if (selectOption !== "") {
       let data = {
         categoryId: selectOption,
@@ -216,7 +214,6 @@ function Header() {
       }
       try {
         let res = await axios.post(`/product/category/search`, data)
-        console.log("res", res.data.fetches)
         setSearchData(res.data.fetches)
       } catch (error) {
         console.log("error", error)
@@ -278,7 +275,6 @@ function Header() {
     e.preventDefault();
     try {
       let res = await axios.get(`/product/getOne/${productId}`)
-      console.log("res", res.data.product)
       navigate("/productdetail", { state: { product: res.data.product } });
     } catch (error) {
       console.log("error", error)
@@ -306,7 +302,6 @@ function Header() {
         console.log("error", error)
       })
   }
-  console.log(categories[0].subCategories[0]._id)
   // handleProductApp(categories[0].subCategories[0]._id)
   return (
     <header className="mainHeader wrapper">

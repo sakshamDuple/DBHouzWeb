@@ -17,9 +17,10 @@ import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import Stack from '@mui/material/Stack';
 import Rating from '@mui/material/Rating';
-
+import Toast from 'react-bootstrap/Toast';
 import { makeStyles } from '@mui/styles';
 import { filter } from "lodash";
+import jwtDecode from "jwt-decode";
 const initialFilter = {
   catagoery: '',
   sub_catagoery: [],
@@ -49,6 +50,7 @@ function ProductList() {
   const [priceValue, setPriceValue] = useState([0, 100000]);
   const [color, setColors] = useState([]);
   const [maxPrice, setMaxPrice] = useState();
+  const [token, setToken] = useState(null);
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
   const onClickCategeory = (cat) => {
@@ -71,9 +73,9 @@ function ProductList() {
       handleColors(x);
     }
     return setPriceValue([0, 1000])
-      // setFilters((prev) => {
-      //   return { ...prev, sub_catagoery: [], color: [] }
-      // });
+    // setFilters((prev) => {
+    //   return { ...prev, sub_catagoery: [], color: [] }
+    // });
   }
 
   useEffect(() => {
@@ -95,7 +97,7 @@ function ProductList() {
     if (filters.catagoery) {
       handleGetProduct();
     }
-  }, [filters, currentPage, priceValue, limitOption,selectOption]);
+  }, [filters, currentPage, priceValue, limitOption, selectOption]);
 
   useEffect(() => {
     const selectedCategory = searchParams.get('categoryId');
@@ -112,6 +114,44 @@ function ProductList() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    let accessToken = window.localStorage.getItem("JWT");
+    let n = jwtDecode(accessToken);
+    const { user: { _id } = {} } = n || {};
+    setToken(_id);
+  }, [])
+
+  const OnClickWhislist = async (product) => {
+    console.log("product",product)
+    if (token !== null) {
+      let data = {
+        "userId": token,
+        "cart": [],
+        "wishList": [{ product }]
+      };
+      try {
+        const res = await axios.put(`/user/updateCartAndWishlist`, data)
+        console.log("res", res)
+        return (
+          < Toast >
+            <Toast.Body>Added to your whislist.</Toast.Body>
+          </Toast >
+        )
+      } catch (error) {
+        console.log("error", error);
+        return (
+          < Toast >
+            <Toast.Body>Error </Toast.Body>
+          </Toast >
+        )
+      }
+    } else {
+      return (< Toast >
+        <Toast.Body>Please Login </Toast.Body>
+      </Toast >
+      )
+    }
+  }
 
   const handleGetProduct = async () => {
     try {
@@ -120,10 +160,8 @@ function ProductList() {
         const { data: { data, Total, get_Colors_MaxPrice: { colors = [], maxPrice = [] } = {} } = {} } = res || {};
         setProducts(strictValidArray(data) ? data : []);
         setTotalCount(Total);
-        if(strictValidArrayWithLength(colors)){  setColors(strictValidArray(colors) ? colors : []) }
-        // setColors(strictValidArray(colors) ? colors : [])
-        // setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000);
-        if(strictValidArrayWithLength(maxPrice)){setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000)}
+        if (strictValidArrayWithLength(colors)) { setColors(strictValidArray(colors) ? colors : []) }
+        if (strictValidArrayWithLength(maxPrice)) { setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000) }
         setLoading(false);
       }
     } catch (error) {
@@ -316,29 +354,29 @@ function ProductList() {
                           <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
-                            <form className="formStyle">
-                              <ul>
-                                {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
-                                  return (
-                                    <li index={key}>
-                                      <div className="form-check d-flex align-items-center">
-                                        <input
-                                          type="checkbox"
-                                          className="form-check-input"
-                                          checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
-                                          onChange={() => handleSubCategory(subcategory._id)}
-                                        />
-                                        <label
-                                          className="form-check-label"
-                                          onClick={() => handleSubCategory(subcategory._id)}
-                                        >
-                                          {subcategory.name}
-                                        </label>
-                                      </div>
-                                    </li>
-                                  );
-                                })}
-                              </ul>
+                              <form className="formStyle">
+                                <ul>
+                                  {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
+                                    return (
+                                      <li index={key}>
+                                        <div className="form-check d-flex align-items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
+                                            onChange={() => handleSubCategory(subcategory._id)}
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            onClick={() => handleSubCategory(subcategory._id)}
+                                          >
+                                            {subcategory.name}
+                                          </label>
+                                        </div>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
                               </form>
                             </div>
                           </Accordion.Body>
@@ -615,11 +653,11 @@ function ProductList() {
                                 <div className="prdctListOverlay"></div>
                               </div>
                               <div className="prdctHovrCard">
-                                <Link to="/wishlist">
-                                  <span className="prdctListWishListIcon">
-                                    <img src="/img/wishListIconDark.svg" />
+                                <div className="heartWhislist">
+                                  <span className="prdctListWishListIcon" onClick={() => { OnClickWhislist(product) }}>
+                                    <img src="/img/wishListIconDark.svg" onClick={() => { OnClickWhislist(product) }}/>
                                   </span>
-                                </Link>
+                                </div>
                                 <Link to="/">
                                   <span className="prdctListIcon">
                                     <img src="/img/prdctListIcon.svg" />

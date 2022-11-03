@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import { Link, NavLink,} from "react-router-dom";
 import { Button, Modal, Dropdown, Offcanvas, Accordion } from "react-bootstrap";
 function AccountSetting() {
+    useEffect(() => { window.scrollTo(0, 0) }, [])
   return (
     <section className="wrapper greyBg3 dashboardBlk ">
       <Header/>

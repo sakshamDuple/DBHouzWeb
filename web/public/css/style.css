@@ -6305,3 +6305,12 @@ box-shadow: 0px 8px 17px 3px rgb(0 0 0 / 9%);
     background-color: transparent;
     border: 0;
 }
+.heartWhislist{
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border-radius: 50%;
+    text-align: center;
+    margin: 0;
+    line-height: 32px;
+}
