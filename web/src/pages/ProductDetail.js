@@ -16,6 +16,7 @@ import "./AddtoCart.css";
 import Stack from '@mui/material/Stack';
 import Rating from '@mui/material/Rating';
 import { makeStyles } from '@mui/styles';
+import jwtDecode from "jwt-decode";
 import {
   FreeMode,
   Navigation,
@@ -24,7 +25,10 @@ import {
   Scrollbar,
   A11y,
 } from "swiper";
+import axios from "../API/axios";
 import $ from "jquery";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 
@@ -42,6 +46,7 @@ function ProductDetail() {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [color, setColor] = useState([]);
+  const [token, setToken] = useState(null);
   const product = state.product;
   let AllUnits
   let units = async () => { AllUnits = await RestAdmin.getAllUnits() }
@@ -66,7 +71,14 @@ function ProductDetail() {
     let color = await RestAdmin.getAllColors();
     setColor(color);
   };
-
+  useEffect(() => {
+    if (window.localStorage.JWT) {
+      let accessToken = window.localStorage.getItem("JWT");
+      let n = jwtDecode(accessToken);
+      const { user: { _id } = {} } = n || {};
+      setToken(_id);
+    }
+  }, [])
   const [getCart, setGetCart] = useState(0)
 
   let cartVal
@@ -81,9 +93,26 @@ function ProductDetail() {
     } else return "green";
   };
 
-  // useEffect(() => {
-  //   setGetCart(cartVal?.length)
-  // }, [cartVal,getCart])
+  const OnClickWhislist = async () => {
+    if (token !== null) {
+      let data = {
+        "userId": token,
+        "cart": [],
+        "wishList": [product]
+      };
+      try {
+        const res = await axios.put(`/user/updateCartAndWishlist`, data)
+        console.log("res", res)
+        return (toast.success('Added To Your Whislist', { autoClose: 1000 }));
+      } catch (error) {
+        console.log("error", error);
+        return toast.error('Please Try Again', { autoClose: 1000 })
+      }
+    }
+    else {
+      return toast('Please Login/Register', { autoClose: 1000 })
+    }
+  }
 
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
@@ -151,6 +180,7 @@ function ProductDetail() {
                         Artificial Stone Tiles
                       </li>
                     </ol>
+                    <ToastContainer />
                   </nav>
                 </div>
               </div>
@@ -186,16 +216,16 @@ function ProductDetail() {
                                 }}
                               ></div>
                               <div className="prdctDtlHovrCard">
-                                <a href="/">
-                                  <span className="prdctDtlWishListIcon">
-                                    <img src="img/wishListWhiteIcon.svg" />
+                                <div className="detailWhislist">
+                                  <span className="prdctDtlWishListIcon" onClick={OnClickWhislist}>
+                                    <img src="img/wishListWhiteIcon.svg"  />
                                   </span>
-                                </a>
-                                <a href="/">
-                                  <span className="prdctDtlListIcon">
+                                </div>
+                                <div className="detailWhislist">
+                                  <span className="prdctDtlListIcon" onClick={OnClickWhislist}>
                                     <img src="img/3dIcon.svg" />
                                   </span>
-                                </a>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -234,11 +264,11 @@ function ProductDetail() {
                     <div className="prdctDtlHdng">
                       <h3>{product.name}</h3>
                     </div>
-                   
+
                     <div className="rvwRtngPrgrsStars detailPage-reviewStar">
-                    {/* <Stack spacing={1}> */}
+                      {/* <Stack spacing={1}> */}
                       <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
-                    {/* </Stack>                   */}
+                      {/* </Stack>                   */}
                       {/* <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                       <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                       <i className="fa fa-star ylowStar" aria-hidden="true"></i>
@@ -262,7 +292,7 @@ function ProductDetail() {
                       <div className="gst">
                         £
                         {(
-                          (product.variants[selectedVariant]?.price / 100) *
+                          (product?.variants[selectedVariant]?.price / 100) *
                           18
                         ).toFixed(2)}
                         vat

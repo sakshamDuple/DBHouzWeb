@@ -17,9 +17,10 @@ import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import Stack from '@mui/material/Stack';
 import Rating from '@mui/material/Rating';
-import Toast from 'react-bootstrap/Toast';
 import { makeStyles } from '@mui/styles';
 import { filter } from "lodash";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import jwtDecode from "jwt-decode";
 const initialFilter = {
   catagoery: '',
@@ -115,41 +116,33 @@ function ProductList() {
   }, [searchParams]);
 
   useEffect(() => {
-    let accessToken = window.localStorage.getItem("JWT");
-    let n = jwtDecode(accessToken);
-    const { user: { _id } = {} } = n || {};
-    setToken(_id);
+    if (window.localStorage.JWT) {
+      let accessToken = window.localStorage.getItem("JWT");
+      let n = jwtDecode(accessToken);
+      const { user: { _id } = {} } = n || {};
+      setToken(_id);
+    }
   }, [])
 
   const OnClickWhislist = async (product) => {
-    console.log("product",product)
+    console.log("jagvir singh product ",product)
     if (token !== null) {
       let data = {
         "userId": token,
         "cart": [],
-        "wishList": [{ product }]
-      };
+        "wishList": [product]
+      }
       try {
         const res = await axios.put(`/user/updateCartAndWishlist`, data)
         console.log("res", res)
-        return (
-          < Toast >
-            <Toast.Body>Added to your whislist.</Toast.Body>
-          </Toast >
-        )
+        return (toast.success('Added To Your Whislist', { autoClose: 1000 }));
       } catch (error) {
         console.log("error", error);
-        return (
-          < Toast >
-            <Toast.Body>Error </Toast.Body>
-          </Toast >
-        )
+        return toast.error('Please Try Again', { autoClose: 1000 })
       }
-    } else {
-      return (< Toast >
-        <Toast.Body>Please Login </Toast.Body>
-      </Toast >
-      )
+    }
+    else {
+      return toast('Please Login/Register', { autoClose: 1000 })
     }
   }
 
@@ -226,6 +219,7 @@ function ProductList() {
                     <a href="/category">Category</a>
                   </li>
                 </ol>
+                <ToastContainer />
               </nav>
             </div>
           </div>
@@ -576,7 +570,19 @@ function ProductList() {
 
                       </Accordion>
                     </div>
-                    <button onClick={(e) => { onClickRestFilter(e) }}>ResetFilter </button>
+                  </div>
+                  <div>
+                    <button
+                      style={{
+
+                        color: "#FFFFFF",
+                        cursor: "pointer",
+                        background: "#232F3E",
+                      }}
+                      onClick={(e) => { onClickRestFilter(e) }}
+                    >
+                      Reset Filter
+                    </button>
                   </div>
                   <div className="sideBarBnrCol">
                     <div className="sideBrAddBnr py-4">
@@ -655,14 +661,14 @@ function ProductList() {
                               <div className="prdctHovrCard">
                                 <div className="heartWhislist">
                                   <span className="prdctListWishListIcon" onClick={() => { OnClickWhislist(product) }}>
-                                    <img src="/img/wishListIconDark.svg" onClick={() => { OnClickWhislist(product) }}/>
+                                    <img src="/img/wishListIconDark.svg" />
                                   </span>
                                 </div>
-                                <Link to="/">
+                                <div className="heartWhislist">
                                   <span className="prdctListIcon">
                                     <img src="/img/prdctListIcon.svg" />
                                   </span>
-                                </Link>
+                                </div>
                               </div>
                               <div className="prdctHvrBtns">
                                 <a
@@ -699,7 +705,7 @@ function ProductList() {
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i> */}
-                                <span>({product.review?.length})</span>
+                                <span>{product.review?.length} reviews</span>
                               </div>
                               <div className="prdctListInfo">
                                 <p

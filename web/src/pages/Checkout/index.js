@@ -504,7 +504,7 @@ function Checkout() {
                                                                         ...prev,
                                                                         address: {
                                                                             ...prev.address,
-                                                                            postal_code: parseInt(e.target.value),
+                                                                            postal_code: (e.target.value),
                                                                         },
                                                                     };
                                                                 });
