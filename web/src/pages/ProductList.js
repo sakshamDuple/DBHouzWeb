@@ -12,15 +12,27 @@ import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
 import axios from "../API/axios";
 import Pagination from '../container/pagination/pagination';
-import { strictValidArrayWithLength } from "../utils/commonutils";
+import { strictValidArray, strictValidArrayWithLength } from "../utils/commonutils";
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import Stack from '@mui/material/Stack';
+import Rating from '@mui/material/Rating';
+import { makeStyles } from '@mui/styles';
 import { filter } from "lodash";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import jwtDecode from "jwt-decode";
 const initialFilter = {
   catagoery: '',
   sub_catagoery: [],
   color: []
 }
+
+const useStyles = makeStyles({
+  root: {
+    alignSelf: "center"
+  },
+});
 
 function ProductList() {
   const dispatch = useDispatch();
@@ -32,23 +44,15 @@ function ProductList() {
   const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
   const [filters, setFilters] = useState(initialFilter);
-  const [selectOption, setSelectOption] = useState('Asc');
+  const [selectOption, setSelectOption] = useState();
   const [limitOption, setLimitOption] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [TotalCount, setTotalCount] = useState(10);
-  const [priceValue, setPriceValue] = useState([0, 1000]);
+  const [priceValue, setPriceValue] = useState([0, 100000]);
   const [color, setColors] = useState([]);
-  // window.scrollTo(0, 0);
-
-  useEffect(async () => {
-    try {
-      const res = await axios.get(`/product/getAllColors`)
-      console.log("res", typeof (res.data.colors))
-      return setColors(res.data.colors)
-    } catch (error) {
-      console.log("error", error)
-    }
-  }, [])
+  const [maxPrice, setMaxPrice] = useState();
+  const [token, setToken] = useState(null);
+  useEffect(() => { window.scrollTo(0, 0) }, [])
 
   const onClickCategeory = (cat) => {
     setSearchParams({
@@ -62,17 +66,22 @@ function ProductList() {
 
   const onClickRestFilter = (e) => {
     e.preventDefault();
-    return setPriceValue([0,1000]),
-    handleSubCategory(false),
-    setFilters((prev) => {
-      return { ...prev, sub_catagoery: []}
-    });
+    const { sub_catagoery, color } = filters || {};
+    for (let x of sub_catagoery) {
+      handleSubCategory(x);
+    }
+    for (let x of color) {
+      handleColors(x);
+    }
+    return setPriceValue([0, 1000])
+    // setFilters((prev) => {
+    //   return { ...prev, sub_catagoery: [], color: [] }
+    // });
   }
 
   useEffect(() => {
     if (!strictValidArrayWithLength(categories)) return
     const selectedCategory = searchParams.get('categoryId')
-    // const sub_cat = searchParams.get('subCategoryId')
     let currentCategory;
     if (selectedCategory) {
       currentCategory = categories.find((i) => {
@@ -85,30 +94,11 @@ function ProductList() {
     }
   }, [categories]);
 
-  // useEffect(() => {
-  //   if (!strictValidArrayWithLength(categories)) return
-  //   setLoading(true);
-  //   const selectedCategory = searchParams.get('category');
-  //   const sub_cat = searchParams.get('subcategory');
-  //   console.log("sub_cat", sub_cat, selectedCategory)
-  //   const currentCategory = categories[0];
-  //   console.log("currentCategory", currentCategory)
-  //   const { category: { _id } = {} } = currentCategory || {};
-  //   setSearchParams({
-  //     ...searchParams,
-  //     categoryId: _id,
-  //   })
-  //   setFilters((prev) => {
-  //     return { ...prev, catagoery: _id };
-  //   });
-  //   setCategory(currentCategory)
-  // }, [categories]);
-
   useEffect(() => {
     if (filters.catagoery) {
       handleGetProduct();
     }
-  }, [filters, currentPage, priceValue, limitOption]);
+  }, [filters, currentPage, priceValue, limitOption, selectOption]);
 
   useEffect(() => {
     const selectedCategory = searchParams.get('categoryId');
@@ -116,7 +106,7 @@ function ProductList() {
     setLoading(true);
     if (sub_cat) {
       return setFilters((prev) => {
-        return { ...prev, catagoery: selectedCategory, sub_catagoery: sub_cat }
+        return { ...prev, catagoery: selectedCategory, sub_catagoery: [sub_cat] }
       });
     } else {
       return setFilters((prev) => {
@@ -125,31 +115,51 @@ function ProductList() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (window.localStorage.JWT) {
+      let accessToken = window.localStorage.getItem("JWT");
+      let n = jwtDecode(accessToken);
+      const { user: { _id } = {} } = n || {};
+      setToken(_id);
+    }
+  }, [])
+
+  const OnClickWhislist = async (product) => {
+    console.log("jagvir singh product ",product)
+    if (token !== null) {
+      let data = {
+        "userId": token,
+        "cart": [],
+        "wishList": [product]
+      }
+      try {
+        const res = await axios.put(`/user/updateCartAndWishlist`, data)
+        console.log("res", res)
+        return (toast.success('Added To Your Whislist', { autoClose: 1000 }));
+      } catch (error) {
+        console.log("error", error);
+        return toast.error('Please Try Again', { autoClose: 1000 })
+      }
+    }
+    else {
+      return toast('Please Login/Register', { autoClose: 1000 })
+    }
+  }
 
   const handleGetProduct = async () => {
     try {
       if (filters.catagoery !== undefined) {
-        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
-        return (
-          setProducts(res.data.data),
-          setTotalCount(res.data.Total),
-          setLoading(false)
-        );
+        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
+        const { data: { data, Total, get_Colors_MaxPrice: { colors = [], maxPrice = [] } = {} } = {} } = res || {};
+        setProducts(strictValidArray(data) ? data : []);
+        setTotalCount(Total);
+        if (strictValidArrayWithLength(colors)) { setColors(strictValidArray(colors) ? colors : []) }
+        if (strictValidArrayWithLength(maxPrice)) { setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000) }
+        setLoading(false);
       }
-
-      // let res
-      // if (categoryId !== undefined) {
-      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
-      //   return (
-      //     setProducts(res.data.data),
-      //     setLoading(false)
-      //   );
-      // }else{
-      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
-
-      // }
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
+      setLoading(false);
     }
   }
 
@@ -157,43 +167,32 @@ function ProductList() {
     navigate("/productdetail", { state: { product } });
   };
 
-  const handleSubCategory = (checked, id) => {
-    console.log("checked",checked);
-    if (checked == true) {
-      setFilters((prev) => {
-        const { sub_catagoery } = prev;
-        return {
-          ...prev,
-          sub_catagoery: [...sub_catagoery, id]
-        };
-      });
-      console.log("print jagvir", JSON.stringify(filters.sub_catagoery))
-      //  setSearchParams({
-      //   categoryId: searchParams.get('categoryId'),
-      //   subCategoryId: id,
-      // })
-    } else {
-      setFilters((prev) => {
-        const { sub_catagoery } = prev;
-        return { ...prev, sub_catagoery: (sub_catagoery.filter((e) => e !== id)) };
-      });
-      // setFilterTranscation(filtertranscation.filter((e) => e !== value));
-    }
-    // setSearchParams({
-    //   categoryId: searchParams.get('categoryId'),
-    //   subCategoryId: id,
-    // })
-    // setFilters((prev) => {
-    //   console.log(prev)
-    //   return { ...prev, sub_catagoery: id };
-    // });
+  const handleSubCategory = (id) => {
+    setFilters((prev) => {
+      const { sub_catagoery } = prev;
+      const selected = sub_catagoery.some(_id => _id === id) ? sub_catagoery.filter(_id => _id !== id) : [...sub_catagoery, id];
+      return {
+        ...prev,
+        sub_catagoery: selected,
+      };
+    });
   }
 
+  const handleColors = (id) => {
+    setFilters((prev) => {
+      const { color } = prev;
+      const selected = color.some(_id => _id === id) ? color.filter(_id => _id !== id) : [...color, id];
+      return {
+        ...prev,
+        color: selected,
+      };
+    });
+  }
   const rangeSelector = (event, newValue) => {
     setPriceValue(newValue);
   };
 
-
+  const classes = useStyles();
   return (
     <section className="wrapper">
       <Header />
@@ -220,6 +219,7 @@ function ProductList() {
                     <a href="/category">Category</a>
                   </li>
                 </ol>
+                <ToastContainer />
               </nav>
             </div>
           </div>
@@ -298,7 +298,7 @@ function ProductList() {
                       <h4>Filter</h4>
                     </div>
                     <div className="filtrAcordion">
-                      <Accordion defaultActiveKey="0">
+                      <Accordion>
                         <Accordion.Item eventKey="3">
                           <Accordion.Header>Price</Accordion.Header>
                           <Accordion.Body>
@@ -310,9 +310,9 @@ function ProductList() {
                                 value={priceValue}
                                 onChange={rangeSelector}
                                 valueLabelDisplay="auto"
-                                step={100}
+                                step={50}
                                 marks
-                                max={1000}
+                                max={maxPrice}
                                 min={0}
                               />
                               {/* <ul>
@@ -348,55 +348,78 @@ function ProductList() {
                           <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
-                              <ul>
-                                {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
-                                  return (
-                                    <li index={key}>
-                                      <div className="form-check d-flex align-items-center">
-                                        <input
-                                          type="checkbox"
-                                          className="form-check-input checkBox-align"
-                                          id="acceptCheck"
-                                          onChange={(e) => {
-                                            handleSubCategory(e.target.checked, subcategory._id)
-                                          }}
-                                        />
-                                        <label
-                                          className="form-check-label"
-                                          htmlFor="acceptCheck"
-                                        >
-                                          {subcategory.name}
-                                        </label>
-                                      </div>
-                                    </li>
-                                  );
-                                })}
-                              </ul>
+                              <form className="formStyle">
+                                <ul>
+                                  {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
+                                    return (
+                                      <li index={key}>
+                                        <div className="form-check d-flex align-items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
+                                            onChange={() => handleSubCategory(subcategory._id)}
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            onClick={() => handleSubCategory(subcategory._id)}
+                                          >
+                                            {subcategory.name}
+                                          </label>
+                                        </div>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </form>
                             </div>
                           </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
-                          {/* <Accordion.Header>Color</Accordion.Header>
+                          <Accordion.Header>Color</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
                                 <ul>
-                                  <li>
-                                    <div className="form-check d-flex align-items-center">
-                                      <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        id="acceptCheck"
-                                      />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor="acceptCheck"
-                                      >
-                                        White
-                                      </label>
-                                    </div>
-                                  </li>
-                                  <li>
+                                  {color.map((item, index) => {
+                                    return (
+                                      <li key={index}>
+                                        <div className="form-check d-flex align-items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            value={item._id}
+                                            checked={strictValidArray(filters && filters.color) && filters.color.some(e => e === item._id)}
+                                            onChange={() => { handleColors(item._id) }}
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            onChange={() => { handleColors(item._id) }}
+                                          >
+                                            {item.name}
+                                          </label>
+                                        </div>
+
+                                      </li>
+                                    );
+                                  })
+                                  }
+                                  {/* <li key={index}>
+                                        <div className="form-check d-flex align-items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="acceptCheck"
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="acceptCheck"
+                                          >
+                                            {item._id}
+                                          </label>
+                                        </div>
+                                      </li> */}
+                                  {/* <li>
                                     <div className="form-check d-flex align-items-center">
                                       <input
                                         type="checkbox"
@@ -455,11 +478,11 @@ function ProductList() {
                                         Multicolor
                                       </label>
                                     </div>
-                                  </li>
+                                  </li> */}
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body>*/}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                           {/* <Accordion.Header>Size</Accordion.Header>
@@ -547,7 +570,19 @@ function ProductList() {
 
                       </Accordion>
                     </div>
-                    <button onClick={(e)=>{onClickRestFilter(e)}}>ResetFilter </button>
+                  </div>
+                  <div>
+                    <button
+                      style={{
+
+                        color: "#FFFFFF",
+                        cursor: "pointer",
+                        background: "#232F3E",
+                      }}
+                      onClick={(e) => { onClickRestFilter(e) }}
+                    >
+                      Reset Filter
+                    </button>
                   </div>
                   <div className="sideBarBnrCol">
                     <div className="sideBrAddBnr py-4">
@@ -623,16 +658,16 @@ function ProductList() {
                                 <div className="prdctListOverlay"></div>
                               </div>
                               <div className="prdctHovrCard">
-                                <Link to="/wishlist">
-                                  <span className="prdctListWishListIcon">
+                                <div className="heartWhislist">
+                                  <span className="prdctListWishListIcon" onClick={() => { OnClickWhislist(product) }}>
                                     <img src="/img/wishListIconDark.svg" />
                                   </span>
-                                </Link>
-                                <Link to="/">
+                                </div>
+                                <div className="heartWhislist">
                                   <span className="prdctListIcon">
                                     <img src="/img/prdctListIcon.svg" />
                                   </span>
-                                </Link>
+                                </div>
                               </div>
                               <div className="prdctHvrBtns">
                                 <a
@@ -659,13 +694,17 @@ function ProductList() {
                                   </a>
                                 </h4>
                               </div>
-                              <div className="rvwRtngPrgrsStars">
+                              <div>
+                                <Stack spacing={1}>
+                                  {/* <Rating className={classes.root} name="read-only" value={3.5} readOnly /> */}
+                                  <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
+                                </Stack>
+                                {/* <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <span>({Math.ceil(Math.random() * 100)})</span>
+                                <i className="fa fa-star ylowStar" aria-hidden="true"></i> */}
+                                <span>{product.review?.length} reviews</span>
                               </div>
                               <div className="prdctListInfo">
                                 <p
@@ -673,9 +712,9 @@ function ProductList() {
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">
-                                {/* <div className="price">£{product.variants[1].price}</div> */}
-                                {/* <div className="oferPrice">$65.00</div> 
-                                                            <div className="discntPrice">(£100.43 Inc VAT)</div>*/}
+                                <div className="price">£{product.variants[0].price}</div>
+                                <div className="oferPrice">${product.variants[0].price + 20}</div>
+                                {/* <div className="discntPrice">(£100.43 Inc VAT)</div> */}
                               </div>
                             </div>
                           </div>
@@ -743,9 +782,10 @@ function ProductList() {
           </div>
         </div>
       </article>
-      <HomeAbout />
+      {/* <HomeAbout /> */}
       <Footer />
     </section>
   );
 }
+
 export default ProductList;
