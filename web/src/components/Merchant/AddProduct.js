@@ -58,7 +58,7 @@ function AddProduct() {
     }
     setImagesToUpload(arr);
   };
-console.log("jagvir",imagesToUpload)
+
   const initialVariant = {
     priority: 7,
     size: "",
@@ -75,6 +75,7 @@ console.log("jagvir",imagesToUpload)
     categoryId: "",
     subCategoryId: "",
     description: "",
+    brand: "",
     //metaTagTitle: '',
     //metaTagDescription: '',
     //metaTagKeywords: '',
@@ -173,7 +174,7 @@ console.log("jagvir",imagesToUpload)
   const handleSubmit = async (e) => {
     setDisabled(true);
     let _formData = _.cloneDeep(formData);
-    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants } =
+    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants, brand } =
       formData;
     let isError = false;
     let formErrors = {
@@ -187,10 +188,14 @@ console.log("jagvir",imagesToUpload)
       formErrors.productName = `Please enter a valid Name`;
       isError = true;
     }
-    if (!brandId || !brandId.length) {
-      formErrors.productBrandName = `Please select a Brand`;
+    if (!brand || !name.length || name.length < 3) {
+      formErrors.productBrandName = `Please enter a valid Brand Name`;
       isError = true;
     }
+    // if (!brandId || !brandId.length) {
+    //   formErrors.productBrandName = `Please select a Brand`;
+    //   isError = true;
+    // }
     if (!merchantId || !merchantId.length) {
       formErrors.productMerchantId = `Please select a Merchant`;
       isError = true;
@@ -232,7 +237,8 @@ console.log("jagvir",imagesToUpload)
         variants: [],
         createdAt: Date.now(),
       };
-      let newProduct = await RestMerchant.createProduct(newProductForm, store.getState().jwt);
+      console.log("jagvir",  {newProductForm,brand})
+      let newProduct = await RestMerchant.createProduct({newProductForm,brand}, store.getState().jwt);
       if (imagesToUpload.length > 0 && newProduct.product) {
         const formData = new FormData();
         formData.append("productId", newProduct.product._id.toString());
@@ -254,6 +260,11 @@ console.log("jagvir",imagesToUpload)
     _formData[nativeEvent.target.name] = nativeEvent.target.value;
     setFormData(_formData);
   };
+  const handleBrandChange = ({ nativeEvent }) => {
+    let _formData = _.cloneDeep(formData);
+    _formData[nativeEvent.target.name] = nativeEvent.target.value;
+    setFormData(_formData);
+  };
 
   const selectCategoryRef = useRef();
   const selectSubCategoryRef = useRef();
@@ -268,7 +279,7 @@ console.log("jagvir",imagesToUpload)
 
   useEffect(() => {
     setSubCategories(undefined);
-    if (!formData.categoryId || formData.categoryId === "") return () => {};
+    if (!formData.categoryId || formData.categoryId === "") return () => { };
     RestAdmin.getAllSubCategoriesById(formData.categoryId).then((subCategories) => {
       setSubCategories(subCategories);
     });
@@ -360,13 +371,29 @@ console.log("jagvir",imagesToUpload)
                   </div>
                   <div className="col">
                     <Form.Label>Enter Brand Name</Form.Label>
-                    <select
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Brand Name"
+                      name="brand"
+                      value={formData.brand}
+                      onChange={handleBrandChange}
+                    />
+                    {formErrors.productBrandName && (
+                      <p className="text-danger">* {formErrors.productBrandName}</p>
+                    )}
+                    {/* <select
+                      type="text"
                       ref={selectBrandRef}
                       className="wide"
+                      placeholder="Enter Brand Name"
                       disabled={!brands}
+                      name="brand"
                       value={formData.brandId}
-                      onChange={() => {}}
+                      value={formData.brand}
+                      onChange={() => { }}
+                      onChange={handleBrandChange}
                     >
+                    />
                       <option value="">Enter Brand Name </option>
                       {brands &&
                         (() => {
@@ -376,10 +403,7 @@ console.log("jagvir",imagesToUpload)
                             </option>
                           ));
                         })()}
-                    </select>
-                    {formErrors.productBrandName && (
-                      <p className="text-danger">* {formErrors.productBrandName}</p>
-                    )}
+                    </select> */}
                   </div>
                 </div>
               </div>
@@ -395,7 +419,7 @@ console.log("jagvir",imagesToUpload)
                         ref={selectCategoryRef}
                         className="wide"
                         disabled={!categories}
-                        onChange={() => {}}
+                        onChange={() => { }}
                       >
                         <option value="">Select Category</option>
                         {categories &&
@@ -422,7 +446,7 @@ console.log("jagvir",imagesToUpload)
                         className="wide"
                         disabled={!subCategories}
                         value={formData.subCategoryId}
-                        onChange={() => {}}
+                        onChange={() => { }}
                       >
                         <option value="">Select Sub Category</option>
                         {subCategories &&
@@ -452,7 +476,7 @@ console.log("jagvir",imagesToUpload)
                         className="wide"
                         disabled={!merchants}
                         value={formData.merchantId}
-                        onChange={() => {}}
+                        onChange={() => { }}
                       >
                         <option value="">Select Merchant</option>
                         {merchants &&
