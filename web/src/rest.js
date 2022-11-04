@@ -398,6 +398,13 @@ export let RestMerchant = {
       { jwt, errorMessage: "Unable to update Merchant!" }
     );
   },
+  async smallBannerOne(data) {
+    return await post(
+      "/misc/smallBanner1Creation",
+      { data },
+      { errorMessage: "Unable to update Color." }
+    );
+  },
 };
 
 export let RestClient = {

@@ -330,7 +330,7 @@ function OrderDetail() {
                         <div>
                           <span className="siSubtitle">Dimension : </span>
                           <span className="siFeatures">
-                            {" "}
+                            {" "} 
                             {getDimension(product.variants[selectedVariant])}
                           </span>
                         </div>

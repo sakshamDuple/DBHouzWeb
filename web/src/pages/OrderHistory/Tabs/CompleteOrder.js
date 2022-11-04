@@ -14,14 +14,9 @@ const CompleteOrder = () => {
     const [userId, setUserId] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(1);
-    const [orderProducts,setOrderProducts]=useState([])
+   
 const viewOrderProduct= async(item)=>{
-    alert("hi")
     console.log(item);
- 
-  
-    // const {data}= await axios.get(`${baseUrl}/product/getOne/${item?.products[0]?.sellerId}`)
-    // console.log(data);
     navigate(`/orderdetail/${item?._id}`)
 }
     useEffect(() => {
