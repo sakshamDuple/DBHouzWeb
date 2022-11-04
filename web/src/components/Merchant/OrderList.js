@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink, } from "react-router-dom";
+import { Link, NavLink,useNavigate } from "react-router-dom";
 import { Button, Table, Tab, Tabs, Row, Col, Alert, Container, Form, label } from "react-bootstrap";
 import Sidebar from './SideBar';
 import Style from './DashboardStyle';
@@ -22,11 +22,11 @@ import Pagination from '../../container/pagination/pagination';
 import jwtDecode from "jwt-decode";
 const limit = 10;
 function OrderList() {
-
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(10);
     const [selectOption, setSelectOption] = useState();
-    const [selectOrderOption, setSelectOrderOption] = useState();
+    const [selectOrderOption, setSelectOrderOption] = useState(":OrderType");
     const [sellerId, setSellerId] = useState("");
 
     useEffect(() => {
@@ -43,6 +43,7 @@ function OrderList() {
             if (sellerId == "") {
                 return;
             }
+
             const res = await axios.get(`/order/getOrderForSeller/${sellerId}/${currentPage}/${limit}/${selectOption}/${selectOrderOption}`);
             const { data: { order, totalOrders } = {} } = res || {};
             return setGetData(order), setTotalCount(totalOrders);
@@ -50,7 +51,7 @@ function OrderList() {
             console.log("erroe", error);
         }
     }
-    
+
     useEffect(() => {
         getProducts();
     }, [sellerId])
@@ -59,6 +60,11 @@ function OrderList() {
         getProducts();
     }, [currentPage, selectOption, selectOrderOption])
 
+    const handleViewOrder = (e,order) => {
+        e.preventDefault();
+        navigate(`/merchant/ViewOrder`, { state: { order } });
+        //    navigate(`/admin/vieworder?orderId=${orderid}`, { state: { order} });
+    };
     const ans = Array.isArray(getData);
     console.log("getData", ans);
 
@@ -93,8 +99,8 @@ function OrderList() {
                                                         onChange={(e) => { setSelectOrderOption(e.target.value) }}
                                                     >
                                                         <option selected disabled hidden value="None" >Orders</option>
-                                                        <option value="All"> All Orders</option>
-                                                        <option value="Completed">Completed</option>
+                                                        <option value=":OrderType"> All Orders</option>
+                                                        <option value="Payment_Accepted ">Completed</option>
                                                         <option value="Cancelled">Cancelled</option>
                                                         <option value="Refund_Done"> Refund</option>
                                                     </select>
@@ -182,9 +188,9 @@ function OrderList() {
                                                             <td className="actions">
                                                                 <div className="tbl-actn">
                                                                     <ul>
-                                                                        <li className="view-btn">
-                                                                            <div className="">
-                                                                                <a href="/admin/vieworder">
+                                                                        <li className="view-btn" onClick={(e)=>{handleViewOrder(e,item)}}>
+                                                                            <div className="" >
+                                                                                <a >
                                                                                     <img src={view} alt="" height="18" />
                                                                                     <span>
                                                                                         <img
@@ -196,7 +202,7 @@ function OrderList() {
                                                                                 </a>
                                                                             </div>
                                                                         </li>
-                                                                         {/* <li className="edit-btn">
+                                                                        {/* <li className="edit-btn">
                                                                             <div className="">
                                                                                 <a href="javascript:void(0);">
                                                                                     <img

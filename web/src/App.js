@@ -43,6 +43,7 @@ import {
   MyProfile,
   EditProfile,
   MerchantPassword,
+  MerchantViewOrder
 } from "./components";
 
 // Main Admin pages
@@ -239,6 +240,7 @@ export function App() {
         <Route path="merchant/EditProfile" element={<EditProfile />} />
         <Route path="merchant/EditProductVariants" element={<MerchantEditProductVariants />} />
         <Route path="merchant/MerchantPassword" element={<MerchantPassword />} />
+        <Route path="merchant/ViewOrder" element={<MerchantViewOrder />} />
 
         {/* Main Admin Screens */}
         <Route path="admin/dashboard" element={<AdDashboard />} />

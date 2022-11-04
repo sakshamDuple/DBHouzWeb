@@ -42,7 +42,7 @@ export { default as TransactionList} from "./Merchant/TransactionList";
 export { default as MyProfile} from "./Merchant/MyProfile";
 export { default as EditProfile} from "./Merchant/EditProfile";
 export { default as MerchantPassword} from "./Merchant/MerchantPassword";
-
+export { default as MerchantViewOrder} from "./Merchant/ViewOrder";
 
 // Admin Screens
 

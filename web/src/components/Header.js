@@ -221,17 +221,18 @@ function Header() {
 
   const handleSelectOption = async (e) => {
     // e.preventDefault();
-    console.log("selectOption", selectOption);
-    console.log("searchEngine", searchEngine);
+
     if (selectOption !== "") {
       let data = {
         categoryId: selectOption,
         searchVal: searchEngine,
       };
       try {
+
         let res = await axios.post(`/product/category/search`, data);
         console.log("res", res.data.fetches);
         setSearchData(res.data.fetches);
+
       } catch (error) {
         console.log("error", error);
       }
@@ -317,8 +318,10 @@ function Header() {
   const handleNavtigate = async (e, productId) => {
     e.preventDefault();
     try {
+
       let res = await axios.get(`/product/getOne/${productId}`);
       console.log("res", res.data.product);
+
       navigate("/productdetail", { state: { product: res.data.product } });
     } catch (error) {
       console.log("error", error);
@@ -344,12 +347,14 @@ function Header() {
       .then((res) => {
         setProductList(res.data);
       })
+
       .catch((error) => {
         console.log("error", error);
       });
   };
   console.log(categories[0]?.subCategories[0]?._id);
   // handleProductApp(categories[0].subCategories[0]._id)
+
 
   return (
     <header className="mainHeader wrapper">
@@ -379,35 +384,52 @@ function Header() {
                       >
                         <div className="userContnt ">
                           <div className="">
-                            <p className="m-0">Welcome</p>
+                            <span className="m-0">Welcome</span>{" "}
                             {Boolean(user?.user?.firstName) && (
-                              <h5>{user?.user?.firstName}</h5>
+                              <span className="m-0">{user?.user?.firstName}</span>
                             )}
-                            {!Boolean(user?.user?.firstName) && <h5>User</h5>}
+                            {!Boolean(user?.user?.firstName) && <span className="m-0">User</span>}
                           </div>
                         </div>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item href="/user/myprofile">
-                          <span>
-                            <img src={SetingUser} alt="" height="13" />
-                          </span>{" "}
-                          View Profile
+                        <Dropdown.Item >
+                          <Link to="/myaccount" className="viewProfile">
+                            <span>
+                              <img src={SetingUser} alt="" height="13" />
+                            </span>{" "}
+                            View Profile
+                          </Link>
                         </Dropdown.Item>
-                        <Dropdown.Item href="/user/editprofile">
-                          <span>
-                            <img src={Edit} alt="" height="13" />
-                          </span>{" "}
-                          Edit Profile
+                        <Dropdown.Item >
+                          <Link to="/orderhistory" className="viewProfile">
+                            <span>
+                              {/* <img src={Edit} alt="" height="13" /> */}
+                              <i className="fa fa-shopping-cart"></i>
+                            </span>{" "}
+                            Order History
+                          </Link>
                         </Dropdown.Item>
-                        <Dropdown.Item href="/user/password">
-                          <span>
-                            <img src={ChangePassword} alt="" height="13" />
-                          </span>{" "}
-                          Change Password
+                        <Dropdown.Item >
+                          <Link to="/transactions" className="viewProfile">
+                            <span>
+                              {/* <img src={ChangePassword} alt="" height="13" /> */}
+                              <i className="fa fa-money"></i>
+                            </span>{" "}
+                            Transactions
+                          </Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item >
+                          <Link to="/accountsetting" className="viewProfile">
+                            <span>
+                              {/* <img src={ChangePassword} alt="" height="13" /> */}
+                              <i className="fa fa-key"></i>
+                            </span>{" "}
+                            Account Setting
+                          </Link>
                         </Dropdown.Item>
                         <Dropdown.Item>
-                          <div
+                          <div className="viewProfile"
                             onClick={() => {
                               dispatch(stateActions.logout());
                               navigate("/");
@@ -1029,6 +1051,7 @@ function Header() {
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
                         <div className="db-searchList-main">
+
                           {searchData[0]?.products?.map((product) => {
                             console.log("product", product);
 
@@ -1041,6 +1064,8 @@ function Header() {
                               </div>
                             );
                           })}
+
+                 
                         </div>
                       </div>
                     </div>
@@ -1116,6 +1141,7 @@ function Header() {
                           {/* <div className="col-auto"> */}
                           <div className="shopping-cart-delete">
                             {/* <Link to="/"> */}
+
                             <img
                               src={deleteCart}
                               alt=""
@@ -1128,6 +1154,7 @@ function Header() {
                                 );
                               }}
                             />
+
                             {/* </Link> */}
                           </div>
                           {/* </div> */}
@@ -1471,8 +1498,39 @@ function Header() {
                               </div>
                             )}
                           </div>
-                        </Dropdown.Menu>
-                      )}
+
+                          {categoryM && <div className="col-md-4 pl-0">
+                            <div className="blueBg p-4 h-100">
+                              <h3 className="m-0 text-white">{categoryM?.category?.name}</h3>
+                              <ul>
+                                {categoryM?.subCategories?.map((SubCategory) => {
+                                  return (<div onClick={(e) => SubCategory ? handleProductApi(e, SubCategory?._id) : handleProductApi(e, categories[0].subCategories[0]._id)} className='row h-100'>
+                                    <li>
+                                      <span > {SubCategory?.name} </span>
+                                      <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
+                                    </li>
+                                  </div>)
+                                })}
+                              </ul>
+                            </div>
+                          </div>}
+                          {productList && <div className="col-md-4">
+                            <div className="py-4">
+                              <h3 className="m-0">Popular Product</h3>
+                              <Dropdown.Menu align="end" as={CustomMenu} className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0">
+                                {productList.map(prod => {
+                                  return (
+                                    <Dropdown.Item onClick={() => navigate("/productdetail", { state: { product: prod } })}>
+                                      {prod.name}
+                                    </Dropdown.Item>
+                                  )
+                                })}
+                              </Dropdown.Menu>
+                            </div>
+                          </div>}
+                        </div>
+                      </Dropdown.Menu>}
+
                       {/* </Dropdown.Menu> */}
                     </Dropdown>
                   </div>
