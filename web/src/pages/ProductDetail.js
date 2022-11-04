@@ -515,7 +515,7 @@ function ProductDetail() {
                     }}
                   ></p>
                   <br />
-                  <p>
+                  {/* <p>
                     <b>Benefits</b>
                   </p>
                   <ul>
@@ -524,7 +524,7 @@ function ProductDetail() {
                     <li>UV cured lacquer finish</li>
                     <li>Tongue & groove all 4 edges</li>
                     <li>Stick down or secret nail</li>
-                  </ul>
+                  </ul> */}
                 </div>
               </Tab>
               <Tab eventKey="profile" title="Specifications">
@@ -544,46 +544,38 @@ function ProductDetail() {
                         <td>
                           {console.log(AllUnits)}
                           {product.variants[selectedVariant]
-                            ? `${product.variants[selectedVariant].dimensions.height} ${AllUnits} * ${product.variants[selectedVariant].dimensions.width} inches * ${product.variants[selectedVariant].dimensions.thickness} inches`
+                            ? `${product.variants[selectedVariant].dimensions.height>0?`${product.variants[selectedVariant].dimensions.height} inches *`:""} ${product.variants[selectedVariant].dimensions.width>0?`${product.variants[selectedVariant].dimensions.width} inches`:""} ${product.variants[selectedVariant].dimensions.thickness>0?`* ${product.variants[selectedVariant].dimensions.thickness} inches`:""}` //${AllUnits}
                             : "0 inches x 0 inches x 0 inches"}
                         </td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25">Color</td>
-                        {console.log(product)}
+                        {console.log("product",product.variants[selectedVariant])}
                         <td>
                           {product.variants[selectedVariant]
                             ? product.variants[selectedVariant].color
-                            : "green"}
+                            : "Invalid"}
                         </td>
                       </tr>
-                      <tr>
+                      {product.variants[selectedVariant].dimensions.height>0 && <tr>
+                        <td className="tdBg w-25">Height</td>
+                        <td>{product.variants[selectedVariant].dimensions.height}</td>
+                      </tr>}
+                      {product.variants[selectedVariant].dimensions.height>0 && <tr>
                         <td className="tdBg w-25">Width</td>
-                        <td>125mm</td>
-                      </tr>
-                      <tr>
+                        <td>{product.variants[selectedVariant].dimensions.width}</td>
+                      </tr>}
+                      {product.variants[selectedVariant].dimensions.thickness>0 && <tr>
                         <td className="tdBg w-25">Thickness</td>
-                        <td>18mm</td>
-                      </tr>
-                      <tr>
-                        <td className="tdBg w-25">Coverage (m2)</td>
-                        <td>2.2</td>
-                      </tr>
-                      <tr>
-                        <td className="tdBg w-25">Coverage Per</td>
-                        <td>Pack</td>
-                      </tr>
+                        <td>{product.variants[selectedVariant].dimensions.thickness}</td>
+                      </tr>}
                       <tr>
                         <td className="tdBg w-25">Material</td>
-                        <td>Timber</td>
+                        <td>{product.variants[selectedVariant].material_type}</td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25 ">Finish</td>
-                        <td>Silk Mat Lacquered</td>
-                      </tr>
-                      <tr>
-                        <td className="tdBg w-25">Timber</td>
-                        <td>Oak</td>
+                        <td>{product.variants[selectedVariant].material_finish}</td>
                       </tr>
                       <tr>
                         <td className="tdBg w-25">Warranty Period</td>
@@ -593,12 +585,12 @@ function ProductDetail() {
                       </tr>
                     </tbody>
                   </Table>
-                  <p>
+                  {/* <p>
                     <b>Certifications</b>
                   </p>
                   <ul>
                     <li>FSC</li>
-                  </ul>
+                  </ul> */}
                 </div>
               </Tab>
             </Tabs>

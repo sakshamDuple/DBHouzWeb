@@ -642,7 +642,6 @@ function ProductList() {
                         <p>(No Products)</p>
                       </div>
                     )}
-
                     {!loading &&
                       products?.map((product, index) => (
                         <div className="col-md-3 mb-3" key={index}>
@@ -722,7 +721,6 @@ function ProductList() {
                         </div>
                       ))}
                   </div>
-
                   <div className="pgntnOuter text-center pt-3 pb-3">
                     <Pagination
                       className="pagination-bar"

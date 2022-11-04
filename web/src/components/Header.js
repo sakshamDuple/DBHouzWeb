@@ -86,6 +86,7 @@ function Header() {
   const [reset, resetModal] = useState(false);
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
+
   const [getShowMenu, setShowMenu] = useState([])
   const [searchEngine, setSearchEngine] = useState("");
   const [selectOption, setSelectOption] = useState('');
@@ -107,6 +108,7 @@ function Header() {
       setShowSignUpModal(location?.state?.showLogin)
     }
   }, [location])
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -180,6 +182,7 @@ function Header() {
       .then((res) => {
         console.log(`Got 1`);
         console.log(res);
+        if(res == undefined) return setError(`This Email Already Exists`)
         RestUser.userLogin(email, password)
           .then(({ user, token }) => {
             console.log(`Got 2`);
@@ -230,6 +233,7 @@ function Header() {
         console.log("error", error)
       })
   }
+
 
   function showMenu(category) {
     // handledropdown(category.category._id)
@@ -302,7 +306,6 @@ function Header() {
         console.log("error", error)
       })
   }
-  // handleProductApp(categories[0].subCategories[0]._id)
   return (
     <header className="mainHeader wrapper">
       <article className="topBar blueBg">
@@ -1288,6 +1291,7 @@ function Header() {
                     <NavLink to="/productlist">Shop</NavLink>
                   </li>
                   <li className={`\active${path.blog}`}>
+
                     <NavLink to="/bloglist">Blog</NavLink>
                   </li>
                   {/* <li>

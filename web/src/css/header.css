@@ -18,6 +18,8 @@
     color:white !important;
 }
 
+
 .hdrMenu > ul > li > a.active{
     color:coral;
+
 }
