@@ -91,6 +91,14 @@ export let RestUser = {
     );
   },
 
+  async userProfileUpdate(formData) {
+    return await post(
+      `/user/editProfile`,
+      formData,
+      { errorMessage: "Updation Failed!" }
+    );
+  },
+
   async userSignup(email, password) {
     return await post(
       "/auth/usersignup",
@@ -250,12 +258,12 @@ export let RestAdmin = {
 
   async getMerchantProducts(_id) {
     let result = await post("/user/checkData",
-    {userId:_id}, {
+      { userId: _id }, {
       errorMessage: "Unable to get Products List!",
     });
     return result.products;
   },
-  
+
   async updateProduct(product) {
     return await post(
       "/product/updateOne",
@@ -273,7 +281,7 @@ export let RestAdmin = {
       errorMessage: "Unable to upload variant Images for products",
     });
   },
-  
+
   async createColor(color) {
     return await post("/misc/createColor", color, { errorMessage: "Unable to create color" });
   },
@@ -312,7 +320,7 @@ export let RestMerchant = {
   async createProduct(product, jwt) {
     return await post(
       "/product/createProduct",
-      { product },
+      product,
       { errorMessage: "Unable to create product!", jwt }
     );
   },

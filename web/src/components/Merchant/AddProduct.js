@@ -237,8 +237,8 @@ function AddProduct() {
         variants: [],
         createdAt: Date.now(),
       };
-      console.log("jagvir",  {newProductForm,brand})
-      let newProduct = await RestMerchant.createProduct({newProductForm,brand}, store.getState().jwt);
+      let product = newProductForm
+      let newProduct = await RestMerchant.createProduct({product,brand}, store.getState().jwt);
       if (imagesToUpload.length > 0 && newProduct.product) {
         const formData = new FormData();
         formData.append("productId", newProduct.product._id.toString());

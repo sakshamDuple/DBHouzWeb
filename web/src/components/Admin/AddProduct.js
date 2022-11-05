@@ -40,6 +40,7 @@ const initialFormData = {
   status: "INACTIVE",
   brandId: "",
   categoryId: "",
+  brand: "",
   subCategoryId: "",
   description: "",
   variants: [{ ...initialVariant }],
@@ -165,7 +166,7 @@ function AdminAddProduct() {
   const handleSubmit = async (e) => {
     setDisabled(true);
     let _formData = _.cloneDeep(formData);
-    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants } =
+    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants, brand } =
       formData;
     let isError = false;
     let formErrors = {
@@ -179,8 +180,12 @@ function AdminAddProduct() {
       formErrors.productName = `Please enter a valid Name`;
       isError = true;
     }
-    if (!brandId || !brandId.length) {
-      formErrors.productBrandName = `Please select a Brand`;
+    // if (!brandId || !brandId.length) {
+    //   formErrors.productBrandName = `Please select a Brand`;
+    //   isError = true;
+    // }
+    if (!brand || !name.length || name.length < 3) {
+      formErrors.productBrandName = `Please enter a valid Brand Name`;
       isError = true;
     }
     if (!merchantId || !merchantId.length) {
@@ -224,7 +229,8 @@ function AdminAddProduct() {
         variants: [],
         createdAt: Date.now(),
       };
-      let newProduct = await RestMerchant.createProduct(newProductForm);
+      let product1 = newProductForm
+      let newProduct = await RestMerchant.createProduct({product:product1,brand},brand);
       if (imagesToUpload.length > 0 && newProduct.product) {
         const formData = new FormData();
         formData.append("productId", newProduct.product._id.toString());
@@ -261,6 +267,12 @@ function AdminAddProduct() {
   }, [formData.categoryId]);
 
   const [noOfRows, setNoOfRows] = useState(1);
+
+  const handleBrandChange = ({ nativeEvent }) => {
+    let _formData = _.cloneDeep(formData);
+    _formData[nativeEvent.target.name] = nativeEvent.target.value;
+    setFormData(_formData);
+  };
 
   let getBody = () => {
     if (pageLoading) {
@@ -306,6 +318,43 @@ function AdminAddProduct() {
                   </div>
                   <div className="col">
                     <Form.Label>Enter Brand Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Brand Name"
+                      name="brand"
+                      value={formData.brand}
+                      onChange={handleBrandChange}
+                    />
+                    {formErrors.productBrandName && (
+                      <p className="text-danger">* {formErrors.productBrandName}</p>
+                    )}
+                    {/* <select
+                      type="text"
+                      ref={selectBrandRef}
+                      className="wide"
+                      placeholder="Enter Brand Name"
+                      disabled={!brands}
+                      name="brand"
+                      value={formData.brandId}
+                      value={formData.brand}
+                      onChange={() => { }}
+                      onChange={handleBrandChange}
+                    >
+                    />
+                      <option value="">Enter Brand Name </option>
+                      {brands &&
+                        (() => {
+                          return brands.map((x) => (
+                            <option value={x._id} key={x._id}>
+                              {x.name}
+                            </option>
+                          ));
+                        })()}
+                    </select> */}
+                  </div>
+                  {/**
+                   * <div className="col">
+                    <Form.Label>Enter Brand Name</Form.Label>
                     <select
                       ref={selectBrandRef}
                       className="wide"
@@ -327,6 +376,7 @@ function AdminAddProduct() {
                       <p className="text-danger">* {formErrors.productBrandName}</p>
                     )}
                   </div>
+                   */}
                 </div>
               </div>
 
