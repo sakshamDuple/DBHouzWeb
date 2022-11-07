@@ -80,11 +80,12 @@ function OrderDetail() {
       const { data } = await axios.get(
         `${baseUrl}/order/getProductByOrderId/${orderId}/${1}/${1}`
       );
-      console.log(data.result[0]._id);
-
       setOrderProduct(data.result);
       setReviewProId(data.result[0]._id);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      alert("somthing wrong")
+    }
   };
   useEffect(() => {
     getOrderProducts();
@@ -412,72 +413,7 @@ function OrderDetail() {
                   );
                 })}
 
-                {/* <div className="col-md-5">
-                  <Swiper
-                    loop={true}
-                    spaceBetween={20}
-                    navigation={true}
-                    thumbs={{ swiper: thumbsSwiper }}
-                    modules={[FreeMode, Navigation, Thumbs]}
-                    className="productDtlSlide crslCntrls2"
-                  >
-                    {product.images &&
-                      product.images?.map((image, index) => (
-                        <SwiperSlide key={index}>
-                          <div className="prdctDtlSlideItem">
-                            <div className="prdctDtlSlideMedia">
-                              <div
-                                className="prdctDtlImg"
-                                style={{
-                                  backgroundImage: product.images[index]
-                                    ? `url("${Rest}/documents/get/${product.images[index].documentId}")`
-                                    : `url("img/productDtilImg.jpg")`,
-                                }}
-                              ></div>
-                              <div className="prdctDtlHovrCard">
-                                <a href="/">
-                                  <span className="prdctDtlWishListIcon">
-                                    <img src="img/wishListWhiteIcon.svg" />
-                                  </span>
-                                </a>
-                                <a href="/">
-                                  <span className="prdctDtlListIcon">
-                                    <img src="img/3dIcon.svg" />
-                                  </span>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                  </Swiper>
-                  <Swiper
-                    onSwiper={setThumbsSwiper}
-                    loop={true}
-                    spaceBetween={10}
-                    slidesPerView={4}
-                    freeMode={true}
-                    watchSlidesProgress={true}
-                    modules={[FreeMode, Navigation, Thumbs]}
-                    className="prdctDtlSlidThumb mt-3"
-                  >
-                    {product.images &&
-                      product.images?.map((image, index) => (
-                        <SwiperSlide key={index}>
-                          <div className="prdctThumbSlideMedia">
-                            <div
-                              className="prdctDtlImgThumb"
-                              style={{
-                                backgroundImage: product.images[index]
-                                  ? `url("${Rest}/documents/get/${product.images[index].documentId}")`
-                                  : `url("img/productDtilImg.png")`,
-                              }}
-                            ></div>
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                  </Swiper>
-                </div> */}
+               
               </div>
             </div>
           </div>

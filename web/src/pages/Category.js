@@ -18,13 +18,13 @@ function Category() {
   const inputRefs = useMemo(() => Array(lenCat).fill(0).map(i => React.createRef()), []);
 
   const linkProductList = (category) => {
-    // console.log("category", category)
-    // navigate(`/productlist`, { state: { category } });
-     navigate(`/productlist?categoryId=${category}`);
+    console.log("category", category)
+    navigate(`/productlist`, { state: { category } });
+    //  navigate(`/productlist?category=${category}`);
   };
   const linkSubProductList = (category,subcategory) => {
-    //  navigate(`/productlist`, { state: { subcategory } });
-    navigate(`/productlist?categoryId=${category}&subCategoryId=${subcategory}`, { state: { category, subcategory } });
+     navigate(`/productlist`, { state: { subcategory } });
+    // navigate(`/productlist?category=${category}&subcategory=${subcategory}`, { state: { category, subcategory } });
   };
   window.scrollTo(0, 0);
 

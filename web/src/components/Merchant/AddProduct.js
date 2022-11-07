@@ -75,7 +75,6 @@ function AddProduct() {
     categoryId: "",
     subCategoryId: "",
     description: "",
-    brand: "",
     //metaTagTitle: '',
     //metaTagDescription: '',
     //metaTagKeywords: '',
@@ -174,7 +173,7 @@ function AddProduct() {
   const handleSubmit = async (e) => {
     setDisabled(true);
     let _formData = _.cloneDeep(formData);
-    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants, brand } =
+    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants } =
       formData;
     let isError = false;
     let formErrors = {
@@ -188,14 +187,10 @@ function AddProduct() {
       formErrors.productName = `Please enter a valid Name`;
       isError = true;
     }
-    if (!brand || !name.length || name.length < 3) {
-      formErrors.productBrandName = `Please enter a valid Brand Name`;
+    if (!brandId || !brandId.length) {
+      formErrors.productBrandName = `Please select a Brand`;
       isError = true;
     }
-    // if (!brandId || !brandId.length) {
-    //   formErrors.productBrandName = `Please select a Brand`;
-    //   isError = true;
-    // }
     if (!merchantId || !merchantId.length) {
       formErrors.productMerchantId = `Please select a Merchant`;
       isError = true;
@@ -237,8 +232,7 @@ function AddProduct() {
         variants: [],
         createdAt: Date.now(),
       };
-      console.log("jagvir",  {newProductForm,brand})
-      let newProduct = await RestMerchant.createProduct({newProductForm,brand}, store.getState().jwt);
+      let newProduct = await RestMerchant.createProduct(newProductForm, store.getState().jwt);
       if (imagesToUpload.length > 0 && newProduct.product) {
         const formData = new FormData();
         formData.append("productId", newProduct.product._id.toString());
@@ -260,11 +254,6 @@ function AddProduct() {
     _formData[nativeEvent.target.name] = nativeEvent.target.value;
     setFormData(_formData);
   };
-  const handleBrandChange = ({ nativeEvent }) => {
-    let _formData = _.cloneDeep(formData);
-    _formData[nativeEvent.target.name] = nativeEvent.target.value;
-    setFormData(_formData);
-  };
 
   const selectCategoryRef = useRef();
   const selectSubCategoryRef = useRef();
@@ -279,7 +268,7 @@ function AddProduct() {
 
   useEffect(() => {
     setSubCategories(undefined);
-    if (!formData.categoryId || formData.categoryId === "") return () => { };
+    if (!formData.categoryId || formData.categoryId === "") return () => {};
     RestAdmin.getAllSubCategoriesById(formData.categoryId).then((subCategories) => {
       setSubCategories(subCategories);
     });
@@ -371,29 +360,13 @@ function AddProduct() {
                   </div>
                   <div className="col">
                     <Form.Label>Enter Brand Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Brand Name"
-                      name="brand"
-                      value={formData.brand}
-                      onChange={handleBrandChange}
-                    />
-                    {formErrors.productBrandName && (
-                      <p className="text-danger">* {formErrors.productBrandName}</p>
-                    )}
-                    {/* <select
-                      type="text"
+                    <select
                       ref={selectBrandRef}
                       className="wide"
-                      placeholder="Enter Brand Name"
                       disabled={!brands}
-                      name="brand"
                       value={formData.brandId}
-                      value={formData.brand}
-                      onChange={() => { }}
-                      onChange={handleBrandChange}
+                      onChange={() => {}}
                     >
-                    />
                       <option value="">Enter Brand Name </option>
                       {brands &&
                         (() => {
@@ -403,7 +376,10 @@ function AddProduct() {
                             </option>
                           ));
                         })()}
-                    </select> */}
+                    </select>
+                    {formErrors.productBrandName && (
+                      <p className="text-danger">* {formErrors.productBrandName}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -419,7 +395,7 @@ function AddProduct() {
                         ref={selectCategoryRef}
                         className="wide"
                         disabled={!categories}
-                        onChange={() => { }}
+                        onChange={() => {}}
                       >
                         <option value="">Select Category</option>
                         {categories &&
@@ -446,7 +422,7 @@ function AddProduct() {
                         className="wide"
                         disabled={!subCategories}
                         value={formData.subCategoryId}
-                        onChange={() => { }}
+                        onChange={() => {}}
                       >
                         <option value="">Select Sub Category</option>
                         {subCategories &&
@@ -476,7 +452,7 @@ function AddProduct() {
                         className="wide"
                         disabled={!merchants}
                         value={formData.merchantId}
-                        onChange={() => { }}
+                        onChange={() => {}}
                       >
                         <option value="">Select Merchant</option>
                         {merchants &&
