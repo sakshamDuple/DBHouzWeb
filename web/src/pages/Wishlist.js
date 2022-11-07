@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link, NavLink } from "react-router-dom";
@@ -8,53 +7,7 @@ import UserIcon from "../img/userIcon.svg";
 import PaymentIcon from "../img/pymntIcon.svg";
 import StuffIcon from "../img/stuffIcon.svg";
 import LogoutIcon from "../img/logoutIcon.svg";
-import Stack from '@mui/material/Stack';
-import Rating from '@mui/material/Rating';
-import jwtDecode from "jwt-decode";
-import axios from "../API/axios";
-import { strictValidArrayWithLength } from "../utils/commonutils";
-import { Rest } from "../rest";
-import { makeStyles } from '@mui/styles';
-const useStyles = makeStyles({
-  root: {
-    // alignSelf: "center"
-    padding_left: "5px"
-  },
-});
-function Wishlist() {
-  const navigate = useNavigate();
-  const [product, setProduct] = useState([]);
-  const [token, setToken] = useState(null);
-  const classes = useStyles();
-  const productDetails = (product) => {
-    navigate("/productdetail", { state: { product } });
-  };
-  useEffect(async () => {
-    if (window.localStorage.JWT) {
-      let accessToken = window.localStorage.getItem("JWT");
-      let n = jwtDecode(accessToken);
-      const { user: { _id } = {} } = n || {};
-      setToken(_id)
-      try {
-        const res = await axios.get(`/user/getCartAndWishlist/${_id}`)
-        const { data: { result: { wishList = [] } = {} } = {} } = res || {}
-        setProduct(strictValidArrayWithLength(wishList) ? wishList : []);
-      } catch (error) {
-        console.log("error", error);
-      }
-    }
-  }, [])
-  const DeleteButton = async (productName) => {
-    if (token !== null) {
-      try {
-        const res = await axios.delete(`/user/deleteOneWishlist/${token}/${productName}`)
-        const { data: { result: { wishList = [] } = {} } = {} } = res || {}
-        setProduct(strictValidArrayWithLength(wishList) ? wishList : []);
-      } catch (error) {
-        console.log("error", error);
-      }
-    }
-  }
+function AccountSetting() {
   return (
     <section className="wrapper greyBg3 dashboardBlk ">
       <Header />
@@ -99,7 +52,7 @@ function Wishlist() {
                           <div className="acoutSidebar mb-2">
                             <ul>
                               <li>
-                                <Link to="/accountsetting">
+                                <Link to="/">
                                   <i className="fa fa-user"></i> Profile Information
                                 </Link>
                               </li>
@@ -217,82 +170,58 @@ function Wishlist() {
             <div className="col-md-9 pb-4">
               <div className="dashboard--main">
                 <div className="dashboard--top pt-2 pb-4">
-                  <h4>My Wishlist ({product?.length})</h4>
+                  <h4>My Wishlist (6)</h4>
                   <hr />
                 </div>
                 <div className="wishListPage">
-                  {product?.map((item, index) => {
-                    console.log("jagvir", item)
-                    const {variants = [],_id,images = [], name, rating, review = []} = item || {};
-                    return (
-                      <>
-                        <div className="wishListPrdct">
-                          <div className="row g-3 d-sm-flex align-items-center" key={index}>
-                            <div className="col-auto">
-                              <div className="wishListProMedia">
-                                <a href="/productdetail">
-                                  <div
-                                    className="wishListProImg"
-                                    style={{
-                                      backgroundImage: strictValidArrayWithLength(images)
-                                        ? `url("${Rest}/documents/get/${images[0]?.documentId}")`
-                                        : `url("img/productImg1.jpg")`
-                                    }}
-                                  ></div>
-                                </a>
-                              </div>
-                            </div>
-                            <div className="col mt-0">
-                              <div className="wishListProInfo">
-                                <div className="prdctListTitle">
-                                  <h4
-                                    onClick={() => {
-                                      productDetails(item.product);
-                                    }}
-                                  >
-                                    <span>
-                                      {name}
-                                    </span>
-                                  </h4>
-                                </div>
-                                <div className="rvwRtngPrgrsStars detailPage-reviewStar">
-                                  <Rating className={classes.root} name="half-rating-read" defaultValue={rating} precision={0.5} readOnly />
-                                  <span>{review.length} reviews</span>
-                                </div>
-                                <div className="prodctListPrice wishListPrice pb-0 pt-2 d-flex ">
-                                  <div className="price">£{variants[0]?.price}.00</div>
-                                  {/* <div className="discntPrice mx-1">(10% off)</div> */}
-                                </div>
-                                {/* <div className="wishListPrice">
-                                <Link to="/"> In Stock</Link>
-                              </div> */}
-                              </div>
-                            </div>
-                            <div className="col-auto d-flex align-items-center">
-                              <div className="wishLstCrdBtn">
-                                <button
-                                  onClick={() => {
-                                    productDetails(item);
-                                  }}
-                                  className="btnCommon">
-                                  View Detail
-                                </button>
-                              </div>
-                              <div className="wishLstDlet">
-                                <img src="img/deleteIcon.svg"
-                                  onClick={() => {
-                                    DeleteButton(_id);
-                                  }} />
-                              </div>
-                            </div>
+                  <div className="wishListPrdct">
+                    <div className="row g-3 d-sm-flex align-items-center">
+                      <div className="col-auto">
+                        <div className="wishListProMedia">
+                          <a href="/product-detail">
+                            <div
+                              className="wishListProImg"
+                              style={{ backgroundImage: `url("img/CatImg3.jpg")` }}
+                            ></div>
+                          </a>
+                        </div>
+                      </div>
+                      <div className="col mt-0">
+                        <div className="wishListProInfo">
+                          <div className="prdctListTitle">
+                            <h4>
+                              <a href="/">G654 Pangdang Granite Pedestal...</a>
+                            </h4>
+                          </div>
+                          <div className="rvwRtngPrgrsStars">
+                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                            <i className="fa fa-star ylowStar" aria-hidden="true"></i>
+                          </div>
+                          <div className="prodctListPrice wishListPrice pb-0 pt-2 d-flex ">
+                            <div className="price">$48.00</div>
+                            <div className="discntPrice mx-1">(31% off)</div>
+                          </div>
+                          <div className="wishListPrice">
+                            <Link to="/"> In Stock</Link>
                           </div>
                         </div>
-                        <hr className="mb-5" />
-                      </>
-                    );
-                  })}
-
-                  {/* <hr className="mb-5" />
+                      </div>
+                      <div className="col-auto d-flex align-items-center">
+                        <div className="wishLstCrdBtn">
+                          <button className="btnCommon">Add to Cart</button>
+                        </div>
+                        <div className="wishLstDlet">
+                          <Link to="/">
+                            <img src="img/deleteIcon.svg" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="mb-5" />
                   <div className="wishListPrdct">
                     <div className="row g-3 d-sm-flex align-items-center">
                       <div className="col-auto">
@@ -483,7 +412,7 @@ function Wishlist() {
                         </div>
                       </div>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
             </div>
@@ -495,4 +424,4 @@ function Wishlist() {
     </section>
   );
 }
-export default Wishlist;
+export default AccountSetting;

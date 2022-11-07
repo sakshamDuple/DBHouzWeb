@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Button, Modal, Dropdown, Container, Row, Col, Offcanvas } from "react-bootstrap";
+import {
+  Button,
+  Modal,
+  Dropdown,
+  Container,
+  Row,
+  Col,
+  Offcanvas,
+} from "react-bootstrap";
 import RightArrow from "../img/rightArrowIcon.svg";
 import { Rest, RestAdmin, RestUser, RestClient } from "../rest";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,8 +21,12 @@ import SetingLogout from "../assets/images/settingIcons/logout.svg";
 import "../css/header.css";
 import "./Header.css";
 import axios from "../API/axios";
-import NestedDropdown, { CustomMenu, CustomToggle, CustomToggle2 } from './NestedDropdown';
-import NestedDropdown2 from './NestedDropdown2';
+import NestedDropdown, {
+  CustomMenu,
+  CustomToggle,
+  CustomToggle2,
+} from "./NestedDropdown";
+import NestedDropdown2 from "./NestedDropdown2";
 function Header() {
   const [path, setPath] = useState({
     home: "no",
@@ -87,27 +99,27 @@ function Header() {
   const [error, setError] = useState();
   const [checked, setChecked] = useState(true);
 
-  const [getShowMenu, setShowMenu] = useState([])
+  const [getShowMenu, setShowMenu] = useState([]);
   const [searchEngine, setSearchEngine] = useState("");
-  const [selectOption, setSelectOption] = useState('');
+  const [selectOption, setSelectOption] = useState("");
   const [click1, setClick1] = useState(false);
   const [click2, setClick2] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [productList, setProductList] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const user = useSelector((s) => s.user);
-  const [categoryM, setCategoryM] = useState(categories[0])
+  const [categoryM, setCategoryM] = useState(categories[0]);
   const location = useLocation();
   useEffect(() => {
     if (location?.state?.showSignup) {
-      setShowSignUpModal(location?.state?.showSignup)
+      setShowSignUpModal(location?.state?.showSignup);
     }
-  }, [location])
+  }, [location]);
   useEffect(() => {
     if (location?.state?.showLogin) {
-      setShowSignUpModal(location?.state?.showLogin)
+      setShowSignUpModal(location?.state?.showLogin);
     }
-  }, [location])
+  }, [location]);
 
   const validateEmail = (email) => {
     return String(email)
@@ -118,11 +130,10 @@ function Header() {
   };
 
   const validatePassword = (password) => {
-    return String(password)
-      .match(
-        /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-      );
-  }
+    return String(password).match(
+      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+    );
+  };
 
   // const CustomDropDown = ({ category }) => {
   //   console.log("category manvir", category)
@@ -162,7 +173,7 @@ function Header() {
         // registerShow(false);
       })
       .catch((e) => setError(e.message));
-  }
+  };
 
   const handleSignUp = (e) => {
     e.preventDefault();
@@ -182,7 +193,7 @@ function Header() {
       .then((res) => {
         console.log(`Got 1`);
         console.log(res);
-        if(res == undefined) return setError(`This Email Already Exists`)
+        if (res == undefined) return setError(`This Email Already Exists`);
         RestUser.userLogin(email, password)
           .then(({ user, token }) => {
             console.log(`Got 2`);
@@ -205,54 +216,66 @@ function Header() {
       });
   };
   useEffect(() => {
-    handleSelectOption()
-  }, [searchEngine, selectOption])
+    handleSelectOption();
+  }, [searchEngine, selectOption]);
 
   const handleSelectOption = async (e) => {
     // e.preventDefault();
+    console.log("selectOption", selectOption);
+    console.log("searchEngine", searchEngine);
     if (selectOption !== "") {
       let data = {
         categoryId: selectOption,
         searchVal: searchEngine,
-      }
+      };
       try {
-        let res = await axios.post(`/product/category/search`, data)
-        setSearchData(res.data.fetches)
+        let res = await axios.post(`/product/category/search`, data);
+        console.log("res", res.data.fetches);
+        setSearchData(res.data.fetches);
       } catch (error) {
-        console.log("error", error)
+        console.log("error", error);
       }
     }
-  }
+  };
   function handledropdown(categoryId) {
-    console.log("categoryId", categoryId)
+    console.log("categoryId", categoryId);
     RestClient.getCategoryDropdown(categoryId)
       .then((res) => {
         // setShowMenu(res.fetches)
-        console.log("resjasfjdjj", res)
-      }).catch((error) => {
-        console.log("error", error)
+        console.log("resjasfjdjj", res);
       })
+      .catch((error) => {
+        console.log("error", error);
+      });
   }
-
 
   function showMenu(category) {
     // handledropdown(category.category._id)
-    console.log("toShow", getShowMenu)
+    console.log("toShow", getShowMenu);
     return (
-
       <div className="row">
         <div className="col-md-6">
           <div className="blueBg p-4 h-100">
             {console.log("jug", getShowMenu?.products?.name)}
             <h3 className="m-0">{category?.category?.name}</h3>
             <hr />
-            <ul className=''>
+            <ul className="">
               <li>Tyrone Burt</li>
-              <li><Link to="" >Regina Moreno</Link></li>
-              <li><Link to="" >Tyrone Burt</Link></li>
-              <li><Link to="" >Regina Moreno</Link></li>
-              <li><Link to="" >Tyrone Burt</Link></li>
-              <li><Link to="" >Regina Moreno</Link></li>
+              <li>
+                <Link to="">Regina Moreno</Link>
+              </li>
+              <li>
+                <Link to="">Tyrone Burt</Link>
+              </li>
+              <li>
+                <Link to="">Regina Moreno</Link>
+              </li>
+              <li>
+                <Link to="">Tyrone Burt</Link>
+              </li>
+              <li>
+                <Link to="">Regina Moreno</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -260,52 +283,74 @@ function Header() {
           <div className="px-4 py-3">
             <h3 className="m-0">Popular Product</h3>
             <hr />
-            <ul className=''>
-              <li><Link to="" >Carla Meyers</Link></li>
-              <li><Link to="" >Martin Barron</Link></li>
-              <li><Link to="" >Pankaj Tiles</Link></li>
-              <li><Link to="" >Martin Barron</Link></li>
-              <li><Link to="" >Carla Meyers</Link></li>
-              <li><Link to="" >Martin Barron</Link></li>
-              <li><Link to="" >Pankaj Tiles</Link></li>
-              <li><Link to="" >Martin Barron</Link></li>
+            <ul className="">
+              <li>
+                <Link to="">Carla Meyers</Link>
+              </li>
+              <li>
+                <Link to="">Martin Barron</Link>
+              </li>
+              <li>
+                <Link to="">Pankaj Tiles</Link>
+              </li>
+              <li>
+                <Link to="">Martin Barron</Link>
+              </li>
+              <li>
+                <Link to="">Carla Meyers</Link>
+              </li>
+              <li>
+                <Link to="">Martin Barron</Link>
+              </li>
+              <li>
+                <Link to="">Pankaj Tiles</Link>
+              </li>
+              <li>
+                <Link to="">Martin Barron</Link>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-    )
+    );
   }
   const handleNavtigate = async (e, productId) => {
     e.preventDefault();
     try {
-      let res = await axios.get(`/product/getOne/${productId}`)
+      let res = await axios.get(`/product/getOne/${productId}`);
+      console.log("res", res.data.product);
       navigate("/productdetail", { state: { product: res.data.product } });
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
     }
-  }
+  };
   const handleProductApi = (e, id) => {
-    setProductList([])
-    e.preventDefault()
-    console.log("button")
+    setProductList([]);
+    e.preventDefault();
+    console.log("button");
     RestClient.getCategoryDropdown(id)
       .then((res) => {
-        setProductList(res.data)
-        console.log("resjasfjdjj", res.data)
-      }).catch((error) => {
-        console.log("error", error)
+        setProductList(res.data);
+        console.log("resjasfjdjj", res.data);
       })
-  }
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
   const handleProductApp = (id) => {
-    setProductList([])
-    e.preventDefault()
+    setProductList([]);
+    e.preventDefault();
     RestClient.getCategoryDropdown(id)
       .then((res) => {
-        setProductList(res.data)
-      }).catch((error) => {
-        console.log("error", error)
+        setProductList(res.data);
       })
-  }
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+  console.log(categories[0]?.subCategories[0]?._id);
+  // handleProductApp(categories[0].subCategories[0]._id)
+
   return (
     <header className="mainHeader wrapper">
       <article className="topBar blueBg">
@@ -325,58 +370,44 @@ function Header() {
             </Col>
             <Col className="col-md-auto">
               <div className="tpBarRightCol d-flex">
-                {user.jwt ? (
+                {user.jwt && user.type != "admin" ? (
                   <div className="userContnt-name" style={{ width: "200px" }}>
                     <Dropdown className="header-fix">
-                      <Dropdown.Toggle className="notificatnCol w-100 p-0 border-0" id="dropdown-basic">
+                      <Dropdown.Toggle
+                        className="notificatnCol w-100 p-0 border-0"
+                        id="dropdown-basic"
+                      >
                         <div className="userContnt ">
                           <div className="">
-                            <span className="m-0">Welcome</span>{" "}
+                            <p className="m-0">Welcome</p>
                             {Boolean(user?.user?.firstName) && (
-                              <span className="m-0">{user?.user?.firstName}</span>
+                              <h5>{user?.user?.firstName}</h5>
                             )}
-                            {!Boolean(user?.user?.firstName) && <span className="m-0">User</span>}
+                            {!Boolean(user?.user?.firstName) && <h5>User</h5>}
                           </div>
                         </div>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item >
-                          <Link to="/myaccount" className="viewProfile">
-                            <span>
-                              <img src={SetingUser} alt="" height="13" />
-                            </span>{" "}
-                            View Profile
-                          </Link>
+                        <Dropdown.Item href="/user/myprofile">
+                          <span>
+                            <img src={SetingUser} alt="" height="13" />
+                          </span>{" "}
+                          View Profile
                         </Dropdown.Item>
-                        <Dropdown.Item >
-                          <Link to="/orderhistory" className="viewProfile">
-                            <span>
-                              {/* <img src={Edit} alt="" height="13" /> */}
-                              <i className="fa fa-shopping-cart"></i>
-                            </span>{" "}
-                            Order History
-                          </Link>
+                        <Dropdown.Item href="/user/editprofile">
+                          <span>
+                            <img src={Edit} alt="" height="13" />
+                          </span>{" "}
+                          Edit Profile
                         </Dropdown.Item>
-                        <Dropdown.Item >
-                          <Link to="/transactions" className="viewProfile">
-                            <span>
-                              {/* <img src={ChangePassword} alt="" height="13" /> */}
-                              <i className="fa fa-money"></i>
-                            </span>{" "}
-                            Transactions
-                          </Link>
-                        </Dropdown.Item>
-                        <Dropdown.Item >
-                          <Link to="/accountsetting" className="viewProfile">
-                            <span>
-                              {/* <img src={ChangePassword} alt="" height="13" /> */}
-                              <i className="fa fa-key"></i>
-                            </span>{" "}
-                            Account Setting
-                          </Link>
+                        <Dropdown.Item href="/user/password">
+                          <span>
+                            <img src={ChangePassword} alt="" height="13" />
+                          </span>{" "}
+                          Change Password
                         </Dropdown.Item>
                         <Dropdown.Item>
-                          <div className="viewProfile"
+                          <div
                             onClick={() => {
                               dispatch(stateActions.logout());
                               navigate("/");
@@ -407,14 +438,17 @@ function Header() {
                   size="lg"
                   show={showSignUpModal ? showSignUpModal : signUp}
                   onHide={() => {
-                    registerShow(false)
-                    setShowSignUpModal(false)
-                    navigate('/', { state: { showSignup: false } })
+                    registerShow(false);
+                    setShowSignUpModal(false);
+                    navigate("/", { state: { showSignup: false } });
                   }}
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
-                  <Modal.Header closeButton className="offcanvasHeader offcanvas-header">
+                  <Modal.Header
+                    closeButton
+                    className="offcanvasHeader offcanvas-header"
+                  >
                     <Modal.Title
                       id="example-modal-sizes-title-lg"
                       className="signUpLoginTitle"
@@ -433,7 +467,10 @@ function Header() {
                           <form className="formStyle">
                             <div className="row g-3">
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label pt-3">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label pt-3"
+                                >
                                   Email Address
                                 </label>
                                 <input
@@ -445,7 +482,10 @@ function Header() {
                                 />
                               </div>
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label"
+                                >
                                   Password
                                 </label>
                                 <input
@@ -457,14 +497,19 @@ function Header() {
                                 />
                               </div>
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label"
+                                >
                                   Confirm Password
                                 </label>
                                 <input
                                   type="password"
                                   className="form-control"
                                   value={confirmPassword}
-                                  onChange={(e) => setConfirmPassword(e.target.value)}
+                                  onChange={(e) =>
+                                    setConfirmPassword(e.target.value)
+                                  }
                                   placeholder="Confirm Password"
                                 />
                               </div>
@@ -477,14 +522,24 @@ function Header() {
                                     className="form-check-input"
                                     id="acceptCheck"
                                   />
-                                  <label className="form-check-label" htmlFor="acceptCheck">
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="acceptCheck"
+                                  >
                                     I accept our
-                                    <Link to="/termconditions">Terms of use</Link> and our
-                                    <Link to="/privacypolicy">Privacy policy</Link>
+                                    <Link to="/termconditions">
+                                      Terms of use
+                                    </Link>{" "}
+                                    and our
+                                    <Link to="/privacypolicy">
+                                      Privacy policy
+                                    </Link>
                                   </label>
                                 </div>
                               </div>
-                              {error && <p className="text-danger">* {error}</p>}
+                              {error && (
+                                <p className="text-danger">* {error}</p>
+                              )}
                               <div className="col-12">
                                 <div className="row d-flex align-items-center">
                                   <div className="col">
@@ -526,21 +581,30 @@ function Header() {
                               target="_blank"
                               className="faceBook"
                             >
-                              <i className="fa fa-facebook" aria-hidden="true"></i>
+                              <i
+                                className="fa fa-facebook"
+                                aria-hidden="true"
+                              ></i>
                             </Link>
                             <Link
                               to="https://www.gmail.com/"
                               target="_blank"
                               className="gmail"
                             >
-                              <i className="fa fa-google-plus" aria-hidden="true"></i>
+                              <i
+                                className="fa fa-google-plus"
+                                aria-hidden="true"
+                              ></i>
                             </Link>
                             <Link
                               to="https://www.gmail.com/"
                               target="_blank"
                               className="otherEmail"
                             >
-                              <i className="fa fa-envelope" aria-hidden="true"></i>
+                              <i
+                                className="fa fa-envelope"
+                                aria-hidden="true"
+                              ></i>
                             </Link>
                           </Col>
                         </Row>
@@ -558,14 +622,17 @@ function Header() {
                   size="lg"
                   show={showLoginModal ? showLoginModal : logins}
                   onHide={() => {
-                    loginModel(false)
-                    setShowLoginModal(false)
-                    navigate('/', { state: { showLogin: false } })
+                    loginModel(false);
+                    setShowLoginModal(false);
+                    navigate("/", { state: { showLogin: false } });
                   }}
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
-                  <Modal.Header closeButton className="offcanvasHeader offcanvas-header">
+                  <Modal.Header
+                    closeButton
+                    className="offcanvasHeader offcanvas-header"
+                  >
                     <Modal.Title
                       id="example-modal-sizes-title-lg"
                       className="signUpLoginTitle"
@@ -584,26 +651,36 @@ function Header() {
                           <form className="formStyle">
                             <div className="row g-3">
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label pt-3">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label pt-3"
+                                >
                                   Email Address
                                 </label>
                                 <input
                                   type="email"
                                   className="form-control"
                                   value={loginEmail}
-                                  onChange={(e) => setLoginEmail(e.target.value)}
+                                  onChange={(e) =>
+                                    setLoginEmail(e.target.value)
+                                  }
                                   placeholder="info@Dbhouz.com"
                                 />
                               </div>
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label"
+                                >
                                   Password
                                 </label>
                                 <input
                                   type="password"
                                   className="form-control"
                                   value={loginPassword}
-                                  onChange={(e) => setLoginPassword(e.target.value)}
+                                  onChange={(e) =>
+                                    setLoginPassword(e.target.value)
+                                  }
                                   placeholder="Password"
                                 />
                               </div>
@@ -614,7 +691,10 @@ function Header() {
                                     className="form-check-input"
                                     id="rememberCheck"
                                   />
-                                  <label className="form-check-label" htmlFor="rememberCheck">
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="rememberCheck"
+                                  >
                                     Remember me
                                   </label>
                                 </div>
@@ -658,21 +738,30 @@ function Header() {
                               target="_blank"
                               className="faceBook"
                             >
-                              <i className="fa fa-facebook" aria-hidden="true"></i>
+                              <i
+                                className="fa fa-facebook"
+                                aria-hidden="true"
+                              ></i>
                             </Link>
                             <Link
                               to="https://www.gmail.com/"
                               target="_blank"
                               className="gmail"
                             >
-                              <i className="fa fa-google-plus" aria-hidden="true"></i>
+                              <i
+                                className="fa fa-google-plus"
+                                aria-hidden="true"
+                              ></i>
                             </Link>
                             <Link
                               to="https://www.gmail.com/"
                               target="_blank"
                               className="otherEmail"
                             >
-                              <i className="fa fa-envelope" aria-hidden="true"></i>
+                              <i
+                                className="fa fa-envelope"
+                                aria-hidden="true"
+                              ></i>
                             </Link>
                           </div>
                         </div>
@@ -703,7 +792,10 @@ function Header() {
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
-                  <Modal.Header closeButton className="offcanvasHeader offcanvas-header">
+                  <Modal.Header
+                    closeButton
+                    className="offcanvasHeader offcanvas-header"
+                  >
                     <Modal.Title
                       id="example-modal-sizes-title-lg"
                       className="signUpLoginTitle"
@@ -722,7 +814,10 @@ function Header() {
                           <form className="formStyle">
                             <div className="row g-3">
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label pt-3">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label pt-3"
+                                >
                                   Email Address
                                 </label>
                                 <input
@@ -746,15 +841,19 @@ function Header() {
                                 </Link>
                               </div>
                               <div className="col-auto">
-                                <button type="submit" className="btn btnCommon btnDark  ">
+                                <button
+                                  type="submit"
+                                  className="btn btnCommon btnDark  "
+                                >
                                   Cancel
                                 </button>
                               </div>
                             </div>
                           </form>
                           <p className="pt-3">
-                            Lost your password? Please enter your email address. You will
-                            receive a link to create a new password via email.
+                            Lost your password? Please enter your email address.
+                            You will receive a link to create a new password via
+                            email.
                           </p>
                         </div>
                       </div>
@@ -784,7 +883,10 @@ function Header() {
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
                 >
-                  <Modal.Header closeButton className="offcanvasHeader offcanvas-header">
+                  <Modal.Header
+                    closeButton
+                    className="offcanvasHeader offcanvas-header"
+                  >
                     <Modal.Title
                       id="example-modal-sizes-title-lg"
                       className="signUpLoginTitle"
@@ -803,7 +905,10 @@ function Header() {
                           <form className="formStyle">
                             <div className="row g-3">
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label pt-3">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label pt-3"
+                                >
                                   New Password
                                 </label>
                                 <input
@@ -814,7 +919,10 @@ function Header() {
                                 />
                               </div>
                               <div className="col-12">
-                                <label htmlFor="fullNameFld" className="form-label">
+                                <label
+                                  htmlFor="fullNameFld"
+                                  className="form-label"
+                                >
                                   Confirm New Password
                                 </label>
                                 <input
@@ -825,7 +933,10 @@ function Header() {
                                 />
                               </div>
                               <div className="col-12">
-                                <button type="submit" className="btn btnCommon btnRadiusNone ">
+                                <button
+                                  type="submit"
+                                  className="btn btnCommon btnRadiusNone "
+                                >
                                   Submit
                                 </button>
                               </div>
@@ -891,12 +1002,19 @@ function Header() {
                   <div className="row">
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <select name="option" onChange={(e) => setSelectOption(e.target.value)} className="form-select dp-headerFormSelect">
-
-                          <option value="none" selected disabled hidden>Select an Option</option>
+                        <select
+                          name="option"
+                          onChange={(e) => setSelectOption(e.target.value)}
+                          className="form-select dp-headerFormSelect"
+                        >
+                          <option value="none" selected disabled hidden>
+                            Select an Option
+                          </option>
                           {categories.map((option) => {
                             return (
-                              <option value={option.category._id}>{option.category.name}</option>
+                              <option value={option.category._id}>
+                                {option.category.name}
+                              </option>
                             );
                           })}
                         </select>
@@ -904,25 +1022,32 @@ function Header() {
                     </div>
                     <div className="col-sm">
                       <div className="form-group ">
-                        <input type="text" value={searchEngine} className="form-control"
+                        <input
+                          type="text"
+                          value={searchEngine}
+                          className="form-control"
                           onChange={(e) => setSearchEngine(e.target.value)}
                         />
                         <div className="db-searchList-main">
-                          {
-                            searchData[0]?.products?.map((product) => {
-                              return (
-                                <div onClick={(e) => handleNavtigate(e, product._id)} className="db-searchList">
-                                  {product.name}
-                                </div>
-                              )
-                            })
-                          }
+                          {searchData[0]?.products?.map((product) => {
+                            console.log("product", product);
+
+                            return (
+                              <div
+                                onClick={(e) => handleNavtigate(e, product._id)}
+                                className="db-searchList"
+                              >
+                                {product.name}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
                     <div className="col-sm-auto">
                       <div className="form-group">
-                        <button className="btnCommon btnDark"
+                        <button
+                          className="btnCommon btnDark"
                           onClick={(e) => handleSelectOption(e)}
                         >
                           Search <img src="/img/searchIcon.svg" />
@@ -974,23 +1099,35 @@ function Header() {
                                   <br /> 18 x 125mm 2.2m²{" "}
                                 </Link>
                               </h4>
-                              <h5 onClick={(e) => {
-                                dispatch(
-                                  stateActions.removeCartItem(cartItem.product?._id)
-                                );
-                              }}>
-                                <span>{cartItem.quantity} × </span>${cartItem.variant?.price}
+                              <h5
+                                onClick={(e) => {
+                                  dispatch(
+                                    stateActions.removeCartItem(
+                                      cartItem.product?._id
+                                    )
+                                  );
+                                }}
+                              >
+                                <span>{cartItem.quantity} × </span>$
+                                {cartItem.variant?.price}
                               </h5>
                             </div>
                           </div>
                           {/* <div className="col-auto"> */}
                           <div className="shopping-cart-delete">
                             {/* <Link to="/"> */}
-                            <img src={deleteCart} alt="" onClick={(e) => {
-                              e.preventDefault();
-                              dispatch(stateActions.removeCartItem(cartItem.product._id))
-                            }
-                            } />
+                            <img
+                              src={deleteCart}
+                              alt=""
+                              onClick={(e) => {
+                                e.preventDefault();
+                                dispatch(
+                                  stateActions.removeCartItem(
+                                    cartItem.product._id
+                                  )
+                                );
+                              }}
+                            />
                             {/* </Link> */}
                           </div>
                           {/* </div> */}
@@ -1019,7 +1156,7 @@ function Header() {
             </div>
           </Row>
         </Container>
-      </article >
+      </article>
       <article className="hdrNavRow">
         <Container>
           <Row className="row align-items-center justify-content-between">
@@ -1220,55 +1357,122 @@ function Header() {
                             </Dropdown.Item>
                           );
                         })} */}
-                      {!click1 && <Dropdown.Menu align="end" as={CustomMenu} className="dp-dropdown-box box-shadow dp-dropdown-box-first blueBg p-4" alignRight>
-                        <div className='row h-100'>
-                          <div className="col-md-4 position-relative pr-0">
-                            <div className="redBg py-4@">
-                              <Dropdown.Menu align="end" as={CustomMenu} className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0 w-100">
-                                <ul>
-                                  {categories.map((category) => {
-                                    return (
-                                      <li>
-                                        <span onClick={() => { setCategoryM(category), console.log(category) }}> {category.category.name}{"  "}</span>
-                                        <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
-                                      </li>
-                                    )
-                                  })}
-                                </ul>
-                              </Dropdown.Menu>
+                      {!click1 && (
+                        <Dropdown.Menu
+                          align="end"
+                          as={CustomMenu}
+                          className="dp-dropdown-box box-shadow dp-dropdown-box-first blueBg p-4"
+                          alignRight
+                        >
+                          <div className="row h-100">
+                            <div className="col-md-4 position-relative pr-0">
+                              <div className="redBg py-4@">
+                                <Dropdown.Menu
+                                  align="end"
+                                  as={CustomMenu}
+                                  className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0 w-100"
+                                >
+                                  <ul>
+                                    {categories.map((category) => {
+                                      return (
+                                        <li
+                                          key={category?._id}
+                                          className={
+                                            categoryM.category._id == category.category._id
+                                              ? "catItemsactive"
+                                              : "catItems"
+                                          }
+                                          onClick={() => {
+                                            setCategoryM(category);
+                                         
+                                          }}
+                                        >
+                                          <span>
+                                            {category.category.name}
+                                            {"  "}
+                                          </span>
+                                          <i
+                                            className="fa fa-caret-right ml-10"
+                                            aria-hidden="true"
+                                          ></i>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </Dropdown.Menu>
+                              </div>
                             </div>
+                            {categoryM && (
+                              <div className="col-md-4 pl-0">
+                                <div className="blueBg p-4 h-100">
+                                  <h3 className="m-0 text-white">
+                                    {categoryM?.category?.name}
+                                  </h3>
+                                  <ul>
+                                    {categoryM?.subCategories?.map(
+                                      (SubCategory) => {
+                                        return (
+                                          <div
+                                            onClick={(e) =>
+                                              SubCategory
+                                                ? handleProductApi(
+                                                    e,
+                                                    SubCategory?._id
+                                                  )
+                                                : handleProductApi(
+                                                    e,
+                                                    categories[0]
+                                                      .subCategories[0]._id
+                                                  )
+                                            }
+                                            className="row h-100"
+                                          >
+                                            <li className="subCat">
+                                              <span> {SubCategory?.name} </span>
+                                              <i
+                                                className="fa fa-caret-right ml-10"
+                                                aria-hidden="true"
+                                              ></i>
+                                            </li>
+                                          </div>
+                                        );
+                                      }
+                                    )}
+                                  </ul>
+                                </div>
+                              </div>
+                            )}
+                            {productList && (
+                              <div className="col-md-4">
+                                <div className="py-4">
+                                  <h3 className="m-0">Popular Product</h3>
+                                  <Dropdown.Menu
+                                    align="end"
+                                    as={CustomMenu}
+                                    className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0"
+                                  >
+                                    {productList.map((prod) => {
+                                      return (
+                                        <Dropdown.Item
+                                          onClick={() =>
+                                            navigate("/productdetail", {
+                                              state: { product: prod },
+                                            })
+                                          }
+                                        >
+                                          <span className="catItems">
+                                            {prod.name}
+                                          </span>
+                                        </Dropdown.Item>
+                                      );
+                                    })}
+                                  </Dropdown.Menu>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          {categoryM && <div className="col-md-4 pl-0">
-                            <div className="blueBg p-4 h-100">
-                              <h3 className="m-0 text-white">{categoryM?.category?.name}</h3>
-                              <ul>
-                                {categoryM?.subCategories?.map((SubCategory) => {
-                                  return (<div onClick={(e) => SubCategory ? handleProductApi(e, SubCategory?._id) : handleProductApi(e, categories[0].subCategories[0]._id)} className='row h-100'>
-                                    <li>
-                                      <span > {SubCategory?.name} </span>
-                                      <i className="fa fa-caret-right ml-10" aria-hidden="true"></i>
-                                    </li>
-                                  </div>)
-                                })}
-                              </ul>
-                            </div>
-                          </div>}
-                          {productList && <div className="col-md-4">
-                            <div className="py-4">
-                              <h3 className="m-0">Popular Product</h3>
-                              <Dropdown.Menu align="end" as={CustomMenu} className="@dp-dropdown-box show dropdown-menuProduct dropdown-menu @box-shadow p-4 border-0">
-                                {productList.map(prod => {
-                                  return (
-                                    <Dropdown.Item onClick={() => navigate("/productdetail", { state: { product: prod } })}>
-                                      {prod.name}
-                                    </Dropdown.Item>
-                                  )
-                                })}
-                              </Dropdown.Menu>
-                            </div>
-                          </div>}
-                        </div>
-                      </Dropdown.Menu>}
+                        </Dropdown.Menu>
+                      )}
                       {/* </Dropdown.Menu> */}
                     </Dropdown>
                   </div>
@@ -1291,7 +1495,6 @@ function Header() {
                     <NavLink to="/productlist">Shop</NavLink>
                   </li>
                   <li className={`\active${path.blog}`}>
-
                     <NavLink to="/bloglist">Blog</NavLink>
                   </li>
                   {/* <li>
@@ -1313,11 +1516,8 @@ function Header() {
             </div>
           </Row>
         </Container>
-      </article >
-    </header >
+      </article>
+    </header>
   );
 }
 export default Header;
-
-
-
