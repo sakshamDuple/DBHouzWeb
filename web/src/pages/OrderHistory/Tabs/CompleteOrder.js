@@ -2,18 +2,23 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Table } from "react-bootstrap";
 import axios from '../../../API/axios';
 import jwtDecode from "jwt-decode";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Pagination from '../../../container/pagination/pagination';
 
 const limit = 10;
 const CompleteOrder = () => {
-
+    const baseUrl=process.env.REACT_APP_API_HOST;
+    const navigate=useNavigate()
     const [selectOption, setSelectOption] = useState('Asc');
     const [getData, setGetData] = useState([]);
     const [userId, setUserId] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [TotalCount, setTotalCount] = useState(1);
-
+   
+const viewOrderProduct= async(item)=>{
+    console.log(item);
+    navigate(`/orderdetail/${item?._id}`)
+}
     useEffect(() => {
         let accessToken = window.localStorage.getItem("JWT");
         let n = jwtDecode(accessToken);
@@ -84,7 +89,7 @@ const CompleteOrder = () => {
                     </thead>
                     <tbody>
                         {getData?.map((item, index) => {
-                            console.log("item", item)
+                        
                             const { _id, createdAt, order_status, total_price, expectedDeliveryDate,
                                 transactionDetail: { transactionMethod } = {},
                             } = item || {};
@@ -97,7 +102,9 @@ const CompleteOrder = () => {
                             let month = date.toLocaleString('default', { month: 'short' });
                             let day = ("0" + date.getDate()).slice(-2);
                             return (
-                                <tr key={index}>
+                                <tr key={index} onClick={
+                                   ()=> viewOrderProduct(item)
+                                } >
                                     <td>#{_id}</td>
                                     <td>{`${month}  ${day},${year}`}</td>
                                     <td className="delvrd">{order_status}</td>

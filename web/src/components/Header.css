@@ -30,7 +30,6 @@
 
     .db-searchList-main{
         background-color: #ffffff;
-        
         position: relative;
         z-index: 11;
         box-shadow: 0 6px 25px 0 rgb(0 0 0 / 10%)
@@ -49,4 +48,15 @@
     }
     .dp-headerFormSelect option:hover{
         
+    }
+    .catItems:hover{
+        color:#F2672A ;
+    }
+    .catItemsactive{
+        background-color: #F2672A;
+        color:white ;
+    }
+   
+    .subCat:hover{
+        background-color: black;
     }
