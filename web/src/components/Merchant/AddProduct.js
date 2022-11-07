@@ -238,7 +238,7 @@ function AddProduct() {
         createdAt: Date.now(),
       };
       let product = newProductForm
-      let newProduct = await RestMerchant.createProduct({product,brand}, store.getState().jwt);
+      let newProduct = await RestMerchant.createProduct({ product, brand }, store.getState().jwt);
       if (imagesToUpload.length > 0 && newProduct.product) {
         const formData = new FormData();
         formData.append("productId", newProduct.product._id.toString());
@@ -467,7 +467,7 @@ function AddProduct() {
                     </div>
                   </div>
                   <div className="col">
-                    <Form.Label>
+                    {/* <Form.Label>
                       Add Merchant<span className="contact_star">*</span>
                     </Form.Label>
                     <div className="form-group">
@@ -491,7 +491,19 @@ function AddProduct() {
                       {formErrors.productMerchantId && (
                         <p className="text-danger">* {formErrors.productMerchantId}</p>
                       )}
-                    </div>
+                    </div> */}
+                    {merchants &&
+                      (() => {
+                        return merchants.map((x) => {
+                          if (x._id == formData.merchantId) {
+                            return (
+                              <option value={x._id} key={x._id}>
+                                {/* {x.email} */}
+                              </option>
+                            )
+                          }
+                        });
+                      })()}
                   </div>
                 </div>
               </div>

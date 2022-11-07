@@ -193,7 +193,7 @@ function AdminProductList() {
                             <th className="text-center">Variants</th>
                             <th className="text-center">Category</th>
                             <th className="text-center">Sub Category</th>
-                            <th className="text-center">Status</th>
+                            {/* <th className="text-center">Status</th> */}
                             <th className="text-center">Action</th>
                           </tr>
                         </thead>
@@ -259,7 +259,7 @@ function AdminProductList() {
                                   {getSubCategoryName(product.subCategoryId)}
                                 </div>
                               </td>
-                              <td className="status text-center">
+                              {/* <td className="status text-center">
                                 <button
                                   className={
                                     product?.status.toLowerCase() == "active"
@@ -273,7 +273,7 @@ function AdminProductList() {
                                 >
                                   {product.status}
                                 </button>
-                              </td>
+                              </td> */}
                               <td className="actions text-center">
                                 <div className="tbl-actn text-center">
                                   <ul>
@@ -303,8 +303,11 @@ function AdminProductList() {
                                       </div>
                                     </li>
                                     <li className="delete-btn">
-                                      <div className="">
-                                        <a href="/">
+                                      <div className="" onClick={() => {
+                                        console.log(product._id);
+                                        RestAdmin.deleteProduct(product._id);
+                                      }}>
+                                        <a>
                                           <img src={deleteIcon} alt="" height="18" />
                                           <span>
                                             <img src={deleteWhite} alt="" height="18" />

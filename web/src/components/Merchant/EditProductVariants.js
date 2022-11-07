@@ -66,9 +66,8 @@ function MerchantEditProductVariants() {
   const handleSubmit = async (e) => {
     console.log("submit working");
     let newProduct = { ...product };
-    newProduct.variants = [...variants, price];
+    newProduct.variants = [...variants];
     newProduct.variantParameters = { ...params };
-
     console.log(newProduct, price);
     await RestAdmin.updateProduct(newProduct);
     navigate("/merchant/productlist");
@@ -515,7 +514,7 @@ function MerchantEditProductVariants() {
                                       </div>
 
                                       <div className="row">
-                                        <div className="col-12">
+                                        {/* <div className="col-12">
                                           <div className="row mt-3">
                                             <div className="col-12">
                                               <p className="ms-1">Price</p>
@@ -534,7 +533,7 @@ function MerchantEditProductVariants() {
                                               </InputGroup>
                                             </div>
                                           </div>
-                                        </div>
+                                        </div> */}
                                       </div>
                                     </div>
                                   </div>
@@ -968,7 +967,7 @@ function MerchantEditProductVariants() {
                           </div>
                         )}
 
-                        <div className="form-group">
+                        {/* <div className="form-group">
                           <Form.Label className="text-muted px-2 mt-2">Price</Form.Label>
                           <Form.Control
                             type="text"
@@ -978,7 +977,7 @@ function MerchantEditProductVariants() {
                             value={price}
                             placeholder="Price"
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

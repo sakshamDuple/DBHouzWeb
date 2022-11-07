@@ -150,7 +150,7 @@ function CategoryList() {
                                                         <th>Image</th>
                                                         <th>Category</th>
                                                         <th>Date</th>
-                                                        <th>Status</th>
+                                                        {/* <th>Status</th> */}
                                                         <th align="center" width="150">Action</th>
                                                     </tr>
                                                 </thead>
@@ -173,12 +173,12 @@ function CategoryList() {
                                                             </td>
                                                             <td>
                                                                 <div className="SubCat">
-                                                                    {moment(category.createdAt).format("DD MMMM")}
+                                                                    {moment(category.createdAt).format("DD MMMM YYYY")}
                                                                 </div>
                                                             </td>
-                                                            <td className="status">
+                                                            {/* <td className="status">
                                                                 <button className={(category?.status?.toLowerCase() == "active") ? "btnCommon" : "btnDark"} onClick={() => { changeCategoryStatusAction(category) }} disabled={statusUpdating}>{category.status}</button>
-                                                            </td>
+                                                            </td> */}
                                                             <td className="actions">
                                                                 <div className="tbl-actn">
                                                                     <ul>

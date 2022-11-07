@@ -271,6 +271,9 @@ export let RestAdmin = {
       { errorMessage: "Unable to update Product Details!" }
     );
   },
+  async deleteProduct(productId) {
+    return await $delete("/product/deleteOne/" + productId, { errorMessage: "Somthing Went Wrong" });
+  },
   async newProductImages(body) {
     return await postImage("/product/newProductImages", body, {
       errorMessage: "Unable to upload merchant Images",

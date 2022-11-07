@@ -105,7 +105,6 @@ function AdminEditProductVariants() {
     let newProduct = { ...product };
     newProduct.variants = [...variants];
     newProduct.variantParameters = { ...params };
-
     await RestAdmin.updateProduct(newProduct);
     navigate("/admin/productlist");
   };
