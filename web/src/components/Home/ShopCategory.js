@@ -3,10 +3,9 @@ import { Row, Col, Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Rest } from "../../rest";
 function ShopCategory() {
-
-  const navigate = useNavigate()
-  const categories = useSelector(s => s.categories)
-  console.log("jas",categories)
+  const navigate = useNavigate();
+  const categories = useSelector((s) => s.categories);
+  console.log("jas", categories);
 
   return (
     <article className="shopByCategy wrapper py-40">
@@ -14,21 +13,49 @@ function ShopCategory() {
         <div className="container">
           <div className="mainHeading headingCenter pb-30">
             <h2>Shop By Category</h2>
-            <h5>Lorem Ipsum is simply dummy text of the printing and typesetting industry</h5>
+            <h5>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry
+            </h5>
           </div>
         </div>
         <Container>
           <Row>
             {categories?.map((category) => (
               <Col lg={3} md={6}>
-                <div className="categoryItem" style={{ cursor: 'pointer' }}>
+                <div className="categoryItem" style={{ cursor: "pointer" }}>
                   <div className="categoryMedia">
-                    <div className="categoryImg" style={{ backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})` }} onClick={() => { navigate(`/category`, { state: category }) }}>
+                    <div
+                      className="categoryImg"
+                      style={{
+                        backgroundImage: `url(${Rest}/documents/get/${category.category.imageDocumentId})`,
+                      }}
+                      onClick={() => {
+                        navigate(`/category`, { state: category });
+                      }}
+                    >
                       <div className="categoryOverlay"></div>
                     </div>
-                    <span className="categoryBtn" style={{ display: 'flex' }}>
-                      {console.log("category",category.category._id)}
-                      <button className="btnCommon" style={{ width: 'auto' }} onClick={() => { navigate(`/productlist`, { state: category.category._id })}}>Show Products</button>
+                    <span className="categoryBtn" style={{ display: "flex" }}>
+                      {console.log("category", category.category._id)}
+                      <button
+                        className="btnCommon"
+                        style={{ width: "auto" }}
+                        onClick={()=>{
+                          navigate(`/productlist`,{
+                            state:{
+                              category:category
+                            }
+                          })
+                        }}
+                        // onClick={() => {
+                        //   navigate(`/productlist`, {
+                        //     state: category.category._id,
+                        //   });
+                        // }}
+                      >
+                        Show Products
+                      </button>
                     </span>
                   </div>
                   <div className="categoryTitle">
@@ -41,7 +68,6 @@ function ShopCategory() {
         </Container>
       </div>
     </article>
-
   );
 }
 export default ShopCategory;

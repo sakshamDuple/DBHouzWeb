@@ -64,7 +64,6 @@ function AdminAddProduct() {
 
   const [imagesToUpload, setImagesToUpload] = useState([]);
   const uploadImages = (e) => {
-    console.log("jagvir images",e.target.files)
     let arr = [];
     for (let file of e.target.files) {
       arr.push({
@@ -74,7 +73,7 @@ function AdminAddProduct() {
     }
     setImagesToUpload(arr);
   };
-  console.log("jagvir image",imagesToUpload)
+
   const [pageLoading, setPageLoading] = useState(true);
   const [formData, setFormData] = useState((x) => {
     return _.cloneDeep(initialFormData);
