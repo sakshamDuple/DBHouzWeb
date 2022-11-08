@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -11,26 +17,29 @@ import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
 import axios from "../API/axios";
-import Pagination from '../container/pagination/pagination';
-import { strictValidArray, strictValidArrayWithLength } from "../utils/commonutils";
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
-import Stack from '@mui/material/Stack';
-import Rating from '@mui/material/Rating';
-import { makeStyles } from '@mui/styles';
+import Pagination from "../container/pagination/pagination";
+import {
+  strictValidArray,
+  strictValidArrayWithLength,
+} from "../utils/commonutils";
+import Typography from "@material-ui/core/Typography";
+import Slider from "@material-ui/core/Slider";
+import Stack from "@mui/material/Stack";
+import Rating from "@mui/material/Rating";
+import { makeStyles } from "@mui/styles";
 import { filter } from "lodash";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import jwtDecode from "jwt-decode";
 const initialFilter = {
-  catagoery: '',
+  catagoery: "",
   sub_catagoery: [],
-  color: []
-}
+  color: [],
+};
 
 const useStyles = makeStyles({
   root: {
-    alignSelf: "center"
+    alignSelf: "center",
   },
 });
 
@@ -52,17 +61,42 @@ function ProductList() {
   const [color, setColors] = useState([]);
   const [maxPrice, setMaxPrice] = useState();
   const [token, setToken] = useState(null);
-  useEffect(() => { window.scrollTo(0, 0) }, [])
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const currentCat = location?.state?.category;
 
+  useEffect(() => {
+    if (currentCat) {
+      setSearchParams({
+        categoryId: currentCat.category._id,
+      });
+      console.log(currentCat.category._id);
+      setCategory(currentCat);
+      setFilters((prev) => {
+        return { ...prev, catagoery: currentCat.category._id };
+      });
+    }
+  }, []);
+  const callback = (cat) => {
+    setSearchParams({
+      categoryId: cat.category._id,
+    });
+
+    setCategory(cat);
+    setFilters((prev) => {
+      return { ...prev, catagoery: cat.category._id };
+    });
+  };
   const onClickCategeory = (cat) => {
     setSearchParams({
       categoryId: cat.category._id,
-    })
+    });
     setCategory(cat);
     setFilters((prev) => {
-      return { ...prev, catagoery: cat.category._id }
+      return { ...prev, catagoery: cat.category._id };
     });
-  }
+  };
 
   const onClickRestFilter = (e) => {
     e.preventDefault();
@@ -73,19 +107,23 @@ function ProductList() {
     for (let x of color) {
       handleColors(x);
     }
-    return setPriceValue([0, 1000])
+    return setPriceValue([0, 1000]);
     // setFilters((prev) => {
     //   return { ...prev, sub_catagoery: [], color: [] }
     // });
-  }
+  };
 
   useEffect(() => {
-    if (!strictValidArrayWithLength(categories)) return
-    const selectedCategory = searchParams.get('categoryId')
+    if (!strictValidArrayWithLength(categories)) return;
+    const selectedCategory = searchParams.get("categoryId");
     let currentCategory;
+    if (currentCat) {
+      currentCategory = currentCat;
+      return currentCategory && setCategory(currentCategory);
+    }
     if (selectedCategory) {
       currentCategory = categories.find((i) => {
-        return i.category._id == selectedCategory
+        return i.category._id == selectedCategory;
       });
       return currentCategory && setCategory(currentCategory);
     } else {
@@ -101,16 +139,20 @@ function ProductList() {
   }, [filters, currentPage, priceValue, limitOption, selectOption]);
 
   useEffect(() => {
-    const selectedCategory = searchParams.get('categoryId');
-    const sub_cat = searchParams.get('subCategoryId');
+    const selectedCategory = searchParams.get("categoryId");
+    const sub_cat = searchParams.get("subCategoryId");
     setLoading(true);
     if (sub_cat) {
       return setFilters((prev) => {
-        return { ...prev, catagoery: selectedCategory, sub_catagoery: [sub_cat] }
+        return {
+          ...prev,
+          catagoery: selectedCategory,
+          sub_catagoery: [sub_cat],
+        };
       });
     } else {
       return setFilters((prev) => {
-        return { ...prev, catagoery: selectedCategory }
+        return { ...prev, catagoery: selectedCategory };
       });
     }
   }, [searchParams]);
@@ -122,46 +164,59 @@ function ProductList() {
       const { user: { _id } = {} } = n || {};
       setToken(_id);
     }
-  }, [])
+  }, []);
 
   const OnClickWhislist = async (product) => {
-    console.log("jagvir singh product ",product)
+    console.log("jagvir singh product ", product);
     if (token !== null) {
       let data = {
-        "userId": token,
-        "cart": [],
-        "wishList": [product]
-      }
+        userId: token,
+        cart: [],
+        wishList: [product],
+      };
       try {
-        const res = await axios.put(`/user/updateCartAndWishlist`, data)
-        console.log("res", res)
-        return (toast.success('Added To Your Whislist', { autoClose: 1000 }));
+        const res = await axios.put(`/user/updateCartAndWishlist`, data);
+        console.log("res", res);
+        return toast.success("Added To Your Whislist", { autoClose: 1000 });
       } catch (error) {
         console.log("error", error);
-        return toast.error('Please Try Again', { autoClose: 1000 })
+        return toast.error("Please Try Again", { autoClose: 1000 });
       }
+    } else {
+      return toast("Please Login/Register", { autoClose: 1000 });
     }
-    else {
-      return toast('Please Login/Register', { autoClose: 1000 })
-    }
-  }
+  };
 
   const handleGetProduct = async () => {
     try {
       if (filters.catagoery !== undefined) {
-        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
-        const { data: { data, Total, get_Colors_MaxPrice: { colors = [], maxPrice = [] } = {} } = {} } = res || {};
+        const res = await axios.get(
+          `/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=${filters.color}&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`
+        );
+        const {
+          data: {
+            data,
+            Total,
+            get_Colors_MaxPrice: { colors = [], maxPrice = [] } = {},
+          } = {},
+        } = res || {};
         setProducts(strictValidArray(data) ? data : []);
         setTotalCount(Total);
-        if (strictValidArrayWithLength(colors)) { setColors(strictValidArray(colors) ? colors : []) }
-        if (strictValidArrayWithLength(maxPrice)) { setMaxPrice(strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000) }
+        if (strictValidArrayWithLength(colors)) {
+          setColors(strictValidArray(colors) ? colors : []);
+        }
+        if (strictValidArrayWithLength(maxPrice)) {
+          setMaxPrice(
+            strictValidArrayWithLength(maxPrice) ? maxPrice[0] : 1000
+          );
+        }
         setLoading(false);
       }
     } catch (error) {
       console.log("error", error);
       setLoading(false);
     }
-  }
+  };
 
   const productDetails = (product) => {
     navigate("/productdetail", { state: { product } });
@@ -170,24 +225,28 @@ function ProductList() {
   const handleSubCategory = (id) => {
     setFilters((prev) => {
       const { sub_catagoery } = prev;
-      const selected = sub_catagoery.some(_id => _id === id) ? sub_catagoery.filter(_id => _id !== id) : [...sub_catagoery, id];
+      const selected = sub_catagoery.some((_id) => _id === id)
+        ? sub_catagoery.filter((_id) => _id !== id)
+        : [...sub_catagoery, id];
       return {
         ...prev,
         sub_catagoery: selected,
       };
     });
-  }
+  };
 
   const handleColors = (id) => {
     setFilters((prev) => {
       const { color } = prev;
-      const selected = color.some(_id => _id === id) ? color.filter(_id => _id !== id) : [...color, id];
+      const selected = color.some((_id) => _id === id)
+        ? color.filter((_id) => _id !== id)
+        : [...color, id];
       return {
         ...prev,
         color: selected,
       };
     });
-  }
+  };
   const rangeSelector = (event, newValue) => {
     setPriceValue(newValue);
   };
@@ -195,7 +254,7 @@ function ProductList() {
   const classes = useStyles();
   return (
     <section className="wrapper">
-      <Header />
+      <Header callback={callback} />
       <article className="categoryInrBlk hdrBrNone wrapper">
         {/* <div className="greyBg2 py-4 mb-5"> */}
         <div className="container">
@@ -231,20 +290,24 @@ function ProductList() {
         <div className="container">
           <div className="NavCatInr category-NavCatInr categoryNavBox bg-none">
             <ul className="row no-gutters justify-content-center">
-              {strictValidArrayWithLength(categories) && categories.map((cat, index) => (
-                <li key={index} className="col-md-2 mb-1" >
-                  <div
-                    style={{
-                      color: "#FFFFFF",
-                      cursor: "pointer",
-                      background: cat.category === category?.category ? "#F2672A" : "#232F3E",
-                    }}
-                    onClick={() => onClickCategeory(cat)}
-                  >
-                    {cat.category.name}
-                  </div>
-                </li>
-              ))}
+              {strictValidArrayWithLength(categories) &&
+                categories.map((cat, index) => (
+                  <li key={index} className="col-md-2 mb-1">
+                    <div
+                      style={{
+                        color: "#FFFFFF",
+                        cursor: "pointer",
+                        background:
+                          cat?.category?._id === category?.category?._id
+                            ? "#F2672A"
+                            : "#232F3E",
+                      }}
+                      onClick={() => onClickCategeory(cat)}
+                    >
+                      {cat.category.name}
+                    </div>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
@@ -260,9 +323,17 @@ function ProductList() {
                     <div className="col-auto">
                       <div className="sortByCol">
                         <div className="form-group">
-                          <select selected name="option" className="wide"
-                            onChange={(e) => { setLimitOption(e.target.value) }} >
-                            <option value="none" selected disabled hidden>Limit</option>
+                          <select
+                            selected
+                            name="option"
+                            className="wide"
+                            onChange={(e) => {
+                              setLimitOption(e.target.value);
+                            }}
+                          >
+                            <option value="none" selected disabled hidden>
+                              Limit
+                            </option>
                             <option value={10}>10</option>
                             <option value={20}>20</option>
                           </select>
@@ -277,9 +348,17 @@ function ProductList() {
                     <div className="col-auto">
                       <div className="sortByCol">
                         <div className="form-group">
-                          <select selected name="option" className="wide"
-                            onChange={(e) => { setSelectOption(e.target.value) }} >
-                            <option value="none" selected disabled hidden>Featured</option>
+                          <select
+                            selected
+                            name="option"
+                            className="wide"
+                            onChange={(e) => {
+                              setSelectOption(e.target.value);
+                            }}
+                          >
+                            <option value="none" selected disabled hidden>
+                              Featured
+                            </option>
                             <option value="Asc">Asc</option>
                             <option value="Desc">Desc</option>
                           </select>
@@ -350,26 +429,46 @@ function ProductList() {
                             <div className="filtrList mb-2">
                               <form className="formStyle">
                                 <ul>
-                                  {category && category.subCategories && category?.subCategories.map((subcategory, key) => {
-                                    return (
-                                      <li index={key}>
-                                        <div className="form-check d-flex align-items-center">
-                                          <input
-                                            type="checkbox"
-                                            className="form-check-input"
-                                            checked={strictValidArray(filters && filters.sub_catagoery) && filters.sub_catagoery.some(e => e === subcategory._id)}
-                                            onChange={() => handleSubCategory(subcategory._id)}
-                                          />
-                                          <label
-                                            className="form-check-label"
-                                            onClick={() => handleSubCategory(subcategory._id)}
-                                          >
-                                            {subcategory.name}
-                                          </label>
-                                        </div>
-                                      </li>
-                                    );
-                                  })}
+                                  {category &&
+                                    category.subCategories &&
+                                    category?.subCategories.map(
+                                      (subcategory, key) => {
+                                        return (
+                                          <li index={key}>
+                                            <div className="form-check d-flex align-items-center">
+                                              <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                checked={
+                                                  strictValidArray(
+                                                    filters &&
+                                                      filters.sub_catagoery
+                                                  ) &&
+                                                  filters.sub_catagoery.some(
+                                                    (e) => e === subcategory._id
+                                                  )
+                                                }
+                                                onChange={() =>
+                                                  handleSubCategory(
+                                                    subcategory._id
+                                                  )
+                                                }
+                                              />
+                                              <label
+                                                className="form-check-label"
+                                                onClick={() =>
+                                                  handleSubCategory(
+                                                    subcategory._id
+                                                  )
+                                                }
+                                              >
+                                                {subcategory.name}
+                                              </label>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
+                                    )}
                                 </ul>
                               </form>
                             </div>
@@ -389,21 +488,30 @@ function ProductList() {
                                             type="checkbox"
                                             className="form-check-input"
                                             value={item._id}
-                                            checked={strictValidArray(filters && filters.color) && filters.color.some(e => e === item._id)}
-                                            onChange={() => { handleColors(item._id) }}
+                                            checked={
+                                              strictValidArray(
+                                                filters && filters.color
+                                              ) &&
+                                              filters.color.some(
+                                                (e) => e === item._id
+                                              )
+                                            }
+                                            onChange={() => {
+                                              handleColors(item._id);
+                                            }}
                                           />
                                           <label
                                             className="form-check-label"
-                                            onChange={() => { handleColors(item._id) }}
+                                            onChange={() => {
+                                              handleColors(item._id);
+                                            }}
                                           >
                                             {item.name}
                                           </label>
                                         </div>
-
                                       </li>
                                     );
-                                  })
-                                  }
+                                  })}
                                   {/* <li key={index}>
                                         <div className="form-check d-flex align-items-center">
                                           <input
@@ -567,19 +675,19 @@ function ProductList() {
                             </div>
                           </Accordion.Body>*/}
                         </Accordion.Item>
-
                       </Accordion>
                     </div>
                   </div>
                   <div>
                     <button
                       style={{
-
                         color: "#FFFFFF",
                         cursor: "pointer",
                         background: "#232F3E",
                       }}
-                      onClick={(e) => { onClickRestFilter(e) }}
+                      onClick={(e) => {
+                        onClickRestFilter(e);
+                      }}
                     >
                       Reset Filter
                     </button>
@@ -659,7 +767,12 @@ function ProductList() {
                               </div>
                               <div className="prdctHovrCard">
                                 <div className="heartWhislist">
-                                  <span className="prdctListWishListIcon" onClick={() => { OnClickWhislist(product) }}>
+                                  <span
+                                    className="prdctListWishListIcon"
+                                    onClick={() => {
+                                      OnClickWhislist(product);
+                                    }}
+                                  >
                                     <img src="/img/wishListIconDark.svg" />
                                   </span>
                                 </div>
@@ -697,7 +810,13 @@ function ProductList() {
                               <div>
                                 <Stack spacing={1}>
                                   {/* <Rating className={classes.root} name="read-only" value={3.5} readOnly /> */}
-                                  <Rating className={classes.root} name="half-rating-read" defaultValue={product.rating} precision={0.5} readOnly />
+                                  <Rating
+                                    className={classes.root}
+                                    name="half-rating-read"
+                                    defaultValue={product.rating}
+                                    precision={0.5}
+                                    readOnly
+                                  />
                                 </Stack>
                                 {/* <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
@@ -708,12 +827,19 @@ function ProductList() {
                               </div>
                               <div className="prdctListInfo">
                                 <p
-                                  dangerouslySetInnerHTML={{ __html: product.description.slice(0, 100) + "..." }}
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      product.description.slice(0, 100) + "...",
+                                  }}
                                 ></p>
                               </div>
                               <div className="prodctListPrice d-flex justify-content-center">
-                                <div className="price">£{product.variants[0].price}</div>
-                                <div className="oferPrice">${product.variants[0].price + 20}</div>
+                                <div className="price">
+                                  £{product.variants[0].price}
+                                </div>
+                                <div className="oferPrice">
+                                  ${product.variants[0].price + 20}
+                                </div>
                                 {/* <div className="discntPrice">(£100.43 Inc VAT)</div> */}
                               </div>
                             </div>
@@ -727,7 +853,7 @@ function ProductList() {
                       currentPage={currentPage}
                       totalCount={TotalCount}
                       pageSize={limitOption}
-                      onPageChange={page => setCurrentPage(page)}
+                      onPageChange={(page) => setCurrentPage(page)}
                     />
                     {/* <ul className="pagination">
                       <li className="page-item">

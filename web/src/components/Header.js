@@ -27,7 +27,7 @@ import NestedDropdown, {
   CustomToggle2,
 } from "./NestedDropdown";
 import NestedDropdown2 from "./NestedDropdown2";
-function Header() {
+function Header({ callback }) {
   const [path, setPath] = useState({
     home: "no",
     about: "no",
@@ -219,8 +219,28 @@ function Header() {
     handleSelectOption();
   }, [searchEngine, selectOption]);
 
+  // const handleSelectOption = async (e) => {
+  //   // e.preventDefault();
+  //   console.log("selectOption", selectOption);
+  //   console.log("searchEngine", searchEngine);
+  //   if (selectOption !== "") {
+  //     let data = {
+  //       categoryId: selectOption,
+  //       searchVal: searchEngine,
+  //     };
+  //     try {
+  //       let res = await axios.post(`/product/category/search`, data);
+  //       console.log("res", res.data.fetches);
+  //       setSearchData(res.data.fetches);
+  //     } catch (error) {
+  //       console.log("error", error);
+  //     }
+  //   }
+  // };
+
   const handleSelectOption = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
+
     console.log("selectOption", selectOption);
     console.log("searchEngine", searchEngine);
     if (selectOption !== "") {
@@ -230,13 +250,51 @@ function Header() {
       };
       try {
         let res = await axios.post(`/product/category/search`, data);
+
         console.log("res", res.data.fetches);
         setSearchData(res.data.fetches);
+        const cat = categories?.find(
+          (cata) => cata.category._id == selectOption
+        );
+        console.log(cat);
+        if (callback) {
+          callback(cat);
+        }
+
+        navigate(`/productlist`, {
+          state: {
+            category: cat,
+          },
+        });
       } catch (error) {
         console.log("error", error);
       }
+    } else {
+      navigate(`/productlist`);
     }
   };
+  const searchChange=async(e)=>{
+    setSearchEngine(e.target.value)
+
+    if (selectOption !== "") {
+      let data = {
+        categoryId: selectOption,
+        searchVal: searchEngine,
+      };
+      try {
+        let res = await axios.post(`/product/category/search`, data);
+        setSearchData(res.data.fetches);
+      } catch (error) {
+        
+      }
+
+    }else{
+      alert("choose any category")
+    }
+   
+  
+  }
+
   function handledropdown(categoryId) {
     console.log("categoryId", categoryId);
     RestClient.getCategoryDropdown(categoryId)
@@ -1026,7 +1084,8 @@ function Header() {
                           type="text"
                           value={searchEngine}
                           className="form-control"
-                          onChange={(e) => setSearchEngine(e.target.value)}
+                          // onChange={(e) => setSearchEngine(e.target.value)}
+                          onChange={searchChange}
                         />
                         <div className="db-searchList-main">
                           {searchData[0]?.products?.map((product) => {
@@ -1378,13 +1437,13 @@ function Header() {
                                         <li
                                           key={category?._id}
                                           className={
-                                            categoryM.category._id == category.category._id
+                                            categoryM.category._id ==
+                                            category.category._id
                                               ? "catItemsactive"
                                               : "catItems"
                                           }
                                           onClick={() => {
                                             setCategoryM(category);
-                                         
                                           }}
                                         >
                                           <span>
