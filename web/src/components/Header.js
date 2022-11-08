@@ -379,6 +379,7 @@ function Header() {
                       >
                         <div className="userContnt ">
                           <div className="">
+                            {console.log(user)}
                             <p className="m-0">Welcome</p>
                             {Boolean(user?.user?.firstName) && (
                               <h5>{user?.user?.firstName}</h5>
