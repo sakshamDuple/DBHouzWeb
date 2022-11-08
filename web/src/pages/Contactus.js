@@ -42,7 +42,6 @@ function Contactus() {
       return;
     }
     values.phone = parseInt(value);
-    console.log('Values ===>>>',values);
     RestUser.contactUs(values)
       .then((res) => {
         if (!res) {

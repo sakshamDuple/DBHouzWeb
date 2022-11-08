@@ -122,7 +122,6 @@ export let RestUser = {
     );
   },
   async contactUs(data) {
-    console.log('Data ======>>>', data)
     return await post(`/auth/contactUs`, data, "Something Wrong",
     );
   },
