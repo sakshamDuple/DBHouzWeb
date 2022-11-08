@@ -55,7 +55,7 @@ function OrderDetail() {
     if (!user) {
       return alert("please login");
     }
-    if (description == "" || description == undefined) {
+    if (description === "" || description === undefined) {
       return setError("This field is required");
     }
     setError("");
@@ -77,11 +77,11 @@ function OrderDetail() {
   };
   const getOrderProducts = async () => {
     try {
-      const { data } = await axios.get(
+      const data = await axios.get(
         `${baseUrl}/order/getProductByOrderId/${orderId}/${1}/${1}`
       );
-      setOrderProduct(data.result);
-      setReviewProId(data.result[0]._id);
+      setOrderProduct(data.data.result);
+      setReviewProId(data.data.result[0]?._id);
     } catch (error) {
       console.log(error);
       alert("somthing wrong")
@@ -160,7 +160,7 @@ function OrderDetail() {
     const subCat = cat[0].subCategories.filter(
       (subCategory) => subCategory._id === subId
     );
-     return { cat: cat[0].category.name, subCat: subCat[0].name };
+    return { cat: cat[0].category.name, subCat: subCat[0].name };
   };
 
   const handleRatingClick = (value) => {
@@ -173,7 +173,6 @@ function OrderDetail() {
   const handleMouseLeave = () => {
     sethoverRatingValue(undefined);
   };
-  console.log(state);
 
   //   const product = products.products.product;
   // const product = state.product;
@@ -234,11 +233,11 @@ function OrderDetail() {
     else return "0 x 0 x 0 inches";
   };
 
-  async function filterPeopleAlsoSearcherFor() {
-    let products = await RestClient.getProductsByCategoryId(product.categoryId);
-    products = products.data.filter((s) => s._id !== product._id);
-    setPeopleAlsoSearcherFor(products);
-  }
+  // async function filterPeopleAlsoSearcherFor() {
+  //   let products = await RestClient.getProductsByCategoryId(product.categoryId);
+  //   products = products.data.filter((s) => s._id !== product._id);
+  //   setPeopleAlsoSearcherFor(products);
+  // }
 
   // useEffect(async () => {
   //   filterPeopleAlsoSearcherFor();
@@ -331,7 +330,7 @@ function OrderDetail() {
                         <div>
                           <span className="siSubtitle">Dimension : </span>
                           <span className="siFeatures">
-                            {" "} 
+                            {" "}
                             {getDimension(product.variants[selectedVariant])}
                           </span>
                         </div>
@@ -379,15 +378,14 @@ function OrderDetail() {
 
                         <div className="siDetailTexts">
                           <span className="siPrice">
-                            {`£ ${
-                              product.variants[selectedVariant]
-                                ? (
-                                    (product.variants[selectedVariant].price *
-                                      82) /
-                                    100
-                                  ).toFixed(2)
-                                : 0
-                            }`}{" "}
+                            {`£ ${product.variants[selectedVariant]
+                              ? (
+                                (product.variants[selectedVariant].price *
+                                  82) /
+                                100
+                              ).toFixed(2)
+                              : 0
+                              }`}{" "}
                             <sub>
                               + £
                               {(
@@ -412,8 +410,6 @@ function OrderDetail() {
                     </div>
                   );
                 })}
-
-               
               </div>
             </div>
           </div>

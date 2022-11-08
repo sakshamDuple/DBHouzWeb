@@ -66,6 +66,7 @@ function AddProduct() {
     price: "",
     color: "",
   };
+  const [brand, setBrand] = useState("")
 
   const initialFormData = {
     name: "",
@@ -97,7 +98,11 @@ function AddProduct() {
 
       setFormData((_formData) => {
         if (val == "" || !val)
-          return { ..._.cloneDeep(_formData), categoryId: val, subCategoryId: "" };
+          return {
+            ..._.cloneDeep(_formData),
+            categoryId: val,
+            subCategoryId: "",
+          };
         return { ..._.cloneDeep(_formData), categoryId: val };
       });
     });
@@ -108,7 +113,10 @@ function AddProduct() {
     $(selectRef2.current).niceSelect();
     $(selectRef2.current).on("change", (e) => {
       let val = $(selectRef2.current).val();
-      setFormData((_formData) => ({ ..._.cloneDeep(_formData), subCategoryId: val }));
+      setFormData((_formData) => ({
+        ..._.cloneDeep(_formData),
+        subCategoryId: val,
+      }));
     });
   }, []);
 
@@ -157,7 +165,8 @@ function AddProduct() {
 
   const handleVariantsChange = ({ nativeEvent }, index) => {
     let _formData = _.cloneDeep(formData);
-    _formData.variants[index][nativeEvent.target.name] = nativeEvent.target.value;
+    _formData.variants[index][nativeEvent.target.name] =
+      nativeEvent.target.value;
     setFormData(_formData);
   };
 
@@ -173,8 +182,15 @@ function AddProduct() {
   const handleSubmit = async (e) => {
     setDisabled(true);
     let _formData = _.cloneDeep(formData);
-    let { name, brandId, merchantId, categoryId, subCategoryId, description, variants } =
-      formData;
+    let {
+      name,
+      brandId,
+      merchantId,
+      categoryId,
+      subCategoryId,
+      description,
+      variants,
+    } = formData;
     let isError = false;
     let formErrors = {
       productName: false,
@@ -187,10 +203,10 @@ function AddProduct() {
       formErrors.productName = `Please enter a valid Name`;
       isError = true;
     }
-    if (!brandId || !brandId.length) {
-      formErrors.productBrandName = `Please select a Brand`;
-      isError = true;
-    }
+    // if (!brandId || !brandId.length) {
+    //   formErrors.productBrandName = `Please select a Brand`;
+    //   isError = true;
+    // }
     if (!merchantId || !merchantId.length) {
       formErrors.productMerchantId = `Please select a Merchant`;
       isError = true;
@@ -233,8 +249,11 @@ function AddProduct() {
         createdAt: Date.now(),
       };
 
-      let product = newProductForm
-      let newProduct = await RestMerchant.createProduct({product,brand}, store.getState().jwt);
+      let product = newProductForm;
+      let newProduct = await RestMerchant.createProduct(
+        { product, brand:brand },
+        store.getState().jwt
+      );
       if (imagesToUpload.length > 0 && newProduct.product) {
         const formData = new FormData();
         formData.append("productId", newProduct.product._id.toString());
@@ -271,9 +290,11 @@ function AddProduct() {
   useEffect(() => {
     setSubCategories(undefined);
     if (!formData.categoryId || formData.categoryId === "") return () => {};
-    RestAdmin.getAllSubCategoriesById(formData.categoryId).then((subCategories) => {
-      setSubCategories(subCategories);
-    });
+    RestAdmin.getAllSubCategoriesById(formData.categoryId).then(
+      (subCategories) => {
+        setSubCategories(subCategories);
+      }
+    );
   }, [formData.categoryId]);
 
   let loadData = () => {
@@ -307,13 +328,20 @@ function AddProduct() {
       let val = $(selectCategoryRef.current).val();
       setFormData((_formData) => {
         if (val == "" || !val)
-          return { ..._.cloneDeep(_formData), categoryId: val, subCategoryId: "" };
+          return {
+            ..._.cloneDeep(_formData),
+            categoryId: val,
+            subCategoryId: "",
+          };
         return { ..._.cloneDeep(_formData), categoryId: val };
       });
     });
     $(selectSubCategoryRef.current).on("change", (e) => {
       let val = $(selectSubCategoryRef.current).val();
-      setFormData((_formData) => ({ ..._.cloneDeep(_formData), subCategoryId: val }));
+      setFormData((_formData) => ({
+        ..._.cloneDeep(_formData),
+        subCategoryId: val,
+      }));
     });
     $(selectBrandRef.current).on("change", (e) => {
       let val = $(selectBrandRef.current).val();
@@ -321,7 +349,10 @@ function AddProduct() {
     });
     $(selectMerchantRef.current).on("change", (e) => {
       let val = $(selectMerchantRef.current).val();
-      setFormData((_formData) => ({ ..._.cloneDeep(_formData), merchantId: val }));
+      setFormData((_formData) => ({
+        ..._.cloneDeep(_formData),
+        merchantId: val,
+      }));
     });
   }, [pageLoading]);
 
@@ -362,7 +393,14 @@ function AddProduct() {
                   </div>
                   <div className="col">
                     <Form.Label>Enter Brand Name</Form.Label>
-                    <select
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Brand Name"
+                      name="brand"
+                      value={formData.brand}
+                      onChange={(e)=>setBrand(e.target.value)}
+                    />
+                    {/* <select
                       ref={selectBrandRef}
                       className="wide"
                       disabled={!brands}
@@ -378,9 +416,11 @@ function AddProduct() {
                             </option>
                           ));
                         })()}
-                    </select>
+                    </select> */}
                     {formErrors.productBrandName && (
-                      <p className="text-danger">* {formErrors.productBrandName}</p>
+                      <p className="text-danger">
+                        * {formErrors.productBrandName}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -410,7 +450,9 @@ function AddProduct() {
                           })()}
                       </select>
                       {formErrors.productCategory && (
-                        <p className="text-danger">* {formErrors.productCategory}</p>
+                        <p className="text-danger">
+                          * {formErrors.productCategory}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -430,7 +472,9 @@ function AddProduct() {
                         {subCategories &&
                           (() => {
                             window.setTimeout(() => {
-                              $(selectSubCategoryRef.current).niceSelect("update");
+                              $(selectSubCategoryRef.current).niceSelect(
+                                "update"
+                              );
                             }, 0);
                             return subCategories.map((sc) => (
                               <option value={sc._id} key={sc._id}>
@@ -440,12 +484,14 @@ function AddProduct() {
                           })()}
                       </select>
                       {formErrors.productSubCategory && (
-                        <p className="text-danger">* {formErrors.productSubCategory}</p>
+                        <p className="text-danger">
+                          * {formErrors.productSubCategory}
+                        </p>
                       )}
                     </div>
                   </div>
                   <div className="col">
-                    <Form.Label>
+                    {/* <Form.Label>
                       Add Merchant<span className="contact_star">*</span>
                     </Form.Label>
                     <div className="form-group">
@@ -469,13 +515,26 @@ function AddProduct() {
                       {formErrors.productMerchantId && (
                         <p className="text-danger">* {formErrors.productMerchantId}</p>
                       )}
-                    </div>
+                    </div> */}
+                    {merchants &&
+                      (() => {
+                        return merchants.map((x) => {
+                          if (x._id == formData.merchantId) {
+                            return (
+                              <option value={x._id} key={x._id}>
+                                {/* {x.email} */}
+                              </option>
+                            );
+                          }
+                        });
+                      })()}
                   </div>
                 </div>
               </div>
               <div className=" mb-15">
                 <label className="form-label" htmlFor="input5">
-                  Product Description <span className="contact__form--label__star">*</span>
+                  Product Description{" "}
+                  <span className="contact__form--label__star">*</span>
                 </label>
                 <div className="ckEditor">
                   <CKEditor
@@ -489,7 +548,9 @@ function AddProduct() {
                     }}
                   />
                   {formErrors.productDescription && (
-                    <p className="text-danger">* {formErrors.productDescription}</p>
+                    <p className="text-danger">
+                      * {formErrors.productDescription}
+                    </p>
                   )}
                 </div>
               </div>
@@ -512,7 +573,12 @@ function AddProduct() {
                         <img src={upload} alt="" height="50" />
                       )}
                       {imagesToUpload.map((i) => (
-                        <img src={i.imageUrl} style={{ margin: 10 }} alt="" height="100" />
+                        <img
+                          src={i.imageUrl}
+                          style={{ margin: 10 }}
+                          alt=""
+                          height="100"
+                        />
                       ))}
                     </div>
                     <div className="uploadFileCnt">
@@ -525,7 +591,11 @@ function AddProduct() {
             </div>
           </div>
           <div className="">
-            <button className="btnCommon  mt-3 " type="button" onClick={handleSubmit}>
+            <button
+              className="btnCommon  mt-3 "
+              type="button"
+              onClick={handleSubmit}
+            >
               Add Product
             </button>
           </div>

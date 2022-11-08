@@ -298,6 +298,9 @@ export let RestAdmin = {
       { errorMessage: "Unable to update Product Details!" }
     );
   },
+  async deleteProduct(productId) {
+    return await $delete("/product/deleteOne/" + productId, { errorMessage: "Somthing Went Wrong" });
+  },
   async newProductImages(body) {
     return await postImage("/product/newProductImages", body, {
       errorMessage: "Unable to upload merchant Images",
@@ -364,7 +367,7 @@ export let RestAdmin = {
     );
   },
   async deleteContact(id) {
-    return await $delete("/auth/contactUsDel/"+ id, { errorMessage: "" });
+    return await $delete("/auth/contactUsDel/" + id, { errorMessage: "" });
   },
 };
 

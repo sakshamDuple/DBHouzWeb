@@ -42,7 +42,6 @@ function Contactus() {
       return;
     }
     values.phone = parseInt(value);
-    console.log(values);
     RestUser.contactUs(values)
       .then((res) => {
         if (!res) {
@@ -61,7 +60,7 @@ function Contactus() {
     try {
       const { data } = await axios.get(`https://ipapi.co/json`);
       setCurrentLocation(data);
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     getCurentLocation();
@@ -314,8 +313,8 @@ function Contactus() {
                       message: "",
                     }}
                     validationSchema={contactSchema}
-                    onSubmit={(value) => {
-                      handleContact(value);
+                    onSubmit={(value) => { 
+                      handleContact(value)
                     }}
                   >
                     {(formik) => {
