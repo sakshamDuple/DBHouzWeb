@@ -27,7 +27,7 @@ import NestedDropdown, {
   CustomToggle2,
 } from "./NestedDropdown";
 import NestedDropdown2 from "./NestedDropdown2";
-function Header() {
+function Header({ callback }) {
   const [path, setPath] = useState({
     home: "no",
     about: "no",
@@ -219,8 +219,28 @@ function Header() {
     handleSelectOption();
   }, [searchEngine, selectOption]);
 
+  // const handleSelectOption = async (e) => {
+  //   // e.preventDefault();
+  //   console.log("selectOption", selectOption);
+  //   console.log("searchEngine", searchEngine);
+  //   if (selectOption !== "") {
+  //     let data = {
+  //       categoryId: selectOption,
+  //       searchVal: searchEngine,
+  //     };
+  //     try {
+  //       let res = await axios.post(`/product/category/search`, data);
+  //       console.log("res", res.data.fetches);
+  //       setSearchData(res.data.fetches);
+  //     } catch (error) {
+  //       console.log("error", error);
+  //     }
+  //   }
+  // };
+
   const handleSelectOption = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
+
     console.log("selectOption", selectOption);
     console.log("searchEngine", searchEngine);
     if (selectOption !== "") {
@@ -230,13 +250,51 @@ function Header() {
       };
       try {
         let res = await axios.post(`/product/category/search`, data);
+
         console.log("res", res.data.fetches);
         setSearchData(res.data.fetches);
+        const cat = categories?.find(
+          (cata) => cata.category._id == selectOption
+        );
+        console.log(cat);
+        if (callback) {
+          callback(cat);
+        }
+
+        navigate(`/productlist`, {
+          state: {
+            category: cat,
+          },
+        });
       } catch (error) {
         console.log("error", error);
       }
+    } else {
+      navigate(`/productlist`);
     }
   };
+  const searchChange=async(e)=>{
+    setSearchEngine(e.target.value)
+
+    if (selectOption !== "") {
+      let data = {
+        categoryId: selectOption,
+        searchVal: searchEngine,
+      };
+      try {
+        let res = await axios.post(`/product/category/search`, data);
+        setSearchData(res.data.fetches);
+      } catch (error) {
+        
+      }
+
+    }else{
+      alert("choose any category")
+    }
+   
+  
+  }
+
   function handledropdown(categoryId) {
     console.log("categoryId", categoryId);
     RestClient.getCategoryDropdown(categoryId)
@@ -370,45 +428,58 @@ function Header() {
             </Col>
             <Col className="col-md-auto">
               <div className="tpBarRightCol d-flex">
-                {user.jwt && user.type != "admin" ? (
+              {user.jwt ? (
                   <div className="userContnt-name" style={{ width: "200px" }}>
                     <Dropdown className="header-fix">
-                      <Dropdown.Toggle
-                        className="notificatnCol w-100 p-0 border-0"
-                        id="dropdown-basic"
-                      >
+                      <Dropdown.Toggle className="notificatnCol w-100 p-0 border-0" id="dropdown-basic">
                         <div className="userContnt ">
                           <div className="">
-                            {console.log(user)}
-                            <p className="m-0">Welcome</p>
+                            <span className="m-0">Welcome</span>{" "}
                             {Boolean(user?.user?.firstName) && (
-                              <h5>{user?.user?.firstName}</h5>
+                              <span className="m-0">{user?.user?.firstName}</span>
                             )}
-                            {!Boolean(user?.user?.firstName) && <h5>User</h5>}
+                            {!Boolean(user?.user?.firstName) && <span className="m-0">User</span>}
                           </div>
                         </div>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item href="/user/myprofile">
-                          <span>
-                            <img src={SetingUser} alt="" height="13" />
-                          </span>{" "}
-                          View Profile
+                        <Dropdown.Item >
+                          <Link to="/myaccount" className="viewProfile">
+                            <span>
+                              <img src={SetingUser} alt="" height="13" />
+                            </span>{" "}
+                            View Profile
+                          </Link>
                         </Dropdown.Item>
-                        <Dropdown.Item href="/user/editprofile">
-                          <span>
-                            <img src={Edit} alt="" height="13" />
-                          </span>{" "}
-                          Edit Profile
+                        <Dropdown.Item >
+                          <Link to="/orderhistory" className="viewProfile">
+                            <span>
+                              {/* <img src={Edit} alt="" height="13" /> */}
+                              <i className="fa fa-shopping-cart"></i>
+                            </span>{" "}
+                            Order History
+                          </Link>
                         </Dropdown.Item>
-                        <Dropdown.Item href="/user/password">
-                          <span>
-                            <img src={ChangePassword} alt="" height="13" />
-                          </span>{" "}
-                          Change Password
+                        <Dropdown.Item >
+                          <Link to="/transactions" className="viewProfile">
+                            <span>
+                              {/* <img src={ChangePassword} alt="" height="13" /> */}
+                              <i className="fa fa-money"></i>
+                            </span>{" "}
+                            Transactions
+                          </Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item >
+                          <Link to="/accountsetting" className="viewProfile">
+                            <span>
+                              {/* <img src={ChangePassword} alt="" height="13" /> */}
+                              <i className="fa fa-key"></i>
+                            </span>{" "}
+                            Account Setting
+                          </Link>
                         </Dropdown.Item>
                         <Dropdown.Item>
-                          <div
+                          <div className="viewProfile"
                             onClick={() => {
                               dispatch(stateActions.logout());
                               navigate("/");
@@ -1027,7 +1098,8 @@ function Header() {
                           type="text"
                           value={searchEngine}
                           className="form-control"
-                          onChange={(e) => setSearchEngine(e.target.value)}
+                          // onChange={(e) => setSearchEngine(e.target.value)}
+                          onChange={searchChange}
                         />
                         <div className="db-searchList-main">
                           {searchData[0]?.products?.map((product) => {
@@ -1110,7 +1182,7 @@ function Header() {
                                 }}
                               >
                                 <span>{cartItem.quantity} × </span>$
-                                {cartItem.variant?.price}
+                                {cartItem.variant?.price*82/100}
                               </h5>
                             </div>
                           </div>
@@ -1139,7 +1211,7 @@ function Header() {
                     <div className="shopping-cart-footer">
                       <div className="shopping-cart-total">
                         <h4>
-                          Total <span>£{cartTotalAmount}</span>
+                          Total <span>£{cartTotalAmount*82/100}</span>
                         </h4>
                       </div>
                       <div className="shopping-cart-button">
@@ -1379,13 +1451,13 @@ function Header() {
                                         <li
                                           key={category?._id}
                                           className={
-                                            categoryM.category._id == category.category._id
+                                            categoryM.category._id ==
+                                            category.category._id
                                               ? "catItemsactive"
                                               : "catItems"
                                           }
                                           onClick={() => {
                                             setCategoryM(category);
-                                         
                                           }}
                                         >
                                           <span>

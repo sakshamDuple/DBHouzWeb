@@ -753,7 +753,7 @@ function Checkout() {
                                     <div className="chckoutPymtSideBrBlk">
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
-                                                <li>Amount<span>£{cartTotalAmount}</span></li>
+                                                <li>Amount<span>£{cartTotalAmount*82/100}</span></li>
                                                 <li>VAT<span className="discntPrice" >+£{cartTotalAmount * 18 / 100}</span></li>
                                                 <li>Discount<span className="discntPrice" >-£0</span></li>
                                                 <li>Convenience Fee<span className="oferPrice">£0 <span className="discntPrice">Free</span></span></li>
@@ -770,7 +770,7 @@ function Checkout() {
                                         </div>
                                         <div className="col-auto">
                                             <div className="totlGstBlk">
-                                                <h5>£{cartTotalAmount + cartTotalAmount * 18 / 100}</h5>
+                                                <h5>£{cartTotalAmount}</h5>
                                                 <p>Inc. VAT</p>
                                             </div>
                                         </div>

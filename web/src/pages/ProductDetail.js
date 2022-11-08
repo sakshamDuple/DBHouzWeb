@@ -284,11 +284,7 @@ function ProductDetail() {
                         ).toFixed(2)
                         : 0
                         }`}</div>
-                      +
-                      {/* <div className="prcentOff px-3">
-                        {(product.variants[selectedVariant].price / 100) * 8}£
-                        VAT Included
-                      </div> */}
+                      {/* +
                       <div className="gst">
                         £
                         {(
@@ -296,7 +292,7 @@ function ProductDetail() {
                           18
                         ).toFixed(2)}
                         vat
-                      </div>
+                      </div> */}
                     </div>
                     {console.log("product:", product)}
                     <div className="leftStock">
@@ -330,7 +326,7 @@ function ProductDetail() {
                                     {variant.size} Foot /{" "}
                                     {getSingleColors(variant.colorId)}
                                     <br />
-                                    <span>£{variant?.price}</span>
+                                    <span>£{variant?.price * 82/100}</span>
                                   </button>
                                 ))}
 

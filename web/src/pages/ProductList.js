@@ -64,7 +64,30 @@ function ProductList() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  const currentCat = location?.state?.category;
 
+  useEffect(() => {
+    if (currentCat) {
+      setSearchParams({
+        categoryId: currentCat.category._id,
+      });
+      console.log(currentCat.category._id);
+      setCategory(currentCat);
+      setFilters((prev) => {
+        return { ...prev, catagoery: currentCat.category._id };
+      });
+    }
+  }, []);
+  const callback = (cat) => {
+    setSearchParams({
+      categoryId: cat.category._id,
+    });
+
+    setCategory(cat);
+    setFilters((prev) => {
+      return { ...prev, catagoery: cat.category._id };
+    });
+  };
   const onClickCategeory = (cat) => {
     setSearchParams({
       categoryId: cat.category._id,
@@ -94,6 +117,10 @@ function ProductList() {
     if (!strictValidArrayWithLength(categories)) return;
     const selectedCategory = searchParams.get("categoryId");
     let currentCategory;
+    if (currentCat) {
+      currentCategory = currentCat;
+      return currentCategory && setCategory(currentCategory);
+    }
     if (selectedCategory) {
       currentCategory = categories.find((i) => {
         return i.category._id == selectedCategory;
@@ -227,7 +254,7 @@ function ProductList() {
   const classes = useStyles();
   return (
     <section className="wrapper">
-      <Header />
+      <Header callback={callback} />
       <article className="categoryInrBlk hdrBrNone wrapper">
         {/* <div className="greyBg2 py-4 mb-5"> */}
         <div className="container">
@@ -271,7 +298,7 @@ function ProductList() {
                         color: "#FFFFFF",
                         cursor: "pointer",
                         background:
-                          cat.category === category?.category
+                          cat?.category?._id === category?.category?._id
                             ? "#F2672A"
                             : "#232F3E",
                       }}
