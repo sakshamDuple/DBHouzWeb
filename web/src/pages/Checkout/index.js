@@ -630,7 +630,7 @@ function Checkout() {
                                     <div className="chckoutPymtSideBrBlk">
                                         <div className="d-flex justify-content-between">
                                             <ul className="prodctListPrice checkotPymntList">
-                                                <li>Total MRP<span>£{cartTotalAmount + cartTotalAmount * 18 / 100}</span></li>
+                                                <li>Amount<span>£{cartTotalAmount*82/100}</span></li>
                                                 <li>VAT<span className="discntPrice" >+£{cartTotalAmount * 18 / 100}</span></li>
                                                 <li>Discount on MRP<span className="discntPrice" >-£{cartTotalAmount * 36 / 100}</span></li>
                                                 <li>Convenience Fee<span className="oferPrice">£0 <span className="discntPrice">Free</span></span></li>

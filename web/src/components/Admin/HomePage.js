@@ -32,6 +32,8 @@ require("jquery-nice-select");
 
 function HomePage() {
   const categories = useSelector((s) => s.categories);
+  const user=useSelector((s)=>s.user)
+  const admin=user.type=="admin"?user:""
   const [imgFile, uploading] = useState("");
   const [bannerTitel, setBannerTitle] = useState("");
   const [buttonTitle, setButtonTitle] = useState("");
@@ -222,16 +224,16 @@ function HomePage() {
   };
   const homePageCreationHandler = async (e) => {
     e.preventDefault();
-
-    if (aboutUs == "" || aboutUs == undefined) {
-      return setMainErr("please Fill the about field");
-    }
     if (
       benefits_of_having_Marble == "" ||
       benefits_of_having_Marble == undefined
     ) {
       return setMainErr("please Fill the Benefits of having Marble field");
     }
+    if (aboutUs == "" || aboutUs == undefined) {
+      return setMainErr("please Fill the about field");
+    }
+   
     if(mtCategories.length<3){
       return setMainErr("please Choose atleast 3 Material Selection Categories");
     }if(mtCategories2.length<3){
@@ -262,7 +264,12 @@ function HomePage() {
       SmallBanner2: smallBanner2Id,
     };
     try {
-      const {data}=await axios.post("http://139.59.36.222:12001/rest/misc/HomePageCreation",HomeData)
+      let config = {
+        headers: {
+          Authorization: 'Bearer ' + admin.jwt
+        }
+      }
+      const {data}=await axios.post("http://139.59.36.222:12001/rest/misc/HomePageCreation",HomeData,config)
       console.log(data);
       alert("Form Submited")     
     } catch (error) {
@@ -270,6 +277,7 @@ function HomePage() {
       
     }
   };
+
   const selectRef1 = useRef();
   useEffect(() => {
     getAllProducts();
@@ -762,7 +770,7 @@ function HomePage() {
                                               onSearch={function noRefCheck() {}}
                                               onSelect={getFeaturedProducts}
                                               options={allProduct}
-                                              selectionLimit={8}
+                                              selectionLimit={4}
                                               placeholder="Select Product"
                                             />
                                           </div>
@@ -797,7 +805,8 @@ function HomePage() {
                             onChange={(event, editor) => {
                               const data = editor.getData();
                               console.log({ event, editor, data });
-                              setAboutUs(data);
+                              
+                              setBenefits_of_having_Marble(data);
                             }}
                             onBlur={(event, editor) => {
                               console.log("Blur.", editor);
@@ -829,7 +838,8 @@ function HomePage() {
                             }}
                             onChange={(event, editor) => {
                               const data = editor.getData();
-                              setBenefits_of_having_Marble(data);
+                             
+                              setAboutUs(data);
 
                               console.log({ event, editor, data });
                             }}
