@@ -11,14 +11,19 @@ import { useDispatch, useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
 import Register from "../Register";
 import Login from '../Login';
+import Select from "react-select";
+import { useFormik } from "formik";
+import { City, Country, State } from "country-state-city";
+import { values } from "lodash";
+import { validationName,validationPhone } from '../../utils/validation';
 window.jQuery = window.$ = $;
 require("jquery-nice-select");
 const initialFormData = {
     address: {
-        country: "",
+        country: {},
         state: "",
         city: "",
-        postal_code: 0,
+        postal_code: "",
         main_address_text: ""
     },
     customerDetail: {
@@ -50,9 +55,24 @@ function Checkout() {
     const [modelshow, setModelshow] = useState(false);
     const [modelshowLogin, setModelshowLogin] = useState(false);
     const [productData, setProductData] = useState([]);
+    const [city, setCity] = useState([]);
+    const [error, setError] = useState();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const selectRef1 = useRef();
+    const countries = Country.getAllCountries();
+    const updatedCountries = countries.map((country) => ({
+        label: country.name,
+        value: country.id,
+        ...country
+    }));
+    const updatedCities = (data) =>{
+        if(data){
+          return  City.getCitiesOfState(data.countryCode,data.isoCode).map((city) => ({ label: city.name, value: city.name, ...city }));
+        }
+    };
+
+    const updatedStates = (countryId) =>State.getStatesOfCountry(countryId).map((state) => ({ label: state.name, value: state.id, ...state }));
     useEffect(() => {
         $(selectRef1.current).niceSelect();
     }, []);
@@ -68,13 +88,18 @@ function Checkout() {
     let cartTotalAmount = 0;
     const getData = () => {
         const car = cart.map((i) => {
-            const { product: { _id, merchantId } = {} } = i
-            return ({ sellerId: _id, productId: merchantId });
+            console.log("i", i)
+            const { product: { _id, merchantId } = {},
+                quantity, variant: { price } = {}
+            } = i
+            let totalprice = price * quantity;
+            return ({ sellerId: merchantId, productId: _id, count: quantity, totalPriceOfThisProducts: totalprice });
         })
         setProductData((prev) => {
             return ([...prev, ...car])
         })
     }
+
     cart.forEach((i) => {
         console.log("item", i)
         console.log("price:", i.variant?.price)
@@ -93,10 +118,11 @@ function Checkout() {
 
     const handleLogout = (e) => {
         e.preventDefault();
-        return dispatch(stateActions.logout()), TokenUType(),getD()
+        return dispatch(stateActions.logout()), TokenUType(), getD()
     }
 
-    window.scrollTo(0, 0);
+    useEffect(() => { window.scrollTo(0, 0) }, [])
+
     const TokenUType = () => {
         let Type = window.localStorage.getItem("utype");
         setType(Type);
@@ -107,6 +133,7 @@ function Checkout() {
         getData();
         TokenUType();
     }, [modelshow]);
+
     const getD = () => {
         if (window.localStorage.JWT) {
             let accessToken = window.localStorage.getItem("JWT");
@@ -137,13 +164,37 @@ function Checkout() {
                 firstName, lastName, userId, phone, email
             } = {},
         } = formData || {};
+        if (!firstName || !validationName(firstName)) {
+            return setError(`Please enter a valid first name`);
+        }
+        if (!lastName || !validationName(lastName)) {
+            return setError(`Please enter a valid last name`);
+        }
+        if (!phone || !validationPhone(phone)) {
+            return setError(`Please enter a valid phone`);
+        }
+        if(main_address_text == undefined || main_address_text == "" ){
+            return setError(`Please enter a address`);
+        }
+        if(country?.name == undefined || country?.name  == "" ){
+            return setError(`Please select a country`);
+        }
+        if(state?.name == undefined || state?.name  == "" ){
+            return setError(`Please select a state`);
+        }
+        if(city?.name == undefined || city?.name  == "" ){
+            return setError(`Please select a city`);
+        }
+        if(postal_code == undefined || postal_code == "" ){
+            return setError(`Please enter a  postal code`);
+        }
         let data = {
             order: {
                 products: productData,
                 address: {
-                    country: country,
-                    state: state,
-                    city: city,
+                    country: country?.name,
+                    state: state?.name,
+                    city: city?.name ,
                     postal_code: postal_code,
                     main_address_text: main_address_text,
                 },
@@ -167,18 +218,22 @@ function Checkout() {
         try {
             const res = await axios.post(`/order/make`, data);
             console.log("res", res);
-            return (
-                // dispatch(stateActions.removeCartItem())
-                navigate("/thanku")
-            );
+            let remove = res?.data?.orderData?.products;
+
+            return remove.map((id) => {
+                return (
+                    dispatch(stateActions.removeCartItem(id.productId)),
+                    navigate("/thanku")
+                );
+            });
         } catch (error) {
             console.log(error);
         }
     };
-    useEffect(()=>{
+    useEffect(() => {
         TokenUType();
         getD();
-    },[])
+    }, [])
     const afterLogin = () => {
         TokenUType();
         getD();
@@ -194,47 +249,51 @@ function Checkout() {
                 <div className="checkOutOuterDiv container">
                     <div className="row d-flex justify-content-between g-5 py-3">
                         <div className="col-md">
-                            <div className="checkoutMainBlk">
-                                <div className="whiteBg py-3 px-3">
-                                    <div className="row d-flex align-items-center">
-                                        {Type != "user" ?
+                            {Type != "user" ?
+                                <div className="checkoutMainBlk">
+                                    <div className="whiteBg py-3 px-3">
+                                        <div className="row d-flex align-items-center">
                                             <div className="col">
                                                 <div className="checkOutLoginBts">
-                                                    <button onClick={(e) => {handleSignup(e)}} className="btnCommon">Register Account</button>
+                                                    <button onClick={(e) => { handleSignup(e) }} className="btnCommon">Register Account</button>
                                                     {modelshow ? <Register setModelshow={setModelshow}
                                                         afterSignup={afterSignup} /> : " "}
                                                     <button onClick={(e) => handleLogin(e)} className="btnCommon">Login</button>
                                                     {modelshowLogin ? <Login setModelshowLogin={setModelshowLogin} afterLogin={afterLogin} /> : " "}
                                                 </div>
                                             </div>
-                                            :
-                                            <>
-                                                <div className="col">
-                                                    <div className="checkOutLoginBts">
-                                                        <button className="btn btnCommon btnRadiusNone"
-                                                            onClick={(e) => handleLogout(e)}
-                                                        >
-                                                            Logout
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div className="col-auto ">
-                                                    <div className="prflUser d-flex align-items-center">
-                                                        <div className="prflUsrTitle">
-                                                            <p>Email : <span>{formData?.customerDetail?.email}</span></p>
-                                                        </div>
-                                                        <div className="prflUsrImg">
-                                                            <img src="img/dummy.png" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        }
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="whiteBg phoneNumbrBlk my-4 py-3 px-3">
-                                    <div className="row d-flex align-items-center justify-content-between">
-                                        {/* <div className="col">
+                                :
+                                <div className="checkoutMainBlk">
+                                    <div className="whiteBg py-3 px-3">
+                                        <div className="row d-flex align-items-center">
+                                            <div className="col">
+                                                <div className="checkOutLoginBts">
+                                                    <button className="btn btnCommon btnRadiusNone"
+                                                        onClick={(e) => handleLogout(e)}
+                                                    >
+                                                        Logout
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="col-auto ">
+                                                <div className="prflUser d-flex align-items-center">
+                                                    <div className="prflUsrTitle">
+                                                        <p>Email : <span>{formData?.customerDetail?.email}</span></p>
+                                                    </div>
+                                                    <div className="prflUsrImg">
+                                                        <img src="img/dummy.png" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="whiteBg phoneNumbrBlk my-4 py-3 px-3">
+                                        <div className="row d-flex align-items-center justify-content-between">
+                                            {/* <div className="col">
                                                 <div className="callTxt">
                                                     +123-456-7890
                                                 </div>
@@ -244,178 +303,240 @@ function Checkout() {
                                                     <Link to="/">Change</Link>
                                                 </div>
                                             </div> */}
-                                    </div>
-                                </div>
-                                <div className="bilingBlk ">
-                                    <div className="prdctDtlHdng pb-4">
-                                        <h3>Billing Details</h3>
-                                    </div>
-                                    <div className="conttForm conttFormWidth">
-                                        <Form className="formStyle">
-                                            <div className="row g-3">
-                                                <div className="col-6">
-                                                    <label htmlFor="firstNameFld" className="form-label">First Name*</label>
-                                                    <input type="text" className="form-control"
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { customerDetail } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    customerDetail: {
-                                                                        ...prev.customerDetail,
-                                                                        firstName: e.target.value,
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-6">
-                                                    <label htmlFor="lastaNameFld" className="form-label">Last Name*</label>
-                                                    <input type="text" className="form-control"
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { customerDetail } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    customerDetail: {
-                                                                        ...prev.customerDetail,
-                                                                        lastName: e.target.value,
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-6 numberFieldArrow ">
-                                                    <label htmlFor="firstNameFld" className="form-label">Phone*</label>
-                                                    <input type="number" className="form-control"
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { customerDetail } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    customerDetail: {
-                                                                        ...prev.customerDetail,
-                                                                        phone: parseInt(e.target.value),
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-12">
-                                                    <label htmlFor="emailFld" className="form-label">Address*</label>
-                                                    <input type="text" className="form-control" placeholder="Main Address"
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { address } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    address: {
-                                                                        ...prev.address,
-                                                                        main_address_text: e.target.value,
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-6">
-                                                    <label htmlFor="cityFld" className="form-label">City*</label>
-                                                    <input type="text" className="form-control"
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { address } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    address: {
-                                                                        ...prev.address,
-                                                                        city: e.target.value,
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-6">
-                                                    <label htmlFor="countrField" className="form-label">Country*</label>
-                                                    <input type="text" className="form-control"
-                                                        value={formData.address.country}
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { address } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    address: {
-                                                                        ...prev.address,
-                                                                        country: e.target.value,
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-6 numberFieldArrow">
-                                                    <label htmlFor="passwordFld" className="form-label ">Postal Code*</label>
-                                                    <input type="number" className="form-control"
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { address } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    address: {
-                                                                        ...prev.address,
-                                                                        postal_code: parseInt(e.target.value),
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="col-6">
-                                                    <label htmlFor="countrField" className="form-label">State*</label>
-                                                    <input type="text" className="form-control"
-                                                        value={formData.address.state}
-                                                        onChange={(e) => {
-                                                            setFormData((prev) => {
-                                                                const { address } = prev;
-                                                                return {
-                                                                    ...prev,
-                                                                    address: {
-                                                                        ...prev.address,
-                                                                        state: e.target.value,
-                                                                    },
-                                                                };
-                                                            });
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </Form>
-                                    </div>
-                                    <div className="shpnMthodBlk formStyle my-4 py-4">
-                                        <div className="prdctDtlHdng pb-3">
-                                            <h3>Shipping Method</h3>
                                         </div>
-                                        <div className="row">
-                                            <div className="col-12 ">
-                                                <div className="form-check pb-2">
-                                                    <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked />
-                                                    <label className="form-check-label" htmlFor="flexRadioDefault1">
-                                                        Free Shipping
-                                                    </label>
+                                    </div>
+                                    <div className="bilingBlk ">
+                                        <div className="prdctDtlHdng pb-4">
+                                            <h3>Billing Details</h3>
+                                        </div>
+                                        <div className="conttForm conttFormWidth">
+                                            <Form className="formStyle">
+                                                <div className="row g-3">
+                                                    <div className="col-6">
+                                                        <label htmlFor="firstNameFld" className="form-label">First Name*</label>
+                                                        <input type="text" className="form-control"
+                                                            placeholder="firstname"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { customerDetail } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        customerDetail: {
+                                                                            ...prev.customerDetail,
+                                                                            firstName: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <label htmlFor="lastaNameFld" className="form-label">Last Name*</label>
+                                                        <input type="text" className="form-control"
+                                                            placeholder="lastname"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { customerDetail } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        customerDetail: {
+                                                                            ...prev.customerDetail,
+                                                                            lastName: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="col-6 numberFieldArrow ">
+                                                        <label htmlFor="firstNameFld" className="form-label">Phone*</label>
+                                                        <input type="number" className="form-control"
+                                                            placeholder="987 764 8456"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { customerDetail } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        customerDetail: {
+                                                                            ...prev.customerDetail,
+                                                                            phone: parseInt(e.target.value),
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="col-12">
+                                                        <label htmlFor="emailFld" className="form-label">Address*</label>
+                                                        <input type="text" className="form-control" placeholder="Main Address"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            main_address_text: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <label htmlFor="countrField" className="form-label">Country*</label>
+                                                        <Select
+                                                            id="country"
+                                                            name="country"
+                                                            label="country"
+                                                            options={updatedCountries}
+                                                            value={formData.address.country}
+                                                            onChange={(value) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            country: value,
+                                                                            state: null,
+                                                                            city:null
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                        {/* <input type="text" className="form-control"
+                                                            value={formData.address.country}
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            country: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        /> */}
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <label htmlFor="countrField" className="form-label">State*</label>
+                                                        <Select
+                                                            id="state"
+                                                            name="state"
+                                                            options={updatedStates(formData.address.country ? formData.address.country.isoCode : null)}
+                                                            value={formData.address.state}
+                                                            onChange={(value) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            state: value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                        {/* <input type="text" className="form-control"
+                                                            value={formData.address.state}
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            state: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        /> */}
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <label htmlFor="cityFld" className="form-label">City*</label>
+                                                        <Select
+                                                            id="city"
+                                                            name="city"                                                                                     
+                                                            options={updatedCities(formData?.address?.state ? formData?.address?.state : null)}
+                                                            value={formData.address.city}
+                                                            onChange={(value) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            city: value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                        {/* <input type="text" className="form-control"
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            city: e.target.value,
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        /> */}
+                                                    </div>
+                                                    <div className="col-6 numberFieldArrow">
+                                                        <label className="form-label ">Postal Code*</label>
+                                                        <input type="text" className="form-control"
+                                                        value={formData.address.postal_code}
+                                                            onChange={(e) => {
+                                                                setFormData((prev) => {
+                                                                    const { address } = prev;
+                                                                    return {
+                                                                        ...prev,
+                                                                        address: {
+                                                                            ...prev.address,
+                                                                            postal_code: (e.target.value),
+                                                                        },
+                                                                    };
+                                                                });
+                                                            }}
+                                                        />
+                                                    </div>
+
                                                 </div>
-                                                {/* <div className="form-check">
+                                            </Form>
+                                        </div>
+                                        <div className="shpnMthodBlk formStyle my-4 py-4">
+                                            <div className="prdctDtlHdng pb-3">
+                                                <h3>Shipping Method</h3>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-12 ">
+                                                    <div className="form-check pb-2">
+                                                        <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked />
+                                                        <label className="form-check-label" htmlFor="flexRadioDefault1">
+                                                            Free Shipping
+                                                        </label>
+                                                    </div>
+                                                    {/* <div className="form-check">
                                                         <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
                                                         <label className="form-check-label" htmlFor="flexRadioDefault2">
                                                             EMS (Express Mail Service): £18.00
                                                         </label>
                                                     </div> */}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    {/* <div className="saveMthodBlk formStyle pt-2 mb-4 pb-4">
+                                        {/* <div className="saveMthodBlk formStyle pt-2 mb-4 pb-4">
                                             <div className="prdctDtlHdng pb-3">
                                                 <h3>Saved Payment Method</h3>
                                             </div>
@@ -462,138 +583,140 @@ function Checkout() {
                                                 </div>
                                             </div>
                                         </div> */}
-                                    <div className="paymentMthodBlk formStyle">
-                                        <div className="row">
-                                            <div className="col-sm-6">
-                                                <div className="prdctDtlHdng pb-1">
-                                                    <h3>Payment Method</h3>
-                                                </div>
-                                                <div className="paymntCreditForm">
-                                                    <div className="creditRadio">
-                                                        <div className="form-check">
-                                                            <input className="form-check-input" type="radio" name="CreditSelect" id="CreditSelect"
-                                                            // value={credit.CreditSelect}
-                                                            // onChange={(e) => {
-                                                            //     setCredit((prev) => {
-                                                            //         console.log("e", e)
-                                                            //         return {
-                                                            //             ...prev,
-                                                            //             CreditSelect: e.target.checked,
-                                                            //         };
-                                                            //     });
-                                                            // }}
-                                                            />
-                                                            <label className="form-check-label  d-flex align-items-center justify-content-between" htmlFor="CreditSelect">
-                                                                <h4>Credit/Debit Cards </h4>
-                                                                <span><img src="img/allCardImg.png" /></span>
-                                                            </label>
-                                                        </div>
+                                        <div className="paymentMthodBlk formStyle">
+                                            <div className="row">
+                                                <div className="col-sm-6">
+                                                    <div className="prdctDtlHdng pb-1">
+                                                        <h3>Payment Method</h3>
                                                     </div>
-                                                </div>
-                                                <div className="col-12">
-                                                    <div className="cardNmbrInput pt-3">
-                                                        <label htmlFor="cardNo" className="form-label">Cartd Number</label>
-                                                        <input type="text" className="form-control" placeholder="1234 5678 0123 456789"
-                                                            value={credit.cardNo}
-                                                            onChange={(e) => {
-                                                                setCredit((prev) => {
-                                                                    // console.log("e", e)
-                                                                    return {
-                                                                        ...prev,
-                                                                        cardNo: e.target.value,
-                                                                    };
-                                                                });
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="col-12">
-                                                    <div className="cardNmbrInput pt-3">
-                                                        <label htmlFor="cityFld" className="form-label">Expiration date</label>
-                                                        <div className="row  d-flex align-items-center justify-content-between pb-3">
-                                                            <div className="col-sm-4">
-                                                                <div className="form-group">
-                                                                    <select ref={selectRef1} className="wide">
-                                                                        <option value="Month">Month</option>
-                                                                        <option value="Jan">Jan</option>
-                                                                        <option value="Feb">Feb</option>
-                                                                        <option value="Mar">Mar</option>
-                                                                        <option value="Apr">Apr</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-sm-4">
-                                                                <div className="form-group">
-                                                                    <select ref={selectRef2} className="wide">
-                                                                        <option value="Featured">Year</option>
-                                                                        <option value="10">2022</option>
-                                                                        <option value="25">2021</option>
-                                                                        <option value="50">2020</option>
-                                                                        <option value="100">2019</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-sm-3">
-                                                                <div className="form-group">
-                                                                    <input type="text" className="form-control" placeholder="CVV"
-                                                                        value={credit.cvv}
-                                                                        onChange={(e) => {
-                                                                            setCredit((prev) => {
-                                                                                return {
-                                                                                    ...prev,
-                                                                                    cvv: e.target.value,
-                                                                                };
-                                                                            });
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-sm">
-                                                                <div className="questnIcon">
-                                                                    {/* <Link to="/"><img src="img/questionIcon.svg" /></Link> */}
-                                                                </div>
+                                                    <div className="paymntCreditForm">
+                                                        <div className="creditRadio">
+                                                            <div className="form-check">
+                                                                <input className="form-check-input" type="radio" name="CreditSelect" id="CreditSelect"
+                                                                // value={credit.CreditSelect}
+                                                                // onChange={(e) => {
+                                                                //     setCredit((prev) => {
+                                                                //         console.log("e", e)
+                                                                //         return {
+                                                                //             ...prev,
+                                                                //             CreditSelect: e.target.checked,
+                                                                //         };
+                                                                //     });
+                                                                // }}
+                                                                />
+                                                                <label className="form-check-label  d-flex align-items-center justify-content-between" htmlFor="CreditSelect">
+                                                                    <h4>Credit/Debit Cards </h4>
+                                                                    <span><img src="img/allCardImg.png" /></span>
+                                                                </label>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="paymntCreditForm">
-                                                    <div className="creditRadio">
-                                                        <div className="form-check">
-                                                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="paypal"
-                                                                value={credit.cvv}
+                                                    <div className="col-12">
+                                                        <div className="cardNmbrInput pt-3">
+                                                            <label htmlFor="cardNo" className="form-label">Cartd Number</label>
+                                                            <input type="text" className="form-control" placeholder="1234 5678 0123 456789"
+                                                                value={credit.cardNo}
                                                                 onChange={(e) => {
                                                                     setCredit((prev) => {
+                                                                        // console.log("e", e)
                                                                         return {
                                                                             ...prev,
-                                                                            paypal: e.target.checked,
+                                                                            cardNo: e.target.value,
                                                                         };
                                                                     });
                                                                 }}
                                                             />
-                                                            <label className="form-check-label  d-flex align-items-center justify-content-between" htmlFor="paypal">
-                                                                <h4>PayPal </h4>
-                                                                <span><img src="img/paypal.png" /></span>
-                                                            </label>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div>
-                                                    <div className="byClickTxt">
-                                                        <p>By Clicking The Button, You Agree To The Terms And Conditions</p>
+                                                    <div className="col-12">
+                                                        <div className="cardNmbrInput pt-3">
+                                                            <label htmlFor="cityFld" className="form-label">Expiration date</label>
+                                                            <div className="row  d-flex align-items-center justify-content-between pb-3">
+                                                                <div className="col-sm-4">
+                                                                    <div className="form-group">
+                                                                        <select ref={selectRef1} className="wide">
+                                                                            <option value="Month">Month</option>
+                                                                            <option value="Jan">Jan</option>
+                                                                            <option value="Feb">Feb</option>
+                                                                            <option value="Mar">Mar</option>
+                                                                            <option value="Apr">Apr</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col-sm-4">
+                                                                    <div className="form-group">
+                                                                        <select ref={selectRef2} className="wide">
+                                                                            <option value="Featured">Year</option>
+                                                                            <option value="10">2022</option>
+                                                                            <option value="25">2021</option>
+                                                                            <option value="50">2020</option>
+                                                                            <option value="100">2019</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col-sm-3">
+                                                                    <div className="form-group">
+                                                                        <input type="text" className="form-control" placeholder="CVV"
+                                                                            value={credit.cvv}
+                                                                            onChange={(e) => {
+                                                                                setCredit((prev) => {
+                                                                                    return {
+                                                                                        ...prev,
+                                                                                        cvv: e.target.value,
+                                                                                    };
+                                                                                });
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col-sm">
+                                                                    <div className="questnIcon">
+                                                                        {/* <Link to="/"><img src="img/questionIcon.svg" /></Link> */}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div className="saveBtnDiv">
-                                                        <button className="saveBtn btnCommon btnDark "
-                                                            onClick={handleSubmit}
-                                                        >
-                                                            Save
-                                                        </button>
+                                                    <div className="paymntCreditForm">
+                                                        <div className="creditRadio">
+                                                            <div className="form-check">
+                                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="paypal"
+                                                                    value={credit.cvv}
+                                                                    onChange={(e) => {
+                                                                        setCredit((prev) => {
+                                                                            return {
+                                                                                ...prev,
+                                                                                paypal: e.target.checked,
+                                                                            };
+                                                                        });
+                                                                    }}
+                                                                />
+                                                                <label className="form-check-label  d-flex align-items-center justify-content-between" htmlFor="paypal">
+                                                                    <h4>PayPal </h4>
+                                                                    <span><img src="img/paypal.png" /></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="byClickTxt">
+                                                            <p>By Clicking The Button, You Agree To The Terms And Conditions</p>
+                                                        </div>
+                                                        {error && <p className="text-danger">* {error}</p>}
+                                                        <div className="saveBtnDiv">
+                                                            <button className="saveBtn btnCommon btnDark "
+                                                                onClick={handleSubmit}
+                                                            >
+                                                                Save
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                         <div className="col-md-auto">
                             <div className="sdbrWdgt">
@@ -632,7 +755,7 @@ function Checkout() {
                                             <ul className="prodctListPrice checkotPymntList">
                                                 <li>Amount<span>£{cartTotalAmount*82/100}</span></li>
                                                 <li>VAT<span className="discntPrice" >+£{cartTotalAmount * 18 / 100}</span></li>
-                                                <li>Discount on MRP<span className="discntPrice" >-£{cartTotalAmount * 36 / 100}</span></li>
+                                                <li>Discount<span className="discntPrice" >-£0</span></li>
                                                 <li>Convenience Fee<span className="oferPrice">£0 <span className="discntPrice">Free</span></span></li>
                                             </ul>
                                         </div>
@@ -664,7 +787,7 @@ function Checkout() {
                 </div>
             </form>
 
-            <article className="homeAboutBlk whiteBg wrapper py-5">
+            {/* <article className="homeAboutBlk whiteBg wrapper py-5">
                 <div className="container">
                     <div className="abtHomeInfo">
                         <h3>Different Types of Marble  </h3>
@@ -680,7 +803,7 @@ function Checkout() {
                             Beige Marble | Grey Marble | Green Marble | Pink Marble | Red Marble | Blue Marble | Brown Marble | Black Marble</p>
                     </div>
                 </div>
-            </article>
+            </article> */}
             <Footer />
         </section >
     );

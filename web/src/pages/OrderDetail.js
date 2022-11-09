@@ -42,6 +42,8 @@ function OrderDetail() {
   const user = useSelector((s) => s.user);
   console.log(user.jwt);
 
+  console.log("reviewProId ========>>>>>", orderProduct)
+
   //   const getProduct=async()=>{
   //    const {data}= await axios.get(`${baseUrl}/product/getOne/${products?.products[0]?.sellerId}`)
   //    setOrderProduct(data)
@@ -75,6 +77,7 @@ function OrderDetail() {
 
     console.log(reviewData);
   };
+
   const getOrderProducts = async () => {
     try {
       const data = await axios.get(
@@ -173,6 +176,7 @@ function OrderDetail() {
   const handleMouseLeave = () => {
     sethoverRatingValue(undefined);
   };
+  // console.log('default State ========>>>>>>',state);
 
   //   const product = products.products.product;
   // const product = state.product;
@@ -410,6 +414,8 @@ function OrderDetail() {
                     </div>
                   );
                 })}
+
+
               </div>
             </div>
           </div>

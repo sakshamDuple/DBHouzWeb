@@ -10,13 +10,13 @@ import { Accordion } from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import $ from "jquery";
-import axios from "../API/axios";
 import "rc-slider/assets/index.css";
 import HomeAbout from "../components/Home/HomeAbout";
 import { useDispatch, useSelector } from "react-redux";
 import { Rest, RestClient } from "../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../redux/stateActions";
+import axios from "../API/axios";
 import Pagination from "../container/pagination/pagination";
 import {
   strictValidArray,
@@ -44,26 +44,13 @@ const useStyles = makeStyles({
 });
 
 function ProductList() {
-  const index = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("loc:", location)
-  let selectedCategory = location?.state?.category;
-  let selectedSubCategory = location.state?.subcategory;
-  console.log("selectedSubCategory", selectedSubCategory)
-  let flag = 1;
+  let [searchParams, setSearchParams] = useSearchParams();
   const categories = useSelector((s) => s.categories);
-  console.log("categories", categories)
-  let currentCategory = [{}];
-  let mon = selectedCategory ? selectedCategory : categories[0]?.category?._id
-  console.log("mon", mon)
-  // || i.subCategories.filter((id) => id._id) == mon
-  currentCategory = categories.filter((i) => i.category._id == mon );
-  console.log("currentCategory", currentCategory)
-  const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
-  const [category, setCategory] = useState(currentCategory[0]);
+  const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
   const [filters, setFilters] = useState(initialFilter);
   const [selectOption, setSelectOption] = useState();
@@ -264,6 +251,7 @@ function ProductList() {
     setPriceValue(newValue);
   };
 
+  const classes = useStyles();
   return (
     <section className="wrapper">
       <Header callback={callback} />
@@ -290,6 +278,7 @@ function ProductList() {
                     <a href="/category">Category</a>
                   </li>
                 </ol>
+                <ToastContainer />
               </nav>
             </div>
           </div>
@@ -435,7 +424,7 @@ function ProductList() {
                           </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
-                          {/* <Accordion.Header>Sub Categories</Accordion.Header>
+                          <Accordion.Header>Sub Categories</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -483,10 +472,10 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
-                          {/* <Accordion.Header>Color</Accordion.Header>
+                          <Accordion.Header>Color</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -597,11 +586,11 @@ function ProductList() {
                                         Multicolor
                                       </label>
                                     </div>
-                                  </li>
+                                  </li> */}
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                           {/* <Accordion.Header>Size</Accordion.Header>
@@ -684,40 +673,7 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body> */}
-                        </Accordion.Item>
-                        <Accordion.Item eventKey="3">
-                          {/* <Accordion.Header>Price</Accordion.Header>
-                          <Accordion.Body>
-                            <div className="filtrList mb-2">
-                              <ul>
-                                <li>
-                                  <Link to="/">Under $500</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$500 - $750</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$1,000 - $1,500</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$1,500 - $2,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$2,000 - $5,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$5,000 - $10,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">$15,000 - $20,000</Link>
-                                </li>
-                                <li>
-                                  <Link to="/">Over $20,000</Link>
-                                </li>
-                              </ul>
-                            </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>*/}
                         </Accordion.Item>
                       </Accordion>
                     </div>
@@ -819,12 +775,12 @@ function ProductList() {
                                   >
                                     <img src="/img/wishListIconDark.svg" />
                                   </span>
-                                </Link>
-                                <Link to="/">
+                                </div>
+                                <div className="heartWhislist">
                                   <span className="prdctListIcon">
                                     <img src="/img/prdctListIcon.svg" />
                                   </span>
-                                </Link>
+                                </div>
                               </div>
                               <div className="prdctHvrBtns">
                                 <a
@@ -895,9 +851,8 @@ function ProductList() {
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
                                 <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <i className="fa fa-star ylowStar" aria-hidden="true"></i>
-                                <span>({Math.ceil(Math.random() * 100)})</span>
+                                <i className="fa fa-star ylowStar" aria-hidden="true"></i> */}
+                                <span>{product.review?.length} reviews</span>
                               </div>
                               <div className="prdctListInfo">
                                 <p
@@ -974,7 +929,7 @@ function ProductList() {
                           <span className="visually-hidden">Next</span>
                         </a>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
@@ -982,9 +937,10 @@ function ProductList() {
           </div>
         </div>
       </article>
-      <HomeAbout />
+      {/* <HomeAbout /> */}
       <Footer />
     </section>
   );
 }
+
 export default ProductList;

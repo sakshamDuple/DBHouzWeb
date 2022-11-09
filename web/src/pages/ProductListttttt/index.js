@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useLocation, useParams,useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -11,110 +11,154 @@ import { Rest, RestClient } from "../../rest";
 import { PuffLoader } from "react-spinners";
 import { stateActions } from "../../redux/stateActions";
 import axios from "../../API/axios";
+import Pagination from '../../container/pagination/pagination';
 import { strictValidArrayWithLength } from "../../utils/commonutils";
-window.jQuery = window.$ = $;
-require("jquery-nice-select");
-
+import { RestAdmin } from "../../rest";
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
+import { filter } from "lodash";
 const initialFilter = {
-  page: 0,
-  sort: '',
-  limit: 10,
-  catagoery:'',
+  catagoery: '',
   sub_catagoery: '',
 }
 
 function ProductList() {
-  const index = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   let [searchParams, setSearchParams] = useSearchParams();
-
-  // let selectedCategory = location?.state?.category;
-  // let selectedSubCategory = location?.state?.subcategory;
-  let flag = 1;
   const categories = useSelector((s) => s.categories);
-  
-  const cart = useSelector((s) => s.cart);
   const [loading, setLoading] = useState();
   const [category, setCategory] = useState({});
   const [products, setProducts] = useState();
   const [filters, setFilters] = useState(initialFilter);
+  const [selectOption, setSelectOption] = useState('Asc');
+  const [limitOption, setLimitOption] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [TotalCount, setTotalCount] = useState(10);
+  const [priceValue, setPriceValue] = useState([0, 1000]);
   window.scrollTo(0, 0);
 
-  useEffect(() => {
-    if(!strictValidArrayWithLength(categories)) return
-    const selectedCategory = searchParams.get('category')
-    const sub_cat = searchParams.get('subcategory')
-    const currentCategory = categories.filter((i) => {
-      return i.category._id == selectedCategory
-    }) || categories[0];
-  
-   setCategory(currentCategory)
-  }, [categories]);
+  useEffect(async()=>{
+
+    await RestAdmin.getAllColors();
+  },[])
+
+  const onClickCategeory = (cat) => {
+    setSearchParams({
+      categoryId: cat.category._id,
+    })
+    setCategory(cat);
+    setFilters((prev) => {
+      return { ...prev, catagoery: cat.category._id }
+    });
+  }
 
   useEffect(() => {
-    const selectedCategory = searchParams.get('category');
-    const sub_cat = searchParams.get('subcategory');
-    if(sub_cat){
-      return handleSubcategory(sub_cat)
-    }else{
-      setLoading(true);
-      RestClient.getProductsByCategoryId({categoryId: selectedCategory, limit: 10})
-        .then((res) => {
-          setProducts(res.data);
-          setLoading(false);
-        })
-        .catch(console.error);
+    if (!strictValidArrayWithLength(categories)) return
+    const selectedCategory = searchParams.get('categoryId')
+    // const sub_cat = searchParams.get('subCategoryId')
+    let currentCategory;
+    if (selectedCategory) {
+      currentCategory = categories.find((i) => {
+        return i.category._id == selectedCategory
+      });
+      return currentCategory && setCategory(currentCategory);
+    } else {
+      currentCategory = categories[0];
+      currentCategory && onClickCategeory(currentCategory);
+    }
+  }, [categories]);
+
+  // useEffect(() => {
+  //   if (!strictValidArrayWithLength(categories)) return
+  //   setLoading(true);
+  //   const selectedCategory = searchParams.get('category');
+  //   const sub_cat = searchParams.get('subcategory');
+  //   console.log("sub_cat", sub_cat, selectedCategory)
+  //   const currentCategory = categories[0];
+  //   console.log("currentCategory", currentCategory)
+  //   const { category: { _id } = {} } = currentCategory || {};
+  //   setSearchParams({
+  //     ...searchParams,
+  //     categoryId: _id,
+  //   })
+  //   setFilters((prev) => {
+  //     return { ...prev, catagoery: _id };
+  //   });
+  //   setCategory(currentCategory)
+  // }, [categories]);
+
+  useEffect(() => {
+    if(filters.catagoery){
+      handleGetProduct();
+    }
+  }, [filters, currentPage, priceValue,limitOption]);
+
+  useEffect(() => {
+    const selectedCategory = searchParams.get('categoryId');
+    const sub_cat = searchParams.get('subCategoryId');
+    setLoading(true);
+    if (sub_cat) {
+      return setFilters((prev) => {
+        return { ...prev, catagoery: selectedCategory, sub_catagoery: sub_cat }
+      });
+    } else {
+      return setFilters((prev) => {
+        return { ...prev, catagoery: selectedCategory }
+      });
     }
   }, [searchParams]);
 
 
-  // useEffect(async () => {
-  //   if (selectedSubCategory) {
-  //     setLoading(true);
-  //     const data = {
-  //       subCategoryId: _id,
-  //     };
-  //     try {
-  //       const res = await axios.post(`/product/getProductsBySubCategory`, data)
-  //       console.log("res js", res.data.data)
-  //       setProducts(res.data.data)
-  //     } catch (error) {
-  //       console.log("error", error)
-  //     }
-  //   }
-  // }, [selectedSubCategory]);
-
-  const productDetails = (product) => {
-    navigate("/productdetail", { state: { product } });
-  };
-
-  const handleSubcategory = async (e, subcategory) => {
-    const { _id } = subcategory || {};
-    const data = {
-      subCategoryId: _id,
-    };
+  const handleGetProduct = async () => {
     try {
-      const res = await axios.post(`/product/getProductsBySubCategory`, data)
-      console.log("res js", res.data.data)
-      setProducts(res.data.data)
+      if (filters.catagoery !== undefined) {
+        const res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${filters.catagoery}&subCategoryId=${filters.sub_catagoery}&pricefrom=${priceValue[0]}&priceto=${priceValue[1]}&colorId=&page=${currentPage}&limit=${limitOption}&sortByName=${selectOption}`)
+        return (
+          setProducts(res.data.data),
+          setTotalCount(res.data.Total),
+          setLoading(false)
+        );
+      }
+
+      // let res
+      // if (categoryId !== undefined) {
+      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?categoryId=${categoryId}&subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
+      //   return (
+      //     setProducts(res.data.data),
+      //     setLoading(false)
+      //   );
+      // }else{
+      //   res = await axios.get(`/product/getEveryProductBySpecificaion/filter?subCategoryId=${filters.sub_catagoery}&pricefrom=&priceto=&colorId=&page=${currentPage}&limit=${limitOption}`)
+
+      // }
     } catch (error) {
       console.log("error", error)
     }
   }
 
-  const selectRef2 = useRef();
-  useEffect(() => {
-    $(selectRef2.current).niceSelect();
-  }, []);
-  const selectRef3 = useRef();
-  useEffect(() => {
-    $(selectRef3.current).niceSelect();
-  }, []);
-  // console.log("searchParams",searchParams && searchParams)
+  const productDetails = (product) => {
+    navigate("/productdetail", { state: { product } });
+  };
 
-  console.log(index);
+  const handleSubCategory = (e, id) => {
+    // e.preventDefault();
+    setSearchParams({
+      categoryId: searchParams.get('categoryId'),
+      subCategoryId: id,
+    })
+    setFilters((prev) => {
+      console.log(prev)
+      return { ...prev, sub_catagoery: id };
+    });
+  }
+
+  const rangeSelector = (event, newValue) => {
+    setPriceValue(newValue);
+  };
+
+
   return (
     <section className="wrapper">
       <Header />
@@ -150,23 +194,17 @@ function ProductList() {
       </article>
       <article className="NavCatInrBlck wrapper">
         <div className="container">
-          <div className="NavCatInr">
-            <ul>
+          <div className="NavCatInr category-NavCatInr categoryNavBox bg-none">
+            <ul className="row no-gutters justify-content-center">
               {strictValidArrayWithLength(categories) && categories.map((cat, index) => (
-                <li key={index}>
+                <li key={index} className="col-md-2 mb-1" >
                   <div
                     style={{
                       color: "#FFFFFF",
                       cursor: "pointer",
                       background: cat.category === category?.category ? "#F2672A" : "#232F3E",
                     }}
-                    onClick={() => {
-                      console.log(cat);
-                      setSearchParams({...searchParams,
-                        categoryId: cat.category._id,
-                      })
-                      setCategory(cat);
-                    }}
+                    onClick={() => onClickCategeory(cat)}
                   >
                     {cat.category.name}
                   </div>
@@ -187,12 +225,11 @@ function ProductList() {
                     <div className="col-auto">
                       <div className="sortByCol">
                         <div className="form-group">
-                          <select ref={selectRef3} className="wide">
-                            <option value="Featured">20</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
+                          <select selected name="option" className="wide"
+                            onChange={(e) => { setLimitOption(e.target.value) }} >
+                            <option value="none" selected disabled hidden>Limit</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
                           </select>
                         </div>
                       </div>
@@ -205,12 +242,11 @@ function ProductList() {
                     <div className="col-auto">
                       <div className="sortByCol">
                         <div className="form-group">
-                          <select ref={selectRef2} className="wide">
-                            <option value="Featured">Featured</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
+                          <select selected name="option" className="wide"
+                            onChange={(e) => { setSelectOption(e.target.value) }} >
+                            <option value="none" selected disabled hidden>Featured</option>
+                            <option value="Asc">Asc</option>
+                            <option value="Desc">Desc</option>
                           </select>
                         </div>
                       </div>
@@ -229,10 +265,22 @@ function ProductList() {
                     <div className="filtrAcordion">
                       <Accordion defaultActiveKey="0">
                         <Accordion.Item eventKey="3">
-                          {/* <Accordion.Header>Price</Accordion.Header>
-                          <Accordion.Body> */}
-                          {/* <div className="filtrList mb-2">
-                              <ul>
+                          <Accordion.Header>Price</Accordion.Header>
+                          <Accordion.Body>
+                            <div className="filtrList mb-2">
+                              <Typography id="range-slider" gutterBottom>
+                                Select Price Range:
+                              </Typography>
+                              <Slider
+                                value={priceValue}
+                                onChange={rangeSelector}
+                                valueLabelDisplay="auto"
+                                step={100}
+                                marks
+                                max={1000}
+                                min={0}
+                              />
+                              {/* <ul>
                                 <li>
                                   Under $500
                                 </li>
@@ -257,9 +305,9 @@ function ProductList() {
                                 <li>
                                   Over $20,000
                                 </li>
-                              </ul>
-                            </div> */}
-                          {/* </Accordion.Body> */}
+                              </ul> */}
+                            </div>
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">
                           <Accordion.Header>Sub Categories</Accordion.Header>
@@ -270,7 +318,9 @@ function ProductList() {
                                   return (
                                     <li index={key}>
                                       <a style={{ cursor: "pointer" }}
-                                        onClick={() => handleSubcategory(subcategory)}
+                                        onClick={(e) => {
+                                          handleSubCategory(e, subcategory._id)
+                                        }}
                                       >
                                         {subcategory.name}
                                       </a>
@@ -282,7 +332,7 @@ function ProductList() {
                           </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="0">
-                          {/* <Accordion.Header>Color</Accordion.Header>
+                          <Accordion.Header>Color</Accordion.Header>
                           <Accordion.Body>
                             <div className="filtrList mb-2">
                               <form className="formStyle">
@@ -365,7 +415,7 @@ function ProductList() {
                                 </ul>
                               </form>
                             </div>
-                          </Accordion.Body> */}
+                          </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="2">
                           {/* <Accordion.Header>Size</Accordion.Header>
@@ -590,7 +640,14 @@ function ProductList() {
                   </div>
 
                   <div className="pgntnOuter text-center pt-3 pb-3">
-                    <ul className="pagination">
+                    <Pagination
+                      className="pagination-bar"
+                      currentPage={currentPage}
+                      totalCount={TotalCount}
+                      pageSize={limitOption}
+                      onPageChange={page => setCurrentPage(page)}
+                    />
+                    {/* <ul className="pagination">
                       <li className="page-item">
                         <a className="page-link" role="button" tabIndex="0" href="#">
                           <span aria-hidden="true">‹</span>
@@ -635,7 +692,7 @@ function ProductList() {
                           <span className="visually-hidden">Next</span>
                         </a>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>

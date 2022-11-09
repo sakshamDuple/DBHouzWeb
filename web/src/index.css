@@ -9,8 +9,3 @@ html, body {
     align-items: center;
     justify-content: center;
 }
-/* for contact form */
-.PhoneInputInput {
-    border: none;
-    height: 100%;
-}
